@@ -36,12 +36,11 @@ void withFizzBuzz() {
     }
 }
 
-void main() {
-    int inlineWithIfSize=3;
-    int i;
+int main() {
     regular();
     withIfCompare();
     withIfModulo();
     withFizzBuzz();
-    return;
+    return 0;
+}
 
