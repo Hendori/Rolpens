@@ -1,15 +1,15 @@
 #include <stdio.h>
 void regular() {
     int i;
-    for (i=0; i<15;i++) {
-        printf("inline\n");
+    for (i=0;i<5;i++) {
+        printf("inline \n");
     }
 }
 
 void withIfCompare() {
     int i;
-    for (i=0; i<21; i++) {
-        if (i==19) {
+    for (i=0; i<17; i++) {
+        if (i==6) {
             printf("withIfCompare");
         }
     }
@@ -17,21 +17,21 @@ void withIfCompare() {
 
 void withIfModulo() {
     int i;
-    for (i=0; i<7; i++) {
-        if (i%2==0) {
-            printf("inlineWithModulo\n");
+    for (i=100; i<117; i++) {
+        if (i%5==0) {
+            printf("inlineWithIf %d\n", i);
         }
     }
 }
 
 void withFizzBuzz() {
     int j;
-    for (j=2; j<17; j++) {
+    for (j=0; j<17; j++) {
         if (j%3==0) {
-            printf("fizz%d", j);
+            printf("fizz%d\n", j);
         }
         if (j%5==0) {
-            printf("buzz%d", j);
+            printf("buzz%d\n", j);
         }
     }
 }
@@ -41,6 +41,5 @@ int main() {
     withIfCompare();
     withIfModulo();
     withFizzBuzz();
-    return 1;
+    return 0;
 }
-
