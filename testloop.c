@@ -1,8 +1,8 @@
 #include <stdio.h>
 void regular() {
     int i;
-    for (i=0;i<5;i++) {
-        printf("inline \n");
+    for (i=0;i<20;i++) {
+        printf("inline %d\n", i);
     }
 }
 
