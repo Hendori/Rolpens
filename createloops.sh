@@ -1,13 +1,14 @@
 #!/bin/bash
 createForLoop() {
-  echo """
+  echo "
 void loopWithSize$1() {
   int i;
   for (i=0; i<$1; i++) {
     $2
   }
+  printf("\"\\\\n\"");
 }
-  """
+  "
 }
 
 code="printf(\"inline%d\",i);"
