@@ -1,9 +1,15 @@
-loopsize = 100
-compilersetting = 3
-filename = "createloop{}-{}.c".format(loopsize,compilersetting)
-codefragment = """printf("Current itteration: %d\\n, i);"""
+import argparse
 
-f = open(filename, "a")
+parser = argparse.ArgumentParser()
+parser.add_argument("-s", "--size", type=int)
+
+args = parser.parse_args()
+
+loopsize = args.size
+filename = "createloops{}.c".format(loopsize)
+codefragment = """printf("Current itteration: %d\\n", i);"""
+filestart = "#include <stdio.h>"
+startmain = "int main() {"
 
 def createloop(size):
     loopString = f"""
@@ -15,8 +21,25 @@ def createloop(size):
     printf("\\n");
     }}
     """
-    print(loopString)
+    with open(filename, "a") as file:
+        file.write(loopString)
 
-for a in range (1,100): {
+
+#starting regular code
+with open(filename, "w") as file:
+    file.write(filestart)
+
+for a in range (1,loopsize):
     createloop(a)
-}
+
+with open(filename,"a") as file:
+    file.write(startmain)
+
+for a in range(1, loopsize):
+    with open(filename, "a") as file:
+        file.write(f"""
+        loopWithSize{a}();
+        """)
+
+with open(filename, "a") as file:
+    file.write("}")
