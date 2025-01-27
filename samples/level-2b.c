@@ -28,7 +28,7 @@ void polynome_table() {
 }
 
 void red_herring() {
-	printf("These are a few of my favorite numbers:\n", 16);
+	printf("These are a few of my favorite numbers:\n");
 	printf(" *  %d\n", 16);
 	printf(" *  %d\n", 35);
 	printf(" *  %d\n", 48);

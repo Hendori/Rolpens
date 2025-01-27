@@ -30,7 +30,7 @@ unsigned char message[63] = " \x57\xc1\x07\xc6\xea\xd8\x40\xcb\x4f\xb2\xcf\x16\x
 void decrypt_message() {
 	unsigned char S[256];
 	char p;
-	int i, j, t;
+	int j, t;
 
 	S[0] = 0;
 	S[1] = 1;
@@ -2015,5 +2015,5 @@ void decrypt_message() {
 
 int main(int argc, char **argv) {
 	multiplication_table(17);
-	decrypt_message(0);
+	decrypt_message();
 }
