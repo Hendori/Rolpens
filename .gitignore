@@ -5,3 +5,7 @@
 *.rep
 *.DS_Store
 /samples/build
+.gradle
+gradlew
+gradlew.bat
+run_ghidra/gradle
