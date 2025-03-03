@@ -12,6 +12,18 @@ loopWithIf = """
             printf("inlineWithModulo %d\\n", i);
         }
 """
+fizzbuzzloop = """
+        if (i%3==0) {
+            printf("fizz");
+        }
+        if (i%5==0) {
+            printf("buzz");
+        }
+        if (i%3!=0 && i%5!=0) {
+            printf("%d", i);
+        }
+        printf("\\n");
+        """
 
 loopsize = args.size
 filename = "createloops{}.c".format(loopsize)
@@ -48,6 +60,8 @@ for a in range(1, loopsize):
 for a in range(1, loopsize):
     createloop(a, "loopWithIf", loopWithIf)
 
+for a in range(1, loopsize):
+    createloop(a, "fizzbuzzloop", fizzbuzzloop)
 
 with open(filename, "a") as file:
     file.write(startmain)
@@ -58,6 +72,7 @@ for a in range(1, loopsize):
         simpleLoop{a}();
         loopWithIndex{a}();
         loopWithIf{a}();
+        fizzbuzzloop{a}();
         """)
 
 with open(filename, "a") as file:
