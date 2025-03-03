@@ -16,20 +16,20 @@ shift
 
 GRADLE_VERSION=8.9
 
-if [ ! -x "$THIS_DIR/gradlew" ]; then
-	cd "$THIS_DIR"
+if [ ! -x "$PLUGIN_DIR/gradlew" ]; then
+	cd "$PLUGIN_DIR"
 	gradle wrapper --gradle-version $GRADLE_VERSION || (
 		echo "Failed to create a gradle wrapper. (try 'apt-get install gradle')" >&2
 		exit 1
 	)
-	cd "$PLUGIN_DIR"
 fi
 
 if [ -f "build.gradle" -a -f "extension.properties" ]; then
 	echo "Building extension..."
+	mkdir -p ~/.gradle/daemon/$GRADLE_VERSION
 	rm -f ~/.gradle/daemon/$GRADLE_VERSION/'<REPLACE>'
 	ln -sf "$GHIDRA_PATH" ~/.gradle/daemon/$GRADLE_VERSION/'<REPLACE>'
-	"$THIS_DIR/gradlew" build || exit $?
+	"$PLUGIN_DIR/gradlew" build || exit $?
 
 	echo "Installing extension..."
 	mkdir -p "$GHIDRA_PATH/Ghidra/Extensions/$(basename "$PLUGIN_DIR")"
