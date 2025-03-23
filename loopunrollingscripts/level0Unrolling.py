@@ -33,9 +33,9 @@ def reroll_loops(code):
     return "\n".join(new_code)
 
 
-with open("level-0.c", "r") as file:
+with open("level-0-not-working-for-rerolling.c", "r") as file:
     c_code = file.read()
 
 rerolled_code = reroll_loops(c_code)
-with open("output.c", "w") as file:
+with open("level-0-not-working-for-rerolling-out.c", "w") as file:
     file.write(rerolled_code)
