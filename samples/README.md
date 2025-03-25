@@ -34,6 +34,25 @@ int some_calculation(int p) {
 }
 ```
 
+Level 0b
+-------
+Level 0b are repeated identical lines of C code that contain some class of false positives.
+
+#include <stdio.h>
+
+### `make_absolutely_sure_its_even(n)`
+This function cannot be unrolled. Because it's not indented correctly, the naive approach of surrounding repeated lines with a for loop will cause a syntax error.
+
+### `angry_faces()`
+This function _can_ be unrolled, but not by a naive approach that attempts to infer the level of indentation by counting braces.
+
+```c
+void angry_faces() {
+    for ( int i = 0; i < 5; i++ ) {
+        printf("}:-(\n");
+    }
+}
+```
 
 Level 1
 -------
