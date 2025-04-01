@@ -37,11 +37,11 @@ if args.insecure:
 
 resp = requests.get(args.dce_url + "/api/decompilers/", verify=(not args.insecure))
 decompilers = json.loads(resp.text)["results"]
-print(decompilers)
 
 print("Available decompilers:")
 for decomp in decompilers:
     print(f"   * {decomp['name']} version {decomp['version']}")
+print("")
 
 
 t = tqdm.tqdm(total=(len(decompilers)+2) * len(args.files))
@@ -62,10 +62,10 @@ for file_name in args.files:
         t.update(1)
 
     last_count = 0
-    decomp_resp = {"count": 0}
-    time.sleep(5)
+    decomp_resp = {"count": 0, "results": []}
+    time.sleep(0.5)
     while decomp_resp["count"] < len(decompilers):
-        time.sleep(0.75)
+        time.sleep(0.35)
         decomp_resp = requests.get(args.dce_url + f"/api/binaries/{binary_id}/decompilations/", verify=(not args.insecure))
         decomp_resp = json.loads(decomp_resp.text)
         t.update(decomp_resp["count"] - last_count)
@@ -74,14 +74,16 @@ for file_name in args.files:
     for decomp in decomp_resp["results"]:
         if 'url' in decomp and decomp['url'].startswith(args.dce_url + f"/api/binaries/{binary_id}/"):
             download = requests.get(decomp['url'].rstrip("/") + "/download/", verify=(not args.insecure))
-            print(download, len(download.text))
             if download.status_code == 200:
                 with open(f"decompilations/{base_name}.{decomp['decompiler']['name']}_{decomp['decompiler']['version']}.c", "wb+") as f:
                     f.write(download.content)
             else:
-                if len(decomp["error"]) > 0:
-                    with open(f"decompilations/{base_name}.{decomp['decompiler']['name']}_{decomp['decompiler']['version']}.txt", "w+") as f:
+                with open(f"decompilations/{base_name}.{decomp['decompiler']['name']}_{decomp['decompiler']['version']}.txt", "w+") as f:
+                    if len(decomp["error"]) > 0:
                         f.write(decomp["error"])
+                    else:
+                        f.write(f"{str(download)}\n\n{download.text}")
+
     t.update(1)
 
 t.close()
