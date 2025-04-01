@@ -1,0 +1,11 @@
+ERROR    | 2025-03-31 21:20:01,326 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_condition.
+WARNING  | 2025-03-31 21:20:01,327 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ64.
+WARNING  | 2025-03-31 21:20:01,362 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ8.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

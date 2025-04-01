@@ -1,0 +1,19 @@
+WARNING  | 2025-03-31 19:00:33,372 | cle.backends.macho.macho | The Mach-O backend is not well-supported. Good luck!
+WARNING  | 2025-03-31 19:00:33,373 | cle.backends.macho.macho | LoadCommands.LC_LOAD_DYLINKER is not handled yet
+WARNING  | 2025-03-31 19:00:33,374 | cle.backends.macho.macho | LoadCommands.LC_UUID is not handled yet
+WARNING  | 2025-03-31 19:00:33,374 | cle.backends.macho.macho | LoadCommands.LC_SOURCE_VERSION is not handled yet
+WARNING  | 2025-03-31 19:00:33,374 | cle.backends.macho.macho | LoadCommands.LC_CODE_SIGNATURE is not handled yet
+WARNING  | 2025-03-31 19:00:33,539 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shr32.
+WARNING  | 2025-03-31 19:00:33,539 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl32.
+WARNING  | 2025-03-31 19:00:33,539 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or32.
+ERROR    | 2025-03-31 19:00:33,539 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Triop Iop_MulF32.
+ERROR    | 2025-03-31 19:00:33,540 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Triop Iop_SubF32.
+WARNING  | 2025-03-31 19:00:33,543 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_I64StoF32.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

@@ -1,0 +1,54 @@
+WARNING  | 2025-03-31 18:20:47,309 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLT64U.
+WARNING  | 2025-03-31 18:20:47,405 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ32.
+WARNING  | 2025-03-31 18:20:47,406 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl64.
+WARNING  | 2025-03-31 18:20:47,406 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CasCmpNE32.
+WARNING  | 2025-03-31 18:20:47,551 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ64.
+WARNING  | 2025-03-31 18:20:47,553 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLE32U.
+WARNING  | 2025-03-31 18:20:47,596 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLE64U.
+WARNING  | 2025-03-31 18:20:47,690 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLE32S.
+WARNING  | 2025-03-31 18:20:47,691 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shr64.
+WARNING  | 2025-03-31 18:20:47,691 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Sar64.
+WARNING  | 2025-03-31 18:20:47,800 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpNE64.
+WARNING  | 2025-03-31 18:20:48,196 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLT32S.
+WARNING  | 2025-03-31 18:20:48,201 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul64.
+ERROR    | 2025-03-31 18:20:48,247 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_rflags_c.
+WARNING  | 2025-03-31 18:20:48,247 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or32.
+WARNING  | 2025-03-31 18:20:48,301 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor64.
+WARNING  | 2025-03-31 18:20:48,334 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_ExpCmpNE64.
+ERROR    | 2025-03-31 18:20:48,334 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Unop Iop_Clz64.
+WARNING  | 2025-03-31 18:20:48,334 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor32.
+WARNING  | 2025-03-31 18:20:48,335 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or64.
+WARNING  | 2025-03-31 18:20:48,336 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpNE8.
+ERROR    | 2025-03-31 18:20:48,370 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_condition.
+WARNING  | 2025-03-31 18:20:48,385 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl32.
+WARNING  | 2025-03-31 18:20:48,390 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpNE32.
+ERROR    | 2025-03-31 18:20:48,462 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Unop Iop_Ctz64.
+WARNING  | 2025-03-31 18:20:48,488 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_32HLto64.
+WARNING  | 2025-03-31 18:20:48,488 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_DivModU64to32.
+WARNING  | 2025-03-31 18:20:48,488 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLT32U.
+WARNING  | 2025-03-31 18:20:48,573 | angr.analyses.reaching_definitions.engine_vex.SimEngineRDVEX | Unsupported Binop Iop_F64toI32S.
+WARNING  | 2025-03-31 18:20:48,605 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ16.
+WARNING  | 2025-03-31 18:20:48,636 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul32.
+WARNING  | 2025-03-31 18:20:48,689 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_MullU64.
+WARNING  | 2025-03-31 18:20:48,774 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul64F0x2.
+WARNING  | 2025-03-31 18:20:48,775 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpF64.
+WARNING  | 2025-03-31 18:20:48,794 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Div64F0x2.
+WARNING  | 2025-03-31 18:20:48,806 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ8.
+ERROR    | 2025-03-31 18:20:48,942 | angr.analyses.reaching_definitions.engine_vex.SimEngineRDVEX | Unsupported Unop Iop_ReinterpF64asI64.
+ERROR    | 2025-03-31 18:20:48,942 | angr.analyses.reaching_definitions.engine_vex.SimEngineRDVEX | Unsupported Dirty amd64g_dirtyhelper_storeF80le.
+ERROR    | 2025-03-31 18:20:49,114 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Dirty amd64g_dirtyhelper_loadF80le.
+ERROR    | 2025-03-31 18:20:49,114 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Unop Iop_ReinterpI64asF64.
+WARNING  | 2025-03-31 18:20:49,360 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or8.
+WARNING  | 2025-03-31 18:20:49,373 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLE64S.
+ERROR    | 2025-03-31 18:20:49,438 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Dirty amd64g_dirtyhelper_FINIT.
+WARNING  | 2025-03-31 18:20:49,634 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CasCmpNE64.
+WARNING  | 2025-03-31 18:20:49,656 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpLT64S.
+ERROR    | 2025-03-31 18:20:49,866 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Unop Iop_Not32.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

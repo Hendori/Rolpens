@@ -1,0 +1,19 @@
+WARNING  | 2025-03-31 18:49:34,490 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor8.
+WARNING  | 2025-03-31 18:49:34,538 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl32.
+WARNING  | 2025-03-31 18:49:34,547 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul32.
+WARNING  | 2025-03-31 18:49:34,651 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ32.
+WARNING  | 2025-03-31 18:49:34,676 | angr.analyses.calling_convention.calling_convention | _analyze_function(): Cannot find a calling convention for <Function sub_401050 (0x401050)> that fits the given arguments.
+WARNING  | 2025-03-31 18:49:34,676 | angr.analyses.calling_convention.calling_convention | Cannot determine calling convention for <Function sub_401050 (0x401050)>.
+WARNING  | 2025-03-31 18:49:34,725 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ8.
+WARNING  | 2025-03-31 18:49:34,733 | angr.analyses.calling_convention.calling_convention | _analyze_function(): Cannot find a calling convention for <Function _start (0x401090)> that fits the given arguments.
+WARNING  | 2025-03-31 18:49:34,733 | angr.analyses.calling_convention.calling_convention | Cannot determine calling convention for <Function _start (0x401090)>.
+WARNING  | 2025-03-31 18:49:34,734 | angr.analyses.calling_convention.calling_convention | _analyze_function(): Cannot find a calling convention for <Function sub_401020 (0x401020)> that fits the given arguments.
+WARNING  | 2025-03-31 18:49:34,741 | angr.analyses.calling_convention.calling_convention | Cannot determine calling convention for <Function sub_401020 (0x401020)>.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

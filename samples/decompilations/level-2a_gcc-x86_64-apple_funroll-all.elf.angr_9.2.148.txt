@@ -1,0 +1,23 @@
+WARNING  | 2025-03-31 18:52:33,840 | cle.backends.macho.macho | The Mach-O backend is not well-supported. Good luck!
+WARNING  | 2025-03-31 18:52:33,841 | cle.backends.macho.macho | LoadCommands.LC_LOAD_DYLINKER is not handled yet
+WARNING  | 2025-03-31 18:52:33,841 | cle.backends.macho.macho | LoadCommands.LC_UUID is not handled yet
+WARNING  | 2025-03-31 18:52:33,841 | cle.backends.macho.macho | LoadCommands.LC_SOURCE_VERSION is not handled yet
+WARNING  | 2025-03-31 18:52:34,080 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl64.
+WARNING  | 2025-03-31 18:52:34,085 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl32.
+WARNING  | 2025-03-31 18:52:34,087 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul32.
+ERROR    | 2025-03-31 18:52:34,121 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_rflags_c.
+WARNING  | 2025-03-31 18:52:34,121 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or8.
+WARNING  | 2025-03-31 18:52:34,124 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor8.
+WARNING  | 2025-03-31 18:52:34,124 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_DivU8.
+WARNING  | 2025-03-31 18:52:34,125 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mod8.
+ERROR    | 2025-03-31 18:52:34,134 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_condition.
+ERROR    | 2025-03-31 18:52:34,134 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_rflags_all.
+WARNING  | 2025-03-31 18:52:34,134 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor64.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

@@ -1,0 +1,15 @@
+WARNING  | 2025-03-31 18:37:28,723 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor8.
+WARNING  | 2025-03-31 18:37:28,747 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl64.
+WARNING  | 2025-03-31 18:37:28,757 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul32.
+WARNING  | 2025-03-31 18:37:28,759 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl32.
+ERROR    | 2025-03-31 18:37:28,787 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_condition.
+WARNING  | 2025-03-31 18:37:28,787 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ64.
+WARNING  | 2025-03-31 18:37:28,852 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ8.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

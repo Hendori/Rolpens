@@ -1,0 +1,16 @@
+WARNING  | 2025-03-31 21:25:50,875 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ32.
+WARNING  | 2025-03-31 21:25:50,885 | angr.analyses.calling_convention.calling_convention | _analyze_function(): Cannot find a calling convention for <Function sub_401060 (0x401060)> that fits the given arguments.
+WARNING  | 2025-03-31 21:25:50,886 | angr.analyses.calling_convention.calling_convention | Cannot determine calling convention for <Function sub_401060 (0x401060)>.
+WARNING  | 2025-03-31 21:25:50,905 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_CmpEQ8.
+WARNING  | 2025-03-31 21:25:50,908 | angr.analyses.calling_convention.calling_convention | _analyze_function(): Cannot find a calling convention for <Function _start (0x401090)> that fits the given arguments.
+WARNING  | 2025-03-31 21:25:50,908 | angr.analyses.calling_convention.calling_convention | Cannot determine calling convention for <Function _start (0x401090)>.
+WARNING  | 2025-03-31 21:25:50,909 | angr.analyses.calling_convention.calling_convention | _analyze_function(): Cannot find a calling convention for <Function sub_401020 (0x401020)> that fits the given arguments.
+WARNING  | 2025-03-31 21:25:50,909 | angr.analyses.calling_convention.calling_convention | Cannot determine calling convention for <Function sub_401020 (0x401020)>.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?
