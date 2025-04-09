@@ -28,3 +28,20 @@ with open("level-0.c", "r") as f:
 # Parse and print the syntax tree
 tree = parser.parse(source_code)
 print(tree.root_node)  # Print the AST in S-expression format
+
+
+def get_node_text(node):
+    print(node)
+    return source_code[node.start_byte : node.end_byte].decode()
+
+
+for child in tree.root_node.children:
+    print(get_node_text(child))
+
+previous = ""
+
+
+def find_duplicates(node):
+    if node == previous:
+        print("Duplicate found {0}", node)
+    previous = node
