@@ -12,11 +12,7 @@ def lang_from_so(path: str, name: str) -> Language:
     return Language(language_ptr)
 
 
-so_path = os.path.expanduser(
-    "~/Documents/unrolling_loops/loopunrollingscripts/treesitter-c.so"
-)
-
-C_LANGUAGE = lang_from_so(so_path, "c")
+C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
 
 parser = Parser()
 parser.language = C_LANGUAGE
