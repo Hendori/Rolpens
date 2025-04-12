@@ -1,3 +1,6 @@
+import os,sys
+from tree_sitter import Language, Parser
+from ctypes import cdll, c_void_p
 from os import fspath
 import json
 from typing import Self
@@ -56,6 +59,12 @@ class Node:
             rv.child_names.append(node.field_name_for_child(i) or "")
         return rv
 
+    def child_by_field_name(self, name: str):
+        for i, node_name in enumerate(self.child_names):
+            if node_name == name:
+                return self.children[i]
+        return None
+
     def remove_child(self, node: Self):
         for i, child in enumerate(self.children):
             if child == node:
@@ -92,6 +101,8 @@ class Node:
                 self.child_names.insert(i, name)
                 return
         raise TreeError("reference node not found")
+
+from formatter import Formatter
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -222,3 +233,6 @@ for child_node in get_compound_statement_node(tree_root):
         print(child_node)
 
         break
+
+print(Formatter().format_tree(tree_root))
+
