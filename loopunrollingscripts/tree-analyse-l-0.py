@@ -38,6 +38,15 @@ class Node:
             rv.child_names.append(node.field_name_for_child(i) or "")
         return rv
 
+    def remove_child(self, node):
+        for i, child in enumerate(self.children):
+            if child == node:
+                node.parent = None
+                del self.children[i]
+                del self.child_names[i]
+                return node
+        return None
+
 
 def lang_from_so(path: str, name: str) -> Language:
     lib = cdll.LoadLibrary(fspath(path))
@@ -117,14 +126,14 @@ def find_duplicates(node):
 
 
 def insert_loop(node):
-    node.parent.children = node.parent.children[1:]
+    node.parent.remove_child(node)
 
 
 for child_node in get_compound_statement_node(tree_root):
-    for loop in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
-        print(loop)
-        # insert_loop(loop[0])
-        # print(json.dumps(loop))
-        # print(child_node)
+    for repeated_node, loop_count in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
+        print(repeated_node, loop_count)
+        insert_loop(repeated_node)
+        # print(json.dumps(repeated_node))
+        print(child_node)
 
         break
