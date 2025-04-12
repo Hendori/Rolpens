@@ -4,6 +4,41 @@ from os import fspath
 import json
 
 
+class Node:
+    def __init__(self, node_type: str, node_text:bytes = b""):
+        self.type = node_type
+        self.parent = None
+        self.text = node_text
+        self.children = []
+        self.child_names = []
+
+    def __repr__(self) -> str:
+        return str(self)
+    def __str__(self) -> str:
+        # Formatteer een S-expressie
+        rv = f"({self.type}"
+        for i, child in enumerate(self.children):
+            chstr = str(child)
+            if len(chstr) < 5:
+                continue
+
+            if len(self.child_names) > i and self.child_names[i] != "":
+                rv += f" {self.child_names[i]}: {chstr}"
+            else:
+                rv += " " + chstr
+        return rv + ")"
+
+    @staticmethod
+    def from_tree_sitter(node):
+        rv = Node(node.type)
+        for i, tschild in enumerate(node.children):
+            child = Node.from_tree_sitter(tschild)
+            child.parent = rv
+            rv.children.append(child)
+            rv.child_names.append(node.field_name_for_child(i) or "")
+        return rv
+
+
 def lang_from_so(path: str, name: str) -> Language:
     lib = cdll.LoadLibrary(fspath(path))
     language_function = getattr(lib, f"tree_sitter_{name}")
@@ -23,6 +58,7 @@ with open("level-0.c", "r") as f:
 
 # Parse and print the syntax tree
 tree = parser.parse(source_code)
+tree_root = Node.from_tree_sitter(tree.root_node)
 
 
 def get_node_text(node):
@@ -84,21 +120,11 @@ def insert_loop(node):
     node.parent.children = node.parent.children[1:]
 
 
-class Node:
-    def __init__(self, node_type, children=[]):
-        self.type = node_type
-        self.children = children
-
-    @staticmethod
-    def from_tree_sitter(self, node):
-        return Node(node.type, [Node.from_tree_sitter(child) for child in node.children]
-
-
-for child_node in get_compound_statement_node(tree.root_node):
+for child_node in get_compound_statement_node(tree_root):
     for loop in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
-        # print(loop)
+        print(loop)
         # insert_loop(loop[0])
-        print(json.dumps(loop))
+        # print(json.dumps(loop))
         # print(child_node)
 
         break
