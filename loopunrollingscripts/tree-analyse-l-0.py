@@ -1,16 +1,31 @@
-from tree_sitter import Language, Parser
-from ctypes import cdll, c_void_p
 from os import fspath
 import json
+from typing import Self
 
+from tree_sitter import Language, Parser
+from tree_sitter import Node as TSNode
+from ctypes import cdll, c_void_p
+
+
+
+class TreeError(Exception):
+    pass
 
 class Node:
     def __init__(self, node_type: str, node_text:bytes = b""):
         self.type = node_type
+
         self.parent = None
-        self.text = node_text
+        self.next_sibling = None
+        self.prev_sibling = None
+
         self.children = []
         self.child_names = []
+
+        self.text = node_text
+        self.grammar_id = 0
+        self.grammar_name = ""
+        self.id = 0
 
     def __repr__(self) -> str:
         return str(self)
@@ -29,23 +44,54 @@ class Node:
         return rv + ")"
 
     @staticmethod
-    def from_tree_sitter(node):
+    def from_tree_sitter(node: TSNode):
         rv = Node(node.type)
         for i, tschild in enumerate(node.children):
             child = Node.from_tree_sitter(tschild)
             child.parent = rv
+            if i > 0:
+                child.prev_sibling = rv.children[i-1]
+                rv.children[i-1].next_sibling = child
             rv.children.append(child)
             rv.child_names.append(node.field_name_for_child(i) or "")
         return rv
 
-    def remove_child(self, node):
+    def remove_child(self, node: Self):
         for i, child in enumerate(self.children):
             if child == node:
                 node.parent = None
+                if node.next_sibling is not None:
+                    node.next_sibling.prev_sibling = node.prev_sibling
+                if node.prev_sibling is not None:
+                    node.prev_sibling.next_sibling = node.next_sibling
+                node.next_sibling = None
+                node.prev_sibling = None
                 del self.children[i]
                 del self.child_names[i]
                 return node
-        return None
+        raise TreeError("node not found")
+
+    def append_child(self, node: Self, name: str = ""):
+        node.parent = self
+        if len(self.children) > 0:
+            node.prev_sibling = self.children[-1]
+            self.children[-1].next_sibling = node
+        self.children.append(node)
+        self.child_names.append(name)
+
+    def insert_before(self, node: Self, reference_node: Self, name: str = ""):
+        for i, child in enumerate(self.children):
+            if child == reference_node:
+                node.parent = self
+                node.next_sibling = child
+                child.prev_sibling = node
+                if i > 0:
+                    node.prev_sibling = self.children[i-1]
+                    self.children[i-1].next_sibling = node
+                self.children.insert(i, node)
+                self.child_names.insert(i, name)
+                return
+        raise TreeError("reference node not found")
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -125,14 +171,53 @@ def find_duplicates(node):
             yield (startnode, count)
 
 
-def insert_loop(node):
+def insert_loop(node, count):
+    # Verwijder alle herhalingen (de eerste node die wordt herhaald blijft staan)
+    for _ in range(count):
+        node.parent.remove_child(node.next_sibling)
+
+    # Bouw een for-loop die {count} keer herhaalt
+    for_node = Node("for_statement")
+    for_node.append_child(Node("(", b"("))
+
+    init_node = Node("declaration")
+    init_node.append_child(Node("primitive_type", b"int"), "type")
+    init_decl = Node("init_declarator")
+    init_decl.append_child(Node("identifier", b"i"), "declarator")
+    init_decl.append_child(Node("number_literal", str(count).encode()), "value")
+    init_node.append_child(init_decl, "declarator")
+    for_node.append_child(init_node, "initializer")
+    for_node.append_child(Node(";", b";"))
+
+    cond_node = Node("binary_expression")
+    cond_node.append_child(Node("identifier", b"i"), "left")
+    cond_node.append_child(Node("<", b"<"), "operator")
+    cond_node.append_child(Node("number_literal", str(count).encode()), "right")
+    for_node.append_child(cond_node, "condition")
+    for_node.append_child(Node(";", b";"))
+
+    upd_node = Node("update_expression")
+    upd_node.append_child(Node("identifier", b"i"), "argument")
+    upd_node.append_child(Node("++", b"++"), "operator")
+    for_node.append_child(upd_node, "update")
+    for_node.append_child(Node(")", b")"))
+
+    loop_body = Node("compound_statement")
+    for_node.append_child(loop_body, "body")
+
+    # Zet 'm voor de oorspronkelijke node
+    node.parent.insert_before(for_node, node)
+
+    # En verplaats de node naar het loop-body
     node.parent.remove_child(node)
+    loop_body.append_child(node)
+
 
 
 for child_node in get_compound_statement_node(tree_root):
     for repeated_node, loop_count in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
         print(repeated_node, loop_count)
-        insert_loop(repeated_node)
+        insert_loop(repeated_node, loop_count)
         # print(json.dumps(repeated_node))
         print(child_node)
 
