@@ -48,7 +48,7 @@ class Node:
 
     @staticmethod
     def from_tree_sitter(node: TSNode):
-        rv = Node(node.type)
+        rv = Node(node.type, node.text)
         for i, tschild in enumerate(node.children):
             child = Node.from_tree_sitter(tschild)
             child.parent = rv

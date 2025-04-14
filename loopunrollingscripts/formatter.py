@@ -344,10 +344,13 @@ class Formatter:
     def _format_compound_literal_expression(self, node) -> str:
         raise NotImplementedError()
     def _format_compound_statement(self, node) -> str:
+        close = "\n" + self._ind() + "}"
         self.indent += 1
         try:
             stmts = [self.format_node(x) for x in node.children if x.type not in ["{","}"]]
-            return "{\n" + "\n".join(stmts) + "}"
+            if len(stmts) == 0:
+                return "{}"
+            return "{\n" + self._ind() + ("\n"+self._ind()).join(stmts) + close
         finally:
             self.indent -= 1
     def _format_concatenated_string(self, node) -> str:
@@ -359,7 +362,12 @@ class Formatter:
     def _format_declaration(self, node) -> str:
         type_f = self.format_node(node.child_by_field_name("type"))
         decl_f = self.format_node(node.child_by_field_name("declarator"))
-        return f"{type_f} {decl_f}"
+        if node.parent.type == "compound_statement":
+            # HACK: ik weet niet welke van de twee nou de uitzondering is,
+            # die in een compound statement of die in een for-constructie.
+            return f"{type_f} {decl_f};"
+        else:
+            return f"{type_f} {decl_f}"
     def _format_declaration_list(self, node) -> str:
         raise NotImplementedError()
     def _format_do_statement(self, node) -> str:
@@ -406,7 +414,7 @@ class Formatter:
         type_f = self.format_node(node.child_by_field_name("type"))
         decl_f = self.format_node(node.child_by_field_name("declarator"))
         body_f = self.format_node(node.child_by_field_name("body"))
-        return type_f + " " + decl_f + " " + body_f
+        return "\n" + type_f + " " + decl_f + " " + body_f + "\n"
     def _format_generic_expression(self, node) -> str:
         raise NotImplementedError()
     def _format_gnu_asm_clobber_list(self, node) -> str:
@@ -479,7 +487,7 @@ class Formatter:
     def _format_parameter_declaration(self, node) -> str:
         return " ".join([self.format_node(x) for x in node.children])
     def _format_parameter_list(self, node) -> str:
-        return "(" + ", ".join([self.format_node(x) for x in node.children if x.type not in ["(",")"]]) + ")"
+        return "(" + ", ".join([self.format_node(x) for x in node.children if x.type not in ["(",",",")"]]) + ")"
     def _format_parenthesized_declarator(self, node) -> str:
         raise NotImplementedError()
     def _format_parenthesized_expression(self, node) -> str:
@@ -515,7 +523,7 @@ class Formatter:
     def _format_preproc_ifdef(self, node) -> str:
         raise NotImplementedError()
     def _format_preproc_include(self, node) -> str:
-        return "#include " + self.format_node(node.child_by_field_name("path"))
+        return "#include " + self.format_node(node.child_by_field_name("path")) + "\n"
     def _format_preproc_params(self, node) -> str:
         raise NotImplementedError()
     def _format_primitive_type(self, node) -> str:
