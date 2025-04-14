@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 void it_crowd() {
-  for (int j = 0; j < 4; j++) {
+  for (int j = 0; j < 4; j += 6) {
     puts("Hallo");
   }
   int i = 3;

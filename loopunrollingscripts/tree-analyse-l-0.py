@@ -182,34 +182,51 @@ def find_duplicates(node):
             yield (startnode, count)
 
 
-def insert_loop(node, count):
-    # Verwijder alle herhalingen (de eerste node die wordt herhaald blijft staan)
-    for _ in range(count):
-        node.parent.remove_child(node.next_sibling)
+ident_count = 0
+def new_identifier(reference_node: Node) -> str:
+    global ident_count
+    rv = f"i_{ident_count}"
+    ident_count += 1
+    # TODO: ga omhoog in de tree vanaf reference_node, en kijk of de
+    # kandidaatvariabele al bestaat. Indien ja, verzin een andere.
+    return rv
 
-    # Bouw een for-loop die {count} keer herhaalt
+
+def insert_loop(reference_node: Node, start: int, count: int = 0, step: int = 1):
+    if count == 0:
+        count = start
+        start = 0
+
+    loop_var = new_identifier(reference_node).encode()
+
     for_node = Node("for_statement")
     for_node.append_child(Node("(", b"("))
 
     init_node = Node("declaration")
     init_node.append_child(Node("primitive_type", b"int"), "type")
     init_decl = Node("init_declarator")
-    init_decl.append_child(Node("identifier", b"i"), "declarator")
-    init_decl.append_child(Node("number_literal", str(count).encode()), "value")
+    init_decl.append_child(Node("identifier", loop_var), "declarator")
+    init_decl.append_child(Node("number_literal", str(start).encode()), "value")
     init_node.append_child(init_decl, "declarator")
     for_node.append_child(init_node, "initializer")
     for_node.append_child(Node(";", b";"))
 
     cond_node = Node("binary_expression")
-    cond_node.append_child(Node("identifier", b"i"), "left")
+    cond_node.append_child(Node("identifier", loop_var), "left")
     cond_node.append_child(Node("<", b"<"), "operator")
-    cond_node.append_child(Node("number_literal", str(count).encode()), "right")
+    cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
     for_node.append_child(cond_node, "condition")
     for_node.append_child(Node(";", b";"))
 
     upd_node = Node("update_expression")
-    upd_node.append_child(Node("identifier", b"i"), "argument")
-    upd_node.append_child(Node("++", b"++"), "operator")
+    if step == 1:
+        upd_node.append_child(Node("identifier", loop_var), "argument")
+        upd_node.append_child(Node("++", b"++"), "operator")
+    else:
+        upd_node = Node("assignment_expression")
+        upd_node.append_child(Node("identifier", loop_var), "argument")
+        upd_node.append_child(Node("+=", b"+="), "operator")
+        upd_node.append_child(Node("number_literal", str(step).encode()), "value")
     for_node.append_child(upd_node, "update")
     for_node.append_child(Node(")", b")"))
 
@@ -217,12 +234,21 @@ def insert_loop(node, count):
     for_node.append_child(loop_body, "body")
 
     # Zet 'm voor de oorspronkelijke node
-    node.parent.insert_before(for_node, node)
+    reference_node.parent.insert_before(for_node, reference_node)
+    return for_node, loop_body
+
+
+def reroll_l0_loop(node, repeat_count):
+    # Verwijder alle herhalingen (de eerste node die wordt herhaald blijft staan)
+    for _ in range(repeat_count):
+        node.parent.remove_child(node.next_sibling)
+
+    # Bouw een for-loop die {count} keer herhaalt
+    _, loop_body = insert_loop(node, repeat_count)
 
     # En verplaats de node naar het loop-body
     node.parent.remove_child(node)
     loop_body.append_child(node)
-
 
 
 for child_node in get_compound_statement_node(tree_root):
@@ -232,7 +258,7 @@ for child_node in get_compound_statement_node(tree_root):
         for repeated_node, loop_count in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
             print(repeated_node, loop_count)
             # TODO: if deze_loop_werkt(repeated_node, loop_count):
-            insert_loop(repeated_node, loop_count)
+            reroll_l0_loop(repeated_node, loop_count)
             changed = True
             # print(json.dumps(repeated_node))
             print(child_node)
