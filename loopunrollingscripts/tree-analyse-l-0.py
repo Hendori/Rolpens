@@ -226,13 +226,18 @@ def insert_loop(node, count):
 
 
 for child_node in get_compound_statement_node(tree_root):
-    for repeated_node, loop_count in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
-        print(repeated_node, loop_count)
-        insert_loop(repeated_node, loop_count)
-        # print(json.dumps(repeated_node))
-        print(child_node)
+    changed = True
+    while changed:
+        changed = False
+        for repeated_node, loop_count in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
+            print(repeated_node, loop_count)
+            # TODO: if deze_loop_werkt(repeated_node, loop_count):
+            insert_loop(repeated_node, loop_count)
+            changed = True
+            # print(json.dumps(repeated_node))
+            print(child_node)
 
-        break
+            break
 
 print(Formatter().format_tree(tree_root))
 
