@@ -1,21 +1,18 @@
-import os,sys
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
-import json
 from typing import Self
+from formatter import Formatter
 
-from tree_sitter import Language, Parser
 from tree_sitter import Node as TSNode
-from ctypes import cdll, c_void_p
-
 
 
 class TreeError(Exception):
     pass
 
+
 class Node:
-    def __init__(self, node_type: str, node_text:bytes = b""):
+    def __init__(self, node_type: str, node_text: bytes = b""):
         self.type = node_type
 
         self.parent = None
@@ -32,6 +29,7 @@ class Node:
 
     def __repr__(self) -> str:
         return str(self)
+
     def __str__(self) -> str:
         # Formatteer een S-expressie
         rv = f"({self.type}"
@@ -53,8 +51,8 @@ class Node:
             child = Node.from_tree_sitter(tschild)
             child.parent = rv
             if i > 0:
-                child.prev_sibling = rv.children[i-1]
-                rv.children[i-1].next_sibling = child
+                child.prev_sibling = rv.children[i - 1]
+                rv.children[i - 1].next_sibling = child
             rv.children.append(child)
             rv.child_names.append(node.field_name_for_child(i) or "")
         return rv
@@ -95,14 +93,12 @@ class Node:
                 node.next_sibling = child
                 child.prev_sibling = node
                 if i > 0:
-                    node.prev_sibling = self.children[i-1]
-                    self.children[i-1].next_sibling = node
+                    node.prev_sibling = self.children[i - 1]
+                    self.children[i - 1].next_sibling = node
                 self.children.insert(i, node)
                 self.child_names.insert(i, name)
                 return
         raise TreeError("reference node not found")
-
-from formatter import Formatter
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -128,7 +124,7 @@ tree_root = Node.from_tree_sitter(tree.root_node)
 
 
 def get_node_text(node):
-    print(node)
+    # print(node)
     return source_code[node.start_byte : node.end_byte].decode()
 
 
@@ -166,23 +162,19 @@ def compare_node_content(left, right):
 def find_duplicates(node):
     children_list = list(node.children)
     for i, startnode in enumerate(children_list):
-        # print(str(startnode))
-        # print("nieuw startnode gevonden")
         count = 0
         for node in children_list[i + 1 :]:
             if compare_node_content(startnode, node):
-                # print(node)
-                # print(get_node_text(node))
-                # print("gedupliceerde regel gevonden")
                 count += 1
             else:
                 break
         if count > 1:
-            # print(f"heey, we hebben duplicaten aantal {count}")
             yield (startnode, count)
 
 
 ident_count = 0
+
+
 def new_identifier(reference_node: Node) -> str:
     global ident_count
     rv = f"i_{ident_count}"
@@ -255,7 +247,9 @@ for child_node in get_compound_statement_node(tree_root):
     changed = True
     while changed:
         changed = False
-        for repeated_node, loop_count in sorted(find_duplicates(child_node), key=lambda x: -x[1]):
+        for repeated_node, loop_count in sorted(
+            find_duplicates(child_node), key=lambda x: -x[1]
+        ):
             print(repeated_node, loop_count)
             # TODO: if deze_loop_werkt(repeated_node, loop_count):
             reroll_l0_loop(repeated_node, loop_count)
@@ -266,4 +260,3 @@ for child_node in get_compound_statement_node(tree_root):
             break
 
 print(Formatter().format_tree(tree_root))
-
