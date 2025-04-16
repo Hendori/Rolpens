@@ -235,7 +235,8 @@ def reroll_l0_loop(node, repeat_count):
     for _ in range(repeat_count):
         node.parent.remove_child(node.next_sibling)
 
-    # Bouw een for-loop die {count} keer herhaalt
+    # Bouw een for-loop die {count} + 1 keer herhaalt
+    # Die + 1 is er omdat het origineel van de loop niet meegenomen werd
     _, loop_body = insert_loop(node, repeat_count + 1)
 
     # En verplaats de node naar het loop-body
@@ -250,12 +251,12 @@ for child_node in get_compound_statement_node(tree_root):
         for repeated_node, loop_count in sorted(
             find_duplicates(child_node), key=lambda x: -x[1]
         ):
-            print(repeated_node, loop_count)
+            # print(repeated_node, loop_count)
             # TODO: if deze_loop_werkt(repeated_node, loop_count):
             reroll_l0_loop(repeated_node, loop_count)
             changed = True
             # print(json.dumps(repeated_node))
-            print(child_node)
+            # print(child_node)
 
             break
 
