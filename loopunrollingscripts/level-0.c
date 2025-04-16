@@ -8,16 +8,10 @@ void it_crowd() {
   if (i == 3) {
     puts("bladiebla");
   }
-  int x = 0;
-  int p = 4;
-  x += x * x + p;
-  x += x * x + p;
-  x += x * x + p;
-  x += x * x + p;
-  x += x * x + p;
-  x += x * x + p;
-  x += x * x + p;
-  x += x * x + p;
+  puts("Are you feeling stressed, Jen?\n");
+  puts("Are you sure?\n");
+  puts("Are you feeling stressed, Jen?\n");
+  puts("Are you sure?\n");
   puts("Are you feeling stressed, Jen?\n");
   puts("Are you sure?\n");
   puts("Are you sure?\n");
@@ -39,12 +33,11 @@ void it_crowd() {
   puts("Are you sure?\n");
   puts("Are you sure?\n");
   puts("Are you sure?\n");
-  puts("Are you sure?\n");
-  puts("Are you sure?\n");
-  puts("Are you sure?\n");
-  puts("Are you sure?\n");
-  puts("Are you sure?\n");
-  puts("Are you sure?\n");
+  puts("Are you really sure?\n");
+  puts("Are you really sure?\n");
+  puts("Are you really really sure?\n");
+  puts("Are you really really sure?\n");
+  puts("Are you really really sure?\n");
   puts("Are you sure?\n");
   puts("Well, I guess you're not.\n");
   puts("Well done, Jen.\n");

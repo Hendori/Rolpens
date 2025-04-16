@@ -159,8 +159,8 @@ def compare_node_content(left, right):
             return True
 
 
-def find_duplicates(node):
-    children_list = list(node.children)
+def find_duplicates(compound_node):
+    children_list = list(compound_node.children)
     for i, startnode in enumerate(children_list):
         count = 0
         for node in children_list[i + 1 :]:
@@ -168,7 +168,7 @@ def find_duplicates(node):
                 count += 1
             else:
                 break
-        if count > 1:
+        if count >= 1:
             yield (startnode, count)
 
 
@@ -236,7 +236,7 @@ def reroll_l0_loop(node, repeat_count):
         node.parent.remove_child(node.next_sibling)
 
     # Bouw een for-loop die {count} keer herhaalt
-    _, loop_body = insert_loop(node, repeat_count)
+    _, loop_body = insert_loop(node, repeat_count + 1)
 
     # En verplaats de node naar het loop-body
     node.parent.remove_child(node)
