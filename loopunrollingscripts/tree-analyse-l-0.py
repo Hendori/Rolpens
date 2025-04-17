@@ -67,13 +67,13 @@ def compare_node_content(left, right):
 def find_duplicates(compound_node):
     children_list = list(compound_node.children)
     for i, startnode in enumerate(children_list):
-        count = 0
+        count = 1 # Die + 1 is er omdat het origineel van de loop ook meetelt
         for node in children_list[i + 1 :]:
             if compare_node_content(startnode, node):
                 count += 1
             else:
                 break
-        if count >= 1:
+        if count >= 2:
             yield (startnode, count)
 
 
@@ -136,16 +136,14 @@ def insert_loop(reference_node: Node, start: int, count: int = 0, step: int = 1)
 
 
 def reroll_l0_loop(node, repeat_count):
-    # Verwijder alle herhalingen (de eerste node die wordt herhaald blijft staan)
-    for _ in range(repeat_count):
-        node.parent.remove_child(node.next_sibling)
+    # Bouw een for-loop die {repeat_count} keer herhaalt
+    for_node, loop_body = insert_loop(node, repeat_count)
 
-    # Bouw een for-loop die {count} + 1 keer herhaalt
-    # Die + 1 is er omdat het origineel van de loop niet meegenomen werd
-    _, loop_body = insert_loop(node, repeat_count + 1)
+    # Verwijder alle herhalingen, inclusief het origineel
+    for _ in range(repeat_count):
+        for_node.parent.remove_child(for_node.next_sibling)
 
     # En verplaats de node naar het loop-body
-    node.parent.remove_child(node)
     loop_body.append_child(node)
 
 
