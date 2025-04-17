@@ -1,6 +1,7 @@
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
+from typing import List
 
 from parsetree import Node
 from formatter import Formatter
@@ -66,15 +67,22 @@ def compare_node_content(left, right):
 
 def find_duplicates(compound_node):
     children_list = list(compound_node.children)
-    for i, startnode in enumerate(children_list):
-        count = 1 # Die + 1 is er omdat het origineel van de loop ook meetelt
-        for node in children_list[i + 1 :]:
-            if compare_node_content(startnode, node):
-                count += 1
-            else:
-                break
-        if count >= 2:
-            yield (startnode, count)
+    for l in range(1, len(children_list) // 2):
+        for i, startnode in enumerate(children_list):
+            count = 1 # Die + 1 is er omdat het origineel van de loop ook meetelt
+
+            for j in range(i+l, len(children_list), l):
+                same = True
+                for k in range(l):
+                    if not compare_node_content(children_list[i+k], children_list[j+k]):
+                        same = False
+                        break
+                if same:
+                    count += 1
+                else:
+                    break
+            if count >= 2:
+                yield (children_list[i:i+l], count)
 
 
 ident_count = 0
@@ -135,16 +143,17 @@ def insert_loop(reference_node: Node, start: int, count: int = 0, step: int = 1)
     return for_node, loop_body
 
 
-def reroll_l0_loop(node, repeat_count):
+def reroll_l0_loop(nodes: List[Node], repeat_count: int):
     # Bouw een for-loop die {repeat_count} keer herhaalt
-    for_node, loop_body = insert_loop(node, repeat_count)
+    for_node, loop_body = insert_loop(nodes[0], repeat_count)
 
     # Verwijder alle herhalingen, inclusief het origineel
-    for _ in range(repeat_count):
+    for _ in range(repeat_count * len(nodes)):
         for_node.parent.remove_child(for_node.next_sibling)
 
-    # En verplaats de node naar het loop-body
-    loop_body.append_child(node)
+    # En verplaats de nodes naar het loop-body
+    for n in nodes:
+        loop_body.append_child(n)
 
 
 for child_node in get_compound_statement_node(tree_root):
@@ -152,7 +161,7 @@ for child_node in get_compound_statement_node(tree_root):
     while changed:
         changed = False
         for repeated_node, loop_count in sorted(
-            find_duplicates(child_node), key=lambda x: -x[1]
+            find_duplicates(child_node), key=lambda x: -(x[1]-1)*len(x[0])
         ):
             # print(repeated_node, loop_count)
             # TODO: if deze_loop_werkt(repeated_node, loop_count):
