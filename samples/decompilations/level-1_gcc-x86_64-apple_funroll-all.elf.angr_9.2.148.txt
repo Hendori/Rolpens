@@ -1,0 +1,22 @@
+WARNING  | 2025-03-31 18:31:24,202 | cle.backends.macho.macho | The Mach-O backend is not well-supported. Good luck!
+WARNING  | 2025-03-31 18:31:24,203 | cle.backends.macho.macho | LoadCommands.LC_LOAD_DYLINKER is not handled yet
+WARNING  | 2025-03-31 18:31:24,203 | cle.backends.macho.macho | LoadCommands.LC_UUID is not handled yet
+WARNING  | 2025-03-31 18:31:24,203 | cle.backends.macho.macho | LoadCommands.LC_SOURCE_VERSION is not handled yet
+WARNING  | 2025-03-31 18:31:24,612 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Xor8.
+WARNING  | 2025-03-31 18:31:24,635 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl64.
+WARNING  | 2025-03-31 18:31:24,642 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Mul32.
+WARNING  | 2025-03-31 18:31:24,645 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl32.
+ERROR    | 2025-03-31 18:31:24,665 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_rflags_c.
+WARNING  | 2025-03-31 18:31:24,667 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or8.
+WARNING  | 2025-03-31 18:31:24,668 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shr8.
+WARNING  | 2025-03-31 18:31:24,671 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl8.
+ERROR    | 2025-03-31 18:31:24,671 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_rflags_all.
+ERROR    | 2025-03-31 18:31:24,679 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_condition.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?

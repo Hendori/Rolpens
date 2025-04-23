@@ -1,0 +1,16 @@
+WARNING  | 2025-03-31 20:46:46,475 | cle.backends.macho.macho | The Mach-O backend is not well-supported. Good luck!
+WARNING  | 2025-03-31 20:46:46,476 | cle.backends.macho.macho | LoadCommands.LC_LOAD_DYLINKER is not handled yet
+WARNING  | 2025-03-31 20:46:46,476 | cle.backends.macho.macho | LoadCommands.LC_UUID is not handled yet
+WARNING  | 2025-03-31 20:46:46,477 | cle.backends.macho.macho | LoadCommands.LC_SOURCE_VERSION is not handled yet
+ERROR    | 2025-03-31 20:46:46,627 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_rflags_c.
+WARNING  | 2025-03-31 20:46:46,628 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Or8.
+WARNING  | 2025-03-31 20:46:46,629 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported Binop Iop_Shl64.
+ERROR    | 2025-03-31 20:46:46,633 | angr.analyses.calling_convention.fact_collector.SimEngineFactCollectorVEX | Unsupported CCall amd64g_calculate_condition.
+Traceback (most recent call last):
+  File "/home/decompiler_user/decompile_angr.py", line 58, in <module>
+    decompile()
+  File "/home/decompiler_user/decompile_angr.py", line 28, in decompile
+    funcs_to_decompile: List[Function] = [
+  File "/home/decompiler_user/decompile_angr.py", line 31, in <listcomp>
+    if not func.is_plt and not func.is_simprocedure and not func.alignment
+AttributeError: 'Function' object has no attribute 'alignment'. Did you mean: 'is_alignment'?
