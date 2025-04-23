@@ -1,3 +1,4 @@
+import argparse
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
@@ -13,20 +14,6 @@ def lang_from_so(path: str, name: str) -> Language:
     language_function.restype = c_void_p
     language_ptr = language_function()
     return Language(language_ptr)
-
-
-C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
-
-parser = Parser()
-parser.language = C_LANGUAGE
-
-# Read the C file
-with open("level-0.c", "r") as f:
-    source_code = f.read().encode()
-
-# Parse and print the syntax tree
-tree = parser.parse(source_code)
-tree_root = Node.from_tree_sitter(tree.root_node)
 
 
 def get_node_text(node):
@@ -156,20 +143,40 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int):
         loop_body.append_child(n)
 
 
-for child_node in get_compound_statement_node(tree_root):
-    changed = True
-    while changed:
-        changed = False
-        for repeated_node, loop_count in sorted(
-            find_duplicates(child_node), key=lambda x: -(x[1]-1)*len(x[0])
-        ):
-            # print(repeated_node, loop_count)
-            # TODO: if deze_loop_werkt(repeated_node, loop_count):
-            reroll_l0_loop(repeated_node, loop_count)
-            changed = True
-            # print(json.dumps(repeated_node))
-            # print(child_node)
+argparser = argparse.ArgumentParser(
+        prog="tree-analyse.py",
+        description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
+argparser.add_argument("files", nargs="+")
+config = argparser.parse_args()
 
-            break
+C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
 
-print(Formatter().format_tree(tree_root))
+parser = Parser()
+parser.language = C_LANGUAGE
+
+for filename in config.files:
+    # Read the C file
+    with open(filename, "r") as f:
+        source_code = f.read().encode()
+
+    # Parse the file into an abstract syntax tree
+    tree = parser.parse(source_code)
+    tree_root = Node.from_tree_sitter(tree.root_node)
+
+    for child_node in get_compound_statement_node(tree_root):
+        changed = True
+        while changed:
+            changed = False
+            for repeated_node, loop_count in sorted(
+                find_duplicates(child_node), key=lambda x: -(x[1]-1)*len(x[0])
+            ):
+                # print(repeated_node, loop_count)
+                # TODO: if deze_loop_werkt(repeated_node, loop_count):
+                reroll_l0_loop(repeated_node, loop_count)
+                changed = True
+                # print(json.dumps(repeated_node))
+                # print(child_node)
+
+                break
+
+    print(Formatter().format_tree(tree_root))
