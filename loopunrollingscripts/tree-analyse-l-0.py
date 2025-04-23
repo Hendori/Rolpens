@@ -4,6 +4,7 @@ from ctypes import cdll, c_void_p
 from os import fspath
 from typing import List
 
+from polynomials import Polynomial
 from parsetree import Node
 from formatter import Formatter
 
@@ -127,12 +128,12 @@ def insert_loop(reference_node: Node, start: int, count: int = 0, step: int = 1)
 
     # Zet 'm voor de oorspronkelijke node
     reference_node.parent.insert_before(for_node, reference_node)
-    return for_node, loop_body
+    return for_node, loop_body, loop_var.decode()
 
 
 def reroll_l0_loop(nodes: List[Node], repeat_count: int):
     # Bouw een for-loop die {repeat_count} keer herhaalt
-    for_node, loop_body = insert_loop(nodes[0], repeat_count)
+    for_node, loop_body, loop_var = insert_loop(nodes[0], repeat_count)
 
     # Verwijder alle herhalingen, inclusief het origineel
     for _ in range(repeat_count * len(nodes)):
@@ -141,6 +142,26 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int):
     # En verplaats de nodes naar het loop-body
     for n in nodes:
         loop_body.append_child(n)
+
+    if Formatter().format_tree(nodes[0]) == "master_badge += *(unsigned short*)( some_blob + 16 ) - *(unsigned char*)( some_blob + 20 );":
+        P1 = Polynomial.from_lagrange(list(zip(range(6), [16,39,62,85,108,131])))
+        P2 = Polynomial.from_lagrange(list(zip(range(6), [20,43,66,89,112,135])))
+
+        n1 = nodes[0].children[0].children[2].children[0].children[1].children[3].children[1]
+        n1.insert_before(P1.as_node(loop_var), n1.children[2], "right")
+        n1.remove_child(n1.children[3])
+
+        n2 = nodes[0].children[0].children[2].children[2].children[1].children[3].children[1]
+        n2.insert_before(P2.as_node(loop_var), n2.children[2], "right")
+        n2.remove_child(n2.children[3])
+    elif Formatter().format_tree(nodes[0]) == "printf(\" *  %d\\n\", 16);":
+        P3 = Polynomial.from_lagrange(list(zip(range(5), [16,35,48,49,32])))
+
+        n3 = nodes[0].children[0].children[1]
+        n3.insert_before(P3.as_node(loop_var), n3.children[3])
+        n3.remove_child(n3.children[4])
+        print(n3.type)
+
 
 
 argparser = argparse.ArgumentParser(
