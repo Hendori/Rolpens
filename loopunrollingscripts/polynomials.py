@@ -1,0 +1,93 @@
+from fractions import Fraction
+import typing
+
+class Polynomial:
+    def __init__(self, coefficients: typing.List[typing.Union[int,Fraction]]):
+        self.coefficients = [Fraction(numerator=x, denominator=1) if isinstance(x, int) else x for x in coefficients]
+
+    @staticmethod
+    def from_lagrange(points: typing.List[typing.Tuple[int,int]]) -> typing.Self:
+        rv = Polynomial([0])
+        for i, (x0,y0) in enumerate(points):
+            term = Polynomial([1])
+            den = 1
+            for j, (x,_) in enumerate(points):
+                if i != j:
+                    den *= x0 - x
+                    term *= Polynomial([-x, 1])
+            if den == 0:
+                raise ValueError("X coordinates should be distinct")
+            rv += term * Polynomial([Fraction(y0, den)])
+
+        return rv
+
+    def is_integer(self) -> bool:
+        """is_integer returns true if all coefficients are integers"""
+        for a in self.coefficients:
+            if not a.is_integer():
+                return False
+        return True
+
+    def __add__(self, other: typing.Self) -> typing.Self:
+        left = list(self.coefficients)
+        right = list(other.coefficients)
+        if len(left) > len(right):
+            right += [Fraction(0)] * (len(left) - len(right))
+        if len(right) > len(left):
+            left += [Fraction(0)] * (len(right) - len(left))
+
+        return Polynomial([a+b for (a,b) in zip(left, right)])
+
+    def __mul__(self, other: typing.Self) -> typing.Self:
+        left = list(self.coefficients)
+        rv = [0]*(len(left) + len(other.coefficients) - 1)
+        for a in other.coefficients:
+            if a.numerator != 0:
+                for i, b in enumerate(left):
+                    rv[i] += a*b
+            left = [0] + left
+
+        return Polynomial(rv)
+
+    def __len__(self):
+        """len(P) should just return the degree of P"""
+        for i, a in enumerate(reversed(self.coefficients)):
+            if a.numerator != 0:
+                return len(self.coefficients) - i
+        return 0
+
+    def __str__(self) -> str:
+        comps = []
+        for (i, a) in reversed(list(enumerate(self.coefficients))):
+            if a.numerator == 0:
+                continue
+            if i == 0:
+                comps.append(str(a))
+            else:
+                if a.numerator == a.denominator:
+                    if i == 1:
+                        comps.append(f"x")
+                    else:
+                        comps.append(f"x^{i}")
+                else:
+                    if i == 1:
+                        comps.append(f"{a}·x")
+                    else:
+                        comps.append(f"{a}·x^{i}")
+
+        if len(comps) == 0:
+            return "0"
+        return " + ".join(comps)
+
+if __name__ == "__main__":
+    print(Polynomial([2, -6, 0, Fraction(1,2), Fraction(5,5)]))
+    p = Polynomial([5, 2])
+    q = Polynomial([1, 2])
+    print(f"P = {p}, Q = {q}, PQ = {p * q}")
+    ys = [5, -55, -93, -109, -103, -75, -25, 47, 141, 257, 395]
+    xs = list(range(3, 3+len(ys)))
+    data_points = list(zip(xs, ys))
+
+    print(f"Interpolating: {data_points}")
+    poly = Polynomial.from_lagrange(data_points)
+    print(f"Result: {poly}, confidence {len(ys) - len(poly)}")
