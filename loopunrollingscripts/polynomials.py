@@ -50,6 +50,7 @@ class Polynomial:
                     ax.append_child(Node("number_literal", str(a).encode()), "left")
                     ax.append_child(Node("*", b"*"), "operator")
                     ax.append_child(x, "right")
+                    ax.tight = True
                     if node == None:
                         node = ax
                     else:
@@ -66,6 +67,7 @@ class Polynomial:
                 xx.append_child(Node("identifier", variable_name.encode()), "left")
                 xx.append_child(Node("*", b"*"), "operator")
                 xx.append_child(x, "right")
+                xx.tight = True
                 x = xx
 
         rv = Node("parenthesized_expression")
