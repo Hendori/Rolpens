@@ -22,7 +22,7 @@ fi
 python3 createloops.py -s ${size}
 gcc ${filename} -O$compilersetting -o $executionfilename
 echo "createloops$size-$compilersetting.out has been created"
-echo "now going to analyze this file with functionname $functionname"
-set -x
-cd ${HIGHPEECODE_PATH} && ${UNROLLING_LOOPS_PATH}run_ghidra/run.sh ${UNROLLING_LOOPS_PATH}createloopsscript/${executionfilename} ${functionname} | tee ${UNROLLING_LOOPS_PATH}createloopsscript/${logoutputfilename}
-set +x
+#echo "now going to analyze this file with functionname $functionname"
+#set -x
+#cd ${HIGHPEECODE_PATH} && ${UNROLLING_LOOPS_PATH}run_ghidra/run.sh ${UNROLLING_LOOPS_PATH}createloopsscript/${executionfilename} ${functionname} | tee ${UNROLLING_LOOPS_PATH}createloopsscript/${logoutputfilename}
+#set +x
