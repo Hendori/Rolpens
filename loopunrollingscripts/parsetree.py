@@ -39,9 +39,18 @@ class Node:
                 rv += " " + chstr
         return rv + ")"
 
+    def clone(self) -> Self:
+        rv = Node(self.type, self.text)
+
+        for i, ch in enumerate(self.children):
+            rv.append_child(ch.clone(), self.child_names[i])
+
+        return rv
+
     @staticmethod
     def from_tree_sitter(node: TSNode):
         rv = Node(node.type, node.text or b"")
+        rv.id = node.id
         for i, tschild in enumerate(node.children):
             child = Node.from_tree_sitter(tschild)
             child.parent = rv

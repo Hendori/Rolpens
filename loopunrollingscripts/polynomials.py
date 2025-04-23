@@ -1,6 +1,8 @@
 from fractions import Fraction
 import typing
 
+from parsetree import Node
+
 class Polynomial:
     def __init__(self, coefficients: typing.List[typing.Union[int,Fraction]]):
         self.coefficients = [Fraction(numerator=x, denominator=1) if isinstance(x, int) else x for x in coefficients]
@@ -27,6 +29,50 @@ class Polynomial:
             if not a.is_integer():
                 return False
         return True
+
+    def as_node(self, variable_name: str) -> Node:
+        if not self.is_integer():
+            raise ValueError("cannot write polynomial with non-integer coefficients as a C expression")
+
+        if len(self) == 0:
+            return Node("number_literal", str(self.coefficients[0]).encode())
+
+        node = None
+
+        x = None
+        for a in self.coefficients:
+            n, _ = a.as_integer_ratio()
+            if n != 0:
+                if x == None:
+                    node = Node("number_literal", str(a).encode())
+                else:
+                    ax = Node("binary_expression")
+                    ax.append_child(Node("number_literal", str(a).encode()), "left")
+                    ax.append_child(Node("*", b"*"), "operator")
+                    ax.append_child(x, "right")
+                    if node == None:
+                        node = ax
+                    else:
+                        bx = Node("binary_expression")
+                        bx.append_child(ax, "left")
+                        bx.append_child(Node("+", b"+"), "operator")
+                        bx.append_child(node, "right")
+                        node = bx
+
+            if x == None:
+                x = Node("identifier", variable_name.encode())
+            else:
+                xx = Node("binary_expression")
+                xx.append_child(Node("identifier", variable_name.encode()), "left")
+                xx.append_child(Node("*", b"*"), "operator")
+                xx.append_child(x, "right")
+                x = xx
+
+        rv = Node("parenthesized_expression")
+        rv.append_child(Node("(", b"("))
+        rv.append_child(node)
+        rv.append_child(Node(")", b")"))
+        return rv
 
     def __add__(self, other: typing.Self) -> typing.Self:
         left = list(self.coefficients)
