@@ -3,14 +3,14 @@
 unsigned char some_blob[138] = "\x41\x6c\x6c\x69\x73\x6f\x6e\x00\x00\x00\x00\x00\x00\x00\x00\x00\xa5\x19\xd2\x04\x2a\x8f\x03\x42\x65\x72\x74\x72\x61\x6d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x8e\xdc\x10\x09\x2d\xbe\x1d\x43\x61\x72\x6c\x6f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x6f\x91\x70\x1b\x2c\xbc\x0d\x44\x65\x76\x6f\x6e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x91\xa2\x57\x1a\x28\x5a\x13\x45\x72\x6e\x65\x73\x74\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xd9\x17\x34\x0d\x2b\x93\x25\x46\x72\x61\x6e\x63\x69\x6e\x65\x00\x00\x00\x00\x00\x00\x00\x00\xb6\xc4\x98\x0f\x2a\x43\x12";
 
 void all_badges() {
-   int master_badge = 0;
-   master_badge += *(unsigned short *)(some_blob + 16) - *(unsigned char *)(some_blob + 20);
-   master_badge += *(unsigned short *)(some_blob + 39) - *(unsigned char *)(some_blob + 43);
-   master_badge += *(unsigned short *)(some_blob + 62) - *(unsigned char *)(some_blob + 66);
-   master_badge += *(unsigned short *)(some_blob + 85) - *(unsigned char *)(some_blob + 89);
-   master_badge += *(unsigned short *)(some_blob + 108) - *(unsigned char *)(some_blob + 112);
-   master_badge += *(unsigned short *)(some_blob + 131) - *(unsigned char *)(some_blob + 135);
-   printf("We can open every door with badge #%d\n", master_badge);
+	int master_badge = 0;
+	master_badge += *(unsigned short *)(some_blob + 16) - *(unsigned char *)(some_blob + 20);
+	master_badge += *(unsigned short *)(some_blob + 39) - *(unsigned char *)(some_blob + 43);
+	master_badge += *(unsigned short *)(some_blob + 62) - *(unsigned char *)(some_blob + 66);
+	master_badge += *(unsigned short *)(some_blob + 85) - *(unsigned char *)(some_blob + 89);
+	master_badge += *(unsigned short *)(some_blob + 108) - *(unsigned char *)(some_blob + 112);
+	master_badge += *(unsigned short *)(some_blob + 131) - *(unsigned char *)(some_blob + 135);
+	printf("We can open every door with badge #%d\n", master_badge);
 }
 
 void polynome_table() {
@@ -37,7 +37,7 @@ void red_herring() {
 }
 
 int main(int argc, char **argv) {
-   all_badges();
+	all_badges();
 	polynome_table();
 	red_herring();
 }
