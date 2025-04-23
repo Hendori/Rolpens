@@ -34,9 +34,9 @@ int some_calculation(int p) {
 }
 ```
 
-Level 0b
+Level 0B
 -------
-Level 0b are repeated identical lines of C code that contain some class of false positives.
+Level 0B are repeated identical lines of C code that contain some class of false positives.
 
 #include <stdio.h>
 
@@ -108,43 +108,9 @@ void decrypt_message() {
 }
 ```
 
-Level 2A
+Level 1B
 -------
-Level 2A loops have some sort of `if` condition in the loop body.
-
-### `count_sheep()`
-The thing with being thirty-six years old is that you're basically still nine, but four times over.
-
-```c
-void count_sheep() {
-    for ( int i = 0; i < 100; i++ ) {
-        printf("%d ", i);
-        if ( i == 69 ) {
-            printf("(nice) ");
-        }
-    }
-    printf("ZzZzZz...\n");
-}
-```
-
-### `short_multiplication_table()`
-This function prints a multiplication table in 4 columns.
-
-```c
-void short_multiplication_table(int n) {
-    for ( int i = 0; i < 20; i++ ) {
-        if ( i % 4 == 3 ) {
-            printf("%2d × %3d = %4d\n", i, n, i*n);
-        } else {
-            printf("%2d × %3d = %4d\t", i, n, i*n);
-        }
-    }
-}
-```
-
-Level 2B
--------
-Level 2B loops use the index variable, but in some polynomial expression.
+Level 1B loops use the index variable, but in some polynomial expression.
 
 ### `all_badges()`
 This function features an inline database of structs, where some fields in each struct are processed in a loop. 
@@ -199,5 +165,39 @@ void red_herring() {
     printf(" *  %d\n", 48);
     printf(" *  %d\n", 49);
     printf(" *  %d\n", 32);
+}
+```
+
+Level 2
+-------
+Level 2 loops have some sort of `if` condition in the loop body.
+
+### `count_sheep()`
+The thing with being thirty-six years old is that you're basically still nine, but four times over.
+
+```c
+void count_sheep() {
+    for ( int i = 0; i < 100; i++ ) {
+        printf("%d ", i);
+        if ( i == 69 ) {
+            printf("(nice) ");
+        }
+    }
+    printf("ZzZzZz...\n");
+}
+```
+
+### `short_multiplication_table()`
+This function prints a multiplication table in 4 columns.
+
+```c
+void short_multiplication_table(int n) {
+    for ( int i = 0; i < 20; i++ ) {
+        if ( i % 4 == 3 ) {
+            printf("%2d × %3d = %4d\n", i, n, i*n);
+        } else {
+            printf("%2d × %3d = %4d\t", i, n, i*n);
+        }
+    }
 }
 ```
