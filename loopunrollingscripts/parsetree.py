@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, Union
 
 from tree_sitter import Node as TSNode
 
@@ -39,9 +39,18 @@ class Node:
                 rv += " " + chstr
         return rv + ")"
 
+    def clone(self) -> Self:
+        rv = Node(self.type, self.text)
+
+        for i, ch in enumerate(self.children):
+            rv.append_child(ch.clone(), self.child_names[i])
+
+        return rv
+
     @staticmethod
     def from_tree_sitter(node: TSNode):
         rv = Node(node.type, node.text or b"")
+        rv.id = node.id
         for i, tschild in enumerate(node.children):
             child = Node.from_tree_sitter(tschild)
             child.parent = rv
@@ -57,6 +66,13 @@ class Node:
             if node_name == name:
                 return self.children[i]
         return None
+
+    def field_name_for_child(self, child_index: Union[Self, int]):
+        if isinstance(child_index, Node):
+            for i, ch in enumerate(self.children):
+                if ch == child_index:
+                    return self.child_names[i]
+        return self.child_names[child_index]
 
     def remove_child(self, node: Self):
         for i, child in enumerate(self.children):

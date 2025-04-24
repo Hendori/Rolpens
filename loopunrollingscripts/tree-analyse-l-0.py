@@ -2,8 +2,9 @@ import argparse
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
-from typing import List
+from typing import List, Union
 
+from polynomials import Polynomial
 from parsetree import Node
 from formatter import Formatter
 
@@ -38,7 +39,6 @@ def compare_node_shapes(left, right):
             return False
     return True
 
-
 def compare_node_content(left, right):
     if not compare_node_shapes(left, right):
         return False
@@ -72,6 +72,46 @@ def find_duplicates(compound_node):
                 yield (children_list[i:i+l], count)
 
 
+def find_numeric_constants(result: List[Union[int,float]], node: Node):
+    if node.type == "number_literal":
+        result.append(int(node.text.decode()))
+    for child in node.children:
+        find_numeric_constants(result, child)
+
+
+def find_polynomials_in_candidate_loop(loop_body: List[Node], repeat_count: int) -> List[Polynomial]:
+    num_values = []
+    for n in loop_body:
+        find_numeric_constants(num_values, n)
+
+    node = loop_body[-1]
+    for _ in range(1, repeat_count):
+        for _ in loop_body:
+            node = node.next_sibling
+            find_numeric_constants(num_values, node)
+
+    body_size = len(num_values) // repeat_count
+    rv = [None]*body_size
+    for i in range(body_size):
+        values = [0]*repeat_count
+        for j in range(repeat_count):
+            values[j] = num_values[i + body_size*j]
+        rv[i] = Polynomial.from_lagrange(list(zip(range(repeat_count), values)))
+
+    return rv
+
+
+def splice_polynomial_for_numeric_constant(node: Node, ps: List[Polynomial], loop_var: str):
+    if node.type == "number_literal":
+        p = ps.pop(0)
+        p_node = p.as_node(loop_var)
+        node.parent.insert_before(p_node, node, name=node.parent.field_name_for_child(node))
+        node.parent.remove_child(node)
+    else:
+        for child in node.children:
+            splice_polynomial_for_numeric_constant(child, ps, loop_var)
+
+
 ident_count = 0
 
 
@@ -84,12 +124,12 @@ def new_identifier(reference_node: Node) -> str:
     return rv
 
 
-def insert_loop(reference_node: Node, start: int, count: int = 0, step: int = 1):
+def insert_loop(reference_node: Node, loop_var: str, start: int, count: int = 0, step: int = 1):
     if count == 0:
         count = start
         start = 0
 
-    loop_var = new_identifier(reference_node).encode()
+    loop_var = loop_var.encode()
 
     for_node = Node("for_statement")
     for_node.append_child(Node("(", b"("))
@@ -130,9 +170,9 @@ def insert_loop(reference_node: Node, start: int, count: int = 0, step: int = 1)
     return for_node, loop_body
 
 
-def reroll_l0_loop(nodes: List[Node], repeat_count: int):
+def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
     # Bouw een for-loop die {repeat_count} keer herhaalt
-    for_node, loop_body = insert_loop(nodes[0], repeat_count)
+    for_node, loop_body = insert_loop(nodes[0], loop_var, repeat_count)
 
     # Verwijder alle herhalingen, inclusief het origineel
     for _ in range(repeat_count * len(nodes)):
@@ -141,6 +181,7 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int):
     # En verplaats de nodes naar het loop-body
     for n in nodes:
         loop_body.append_child(n)
+
 
 
 argparser = argparse.ArgumentParser(
@@ -170,9 +211,22 @@ for filename in config.files:
             for repeated_node, loop_count in sorted(
                 find_duplicates(child_node), key=lambda x: -(x[1]-1)*len(x[0])
             ):
+                ps = find_polynomials_in_candidate_loop(repeated_node, loop_count)
+                its_working = True
+                for p in ps:
+                    its_working = its_working and p.is_integer()
+                    its_working = its_working and (len(p) < loop_count//2)
+                if not its_working:
+                    continue
+
+                loop_var = new_identifier(repeated_node[0])
+
+                for node in repeated_node:
+                    splice_polynomial_for_numeric_constant(node, ps, loop_var)
+
                 # print(repeated_node, loop_count)
                 # TODO: if deze_loop_werkt(repeated_node, loop_count):
-                reroll_l0_loop(repeated_node, loop_count)
+                reroll_l0_loop(repeated_node, loop_count, loop_var)
                 changed = True
                 # print(json.dumps(repeated_node))
                 # print(child_node)
