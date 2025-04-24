@@ -274,7 +274,7 @@ class Formatter:
                 return node.text.decode()
             case "+" | "-" | "*" | "/" | "%" | "&" | "|":
                 return node.text.decode()
-            case "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "&&=" | "||=" | "++" | "--":
+            case "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "&&=" | "||=" | "++" | "--":
                 return node.text.decode()
             case _:
                 raise ValueError(f"Unknown node type {node.type} within node of type {node.parent.type}")

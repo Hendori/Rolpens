@@ -104,6 +104,9 @@ class Polynomial:
                 return len(self.coefficients) - i
         return 0
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def __str__(self) -> str:
         comps = []
         for (i, a) in reversed(list(enumerate(self.coefficients))):
