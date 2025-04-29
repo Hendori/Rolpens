@@ -6,7 +6,7 @@ Python Script used to communicate with Ghidra's API. It will decompile the
 specified functions and print the pseudo-C to stdout.
 """
 
-import sys
+import os, sys
 from ghidra.app.decompiler import DecompInterface
 from ghidra.util.task import ConsoleTaskMonitor
 
@@ -32,13 +32,19 @@ print "Selected functions: " + ", ".join(function_names)
 # Iterates through all functions in the binary and decompiles them
 # Then prints the Pseudo C Code
 
+output = ""
+
 for function in functions:
     if str(function) not in function_names:
         continue
 
-    print "// Function: " + str(function)
-
     # Decompile function
     decompiled_function = decompinterface.decompileFunction(function, 0, ConsoleTaskMonitor())
-    print decompiled_function.getDecompiledFunction().getC()
+    output += decompiled_function.getDecompiledFunction().getC() + "\n"
+
+if "GHIDRA_C_OUTPUT_FILE" in os.environ:
+    with open(os.environ["GHIDRA_C_OUTPUT_FILE"], "w+") as f:
+        f.write(output)
+else:
+    print(output)
 
