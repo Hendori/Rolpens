@@ -346,7 +346,7 @@ class Formatter:
     def _format_comma_expression(self, node) -> str:
         raise NotImplementedError()
     def _format_comment(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
     def _format_compound_literal_expression(self, node) -> str:
         raise NotImplementedError()
     def _format_compound_statement(self, node) -> str:
@@ -379,7 +379,7 @@ class Formatter:
     def _format_do_statement(self, node) -> str:
         raise NotImplementedError()
     def _format_else_clause(self, node) -> str:
-        raise NotImplementedError()
+        return "else " + self.format_node(node.children[1])
     def _format_enum_specifier(self, node) -> str:
         raise NotImplementedError()
     def _format_enumerator(self, node) -> str:
@@ -449,7 +449,7 @@ class Formatter:
         alternative_node = node.child_by_field_name("alternative")
         if alternative_node is not None:
             alternative_f = self.format_node(alternative_node)
-            return f"if {condition_f} {consequence_f} else {alternative_f}"
+            return f"if {condition_f} {consequence_f} {alternative_f}"
         return f"if {condition_f} {consequence_f}"
     def _format_init_declarator(self, node) -> str:
         ident_f = self.format_node(node.child_by_field_name("declarator"))
