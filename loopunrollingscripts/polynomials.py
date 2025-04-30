@@ -101,7 +101,7 @@ class Polynomial:
         """len(P) should just return the degree of P"""
         for i, a in enumerate(reversed(self.coefficients)):
             if a.numerator != 0:
-                return len(self.coefficients) - i
+                return len(self.coefficients) - i - 1
         return 0
 
     def __repr__(self) -> str:

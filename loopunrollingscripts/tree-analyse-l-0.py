@@ -208,10 +208,10 @@ for filename in config.files:
         changed = True
         while changed:
             changed = False
-            for repeated_node, loop_count in sorted(
+            for loop_body, loop_count in sorted(
                 find_duplicates(child_node), key=lambda x: -(x[1]-1)*len(x[0])
             ):
-                ps = find_polynomials_in_candidate_loop(repeated_node, loop_count)
+                ps = find_polynomials_in_candidate_loop(loop_body, loop_count)
                 its_working = True
                 for p in ps:
                     its_working = its_working and p.is_integer()
@@ -219,16 +219,16 @@ for filename in config.files:
                 if not its_working:
                     continue
 
-                loop_var = new_identifier(repeated_node[0])
+                loop_var = new_identifier(loop_body[0])
 
-                for node in repeated_node:
+                for node in loop_body:
                     splice_polynomial_for_numeric_constant(node, ps, loop_var)
 
-                # print(repeated_node, loop_count)
-                # TODO: if deze_loop_werkt(repeated_node, loop_count):
-                reroll_l0_loop(repeated_node, loop_count, loop_var)
+                # print(loop_body, loop_count)
+                # TODO: if deze_loop_werkt(loop_body, loop_count):
+                reroll_l0_loop(loop_body, loop_count, loop_var)
                 changed = True
-                # print(json.dumps(repeated_node))
+                # print(json.dumps(loop_body))
                 # print(child_node)
 
                 break
