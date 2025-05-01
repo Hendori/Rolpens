@@ -16,15 +16,14 @@ shift
 
 GRADLE_VERSION=8.9
 
-if [ ! -x "$PLUGIN_DIR/gradlew" ]; then
-	cd "$PLUGIN_DIR"
-	gradle wrapper --gradle-version $GRADLE_VERSION || (
-		echo "Failed to create a gradle wrapper. (try 'apt-get install gradle')" >&2
-		exit 1
-	)
-fi
-
 if [ -f "build.gradle" -a -f "extension.properties" ]; then
+	if [ ! -x "gradlew" ]; then
+		gradle wrapper --gradle-version $GRADLE_VERSION || (
+			echo "Failed to create a gradle wrapper. (try 'apt-get install gradle')" >&2
+			exit 1
+		)
+	fi
+
 	echo "Building extension..."
 	mkdir -p ~/.gradle/daemon/$GRADLE_VERSION
 	rm -f ~/.gradle/daemon/$GRADLE_VERSION/'<REPLACE>'
@@ -42,10 +41,11 @@ if [ -z "$BINARY" ]; then
 fi
 
 
-mkdir -p /tmp/ghidra
+#mkdir -p /tmp/ghidra
+GHIDRA_PROJECT=$(mktemp -d /tmp/ghidra.XXXXXXXX)
 
 "$GHIDRA_PATH/support/analyzeHeadless" \
-	/tmp/ghidra Project1 \
+	"$GHIDRA_PROJECT" Project1 \
 	-import "$BINARY" -overwrite \
 	-scriptPath "$THIS_DIR" -postScript decompile_simple.py "$@"
 
@@ -58,5 +58,6 @@ if [ -f "build.gradle" -a -f "extension.properties" ]; then
 	done
 fi
 
+rm -rf "$GHIDRA_PROJECT"
 exit $EXIT_STATUS
 
