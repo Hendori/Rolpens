@@ -1,0 +1,875 @@
+
+void SEED_set_key(uchar *rawkey,SEED_KEY_SCHEDULE *ks)
+
+{
+  uint uVar1;
+  uint uVar2;
+  uint uVar3;
+  uint uVar4;
+  uint uVar5;
+  uint uVar6;
+  uint uVar7;
+  uint uVar8;
+  uint uVar9;
+  uint uVar10;
+  uint uVar11;
+  uint uVar12;
+  uint uVar13;
+  uint uVar14;
+  
+  uVar4 = *(uint *)(rawkey + 8);
+  uVar5 = *(uint *)rawkey;
+  uVar7 = *(uint *)(rawkey + 0xc);
+  uVar6 = *(uint *)(rawkey + 4);
+  uVar8 = uVar5 >> 0x18 | (uVar5 & 0xff0000) >> 8 | (uVar5 & 0xff00) << 8 | uVar5 << 0x18;
+  uVar2 = uVar4 >> 0x18 | (uVar4 & 0xff0000) >> 8 | (uVar4 & 0xff00) << 8;
+  uVar1 = uVar2 | uVar4 << 0x18;
+  uVar10 = uVar8 + 0x61c88647 + uVar1;
+  uVar9 = uVar6 >> 0x18 | (uVar6 & 0xff0000) >> 8 | (uVar6 & 0xff00) << 8 | uVar6 << 0x18;
+  uVar12 = uVar7 >> 0x18 | (uVar7 & 0xff0000) >> 8 | (uVar7 & 0xff00) << 8;
+  uVar11 = uVar12 | uVar7 << 0x18;
+  uVar3 = (uVar9 + 0x9e3779b9) - uVar11;
+  ks->data[0] = *(uint *)(SS + ((ulong)uVar10 & 0xff) * 4) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  ks->data[1] = *(uint *)(SS + (ulong)(uVar3 & 0xff) * 4) ^
+                *(uint *)(SS + (ulong)(uVar3 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(uVar3 >> 8 & 0xff) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar3 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar8 = uVar8 >> 8;
+  uVar6 = (uVar6 >> 0x18) << 0x18 | uVar8;
+  uVar9 = uVar9 >> 8;
+  uVar3 = (uVar5 >> 0x18) << 0x18 | uVar9;
+  uVar1 = uVar6 + 0xc3910c8d + uVar1;
+  uVar10 = (uVar3 - uVar11) + 0x3c6ef373;
+  uVar12 = uVar12 << 8;
+  uVar11 = uVar12 ^ uVar4 & 0xff;
+  ks->data[2] = *(uint *)(SS + (ulong)(byte)uVar1 * 4) ^
+                *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(byte)(uVar1 >> 8) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 << 8;
+  uVar1 = uVar2 ^ uVar7 & 0xff;
+  ks->data[3] = *(uint *)(SS + (ulong)(uVar10 & 0xff) * 4) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 8 & 0xff) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar10 = uVar6 + 0x8722191a + uVar1;
+  uVar4 = (uVar3 + 0x78dde6e6) - uVar11;
+  ks->data[4] = *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  ks->data[5] = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+                *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar9 = uVar9 << 0x18 | uVar6 >> 8;
+  uVar7 = uVar8 << 0x18 | uVar3 >> 8;
+  uVar10 = uVar1 + 0xe443234 + uVar9;
+  uVar8 = (uVar7 - uVar11) + 0xf1bbcdcc;
+  ks->data[6] = *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar2 >> 0x18 | uVar11 << 8;
+  uVar2 = uVar12 >> 0x18 | uVar1 << 8;
+  uVar5 = (uVar7 + 0xe3779b99) - uVar4;
+  ks->data[7] = *(uint *)(SS + (ulong)(uVar8 & 0xff) * 4) ^
+                *(uint *)(SS + (ulong)(uVar8 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(uVar8 >> 8 & 0xff) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar8 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar10 = uVar9 + 0x1c886467 + uVar2;
+  ks->data[8] = *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar14 = (uVar3 >> 8) << 0x18 | uVar9 >> 8;
+  uVar12 = (uVar6 >> 8) << 0x18 | uVar7 >> 8;
+  uVar10 = uVar2 + 0x3910c8cd + uVar14;
+  ks->data[9] = *(uint *)(SS + (ulong)(uVar5 & 0xff) * 4) ^
+                *(uint *)(SS + (ulong)(uVar5 >> 0x18) * 4 + 0xc00) ^
+                *(uint *)(SS + (ulong)(uVar5 >> 8 & 0xff) * 4 + 0x400) ^
+                *(uint *)(SS + (ulong)(uVar5 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar5 = (uVar12 - uVar4) + 0xc6ef3733;
+  ks->data[10] = *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^
+                 *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00) ^
+                 *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+                 *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar13 = (uVar11 << 8) >> 0x18 | uVar2 << 8;
+  uVar6 = (uVar1 << 8) >> 0x18 | uVar4 << 8;
+  uVar10 = uVar14 + 0x72219199 + uVar13;
+  ks->data[0xb] =
+       *(uint *)(SS + (ulong)(uVar5 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar5 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar5 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar5 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = (uVar12 + 0x8dde6e67) - uVar6;
+  ks->data[0xc] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = (uVar7 >> 8) << 0x18 | uVar14 >> 8;
+  ks->data[0xd] =
+       *(uint *)(SS + (ulong)(uVar1 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar10 = uVar13 + 0xe4432331 + uVar3;
+  uVar5 = (uVar9 >> 8) << 0x18 | uVar12 >> 8;
+  uVar1 = (uVar5 - uVar6) + 0x1bbcdccf;
+  ks->data[0xe] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  ks->data[0xf] =
+       *(uint *)(SS + (ulong)(uVar1 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = (uVar2 << 8) >> 0x18 | uVar6 << 8;
+  uVar8 = (uVar4 << 8) >> 0x18 | uVar13 << 8;
+  uVar4 = (uVar5 + 0x3779b99e) - uVar1;
+  uVar10 = uVar3 + 0xc8864662 + uVar8;
+  ks->data[0x10] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  ks->data[0x11] =
+       *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = (uVar12 >> 8) << 0x18 | uVar3 >> 8;
+  uVar11 = (uVar14 >> 8) << 0x18 | uVar5 >> 8;
+  uVar10 = uVar8 + 0x910c8cc4 + uVar2;
+  uVar4 = (uVar11 - uVar1) + 0x6ef3733c;
+  ks->data[0x12] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar7 = (uVar6 << 8) >> 0x18 | uVar8 << 8;
+  ks->data[0x13] =
+       *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar9 = (uVar13 << 8) >> 0x18 | uVar1 << 8;
+  uVar10 = uVar2 + 0x22191988 + uVar7;
+  uVar4 = (uVar11 + 0xdde6e678) - uVar9;
+  ks->data[0x14] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar5 = (uVar5 >> 8) << 0x18 | uVar2 >> 8;
+  uVar12 = (uVar3 >> 8) << 0x18 | uVar11 >> 8;
+  ks->data[0x15] =
+       *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar10 = uVar7 + 0x4432330f + uVar5;
+  uVar4 = (uVar12 - uVar9) + 0xbbcdccf1;
+  ks->data[0x16] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = (uVar1 << 8) >> 0x18 | uVar7 << 8;
+  uVar6 = (uVar8 << 8) >> 0x18 | uVar9 << 8;
+  ks->data[0x17] =
+       *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar10 = uVar5 + 0x8864661d + uVar3;
+  uVar1 = (uVar12 + 0x779b99e3) - uVar6;
+  ks->data[0x18] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = (uVar2 >> 8) << 0x18 | uVar12 >> 8;
+  ks->data[0x19] =
+       *(uint *)(SS + (ulong)(uVar1 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar8 = (uVar11 >> 8) << 0x18 | uVar5 >> 8;
+  uVar10 = uVar3 + 0x10c8cc3a + uVar8;
+  uVar1 = (uVar4 - uVar6) + 0xef3733c6;
+  ks->data[0x1a] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = (uVar9 << 8) >> 0x18 | uVar3 << 8;
+  uVar7 = (uVar7 << 8) >> 0x18 | uVar6 << 8;
+  ks->data[0x1b] =
+       *(uint *)(SS + (ulong)(uVar1 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar10 = uVar8 + 0x21919873 + uVar2;
+  uVar1 = (uVar4 + 0xde6e678d) - uVar7;
+  ks->data[0x1c] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  ks->data[0x1d] =
+       *(uint *)(SS + (ulong)(uVar1 & 0xff) * 4) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 8 & 0xff) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar2 + 0x432330e5 + ((uVar12 >> 8) << 0x18 | uVar8 >> 8);
+  uVar10 = (((uVar5 >> 8) << 0x18 | uVar4 >> 8) - uVar7) + 0xbcdccf1b;
+  ks->data[0x1e] =
+       *(uint *)(SS + (ulong)(byte)uVar1 * 4) ^ *(uint *)(SS + (ulong)(uVar1 >> 0x18) * 4 + 0xc00) ^
+       *(uint *)(SS + (ulong)(byte)(uVar1 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar1 >> 0x10 & 0xff) * 4 + 0x800);
+  ks->data[0x1f] =
+       *(uint *)(SS + (ulong)(byte)uVar10 * 4) ^ *(uint *)(SS + (ulong)(uVar10 >> 0x18) * 4 + 0xc00)
+       ^ *(uint *)(SS + (ulong)(byte)(uVar10 >> 8) * 4 + 0x400) ^
+       *(uint *)(SS + (ulong)(uVar10 >> 0x10 & 0xff) * 4 + 0x800);
+  return;
+}
+
+
+
+void SEED_encrypt(uchar *s,uchar *d,SEED_KEY_SCHEDULE *ks)
+
+{
+  uint uVar1;
+  uint uVar2;
+  uint uVar3;
+  uint uVar4;
+  uint uVar5;
+  uint uVar6;
+  uint uVar7;
+  
+  uVar6 = *(uint *)s;
+  uVar1 = *(uint *)(s + 4);
+  uVar4 = *(uint *)(s + 8);
+  uVar2 = *(uint *)(s + 0xc);
+  uVar7 = uVar4 >> 0x18 | (uVar4 & 0xff0000) >> 8 | (uVar4 & 0xff00) << 8 | uVar4 << 0x18;
+  uVar4 = ks->data[0] ^ uVar7;
+  uVar3 = uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+  uVar2 = ks->data[1] ^ uVar3 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar5 = *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 + uVar5;
+  uVar4 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) ^ uVar4;
+  uVar6 = uVar5 + uVar4 ^
+          (uVar6 >> 0x18 | (uVar6 & 0xff0000) >> 8 | (uVar6 & 0xff00) << 8 | uVar6 << 0x18);
+  uVar2 = ks->data[2] ^ uVar6;
+  uVar4 = ks->data[3] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[4] ^ uVar7;
+  uVar4 = ks->data[5] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[6] ^ uVar6;
+  uVar4 = ks->data[7] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[8] ^ uVar7;
+  uVar4 = ks->data[9] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar4 = ks->data[10] ^ uVar6;
+  uVar2 = ks->data[0xb] ^ uVar1 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar2;
+  uVar7 = uVar7 ^ uVar4 + uVar2;
+  uVar4 = ks->data[0xc] ^ uVar7;
+  uVar2 = ks->data[0xd] ^ uVar3 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar2;
+  uVar6 = uVar6 ^ uVar4 + uVar2;
+  uVar4 = ks->data[0xe] ^ uVar6;
+  uVar2 = ks->data[0xf] ^ uVar1 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar2;
+  uVar7 = uVar7 ^ uVar4 + uVar2;
+  uVar2 = ks->data[0x10] ^ uVar7;
+  uVar4 = ks->data[0x11] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[0x12] ^ uVar6;
+  uVar4 = ks->data[0x13] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[0x14] ^ uVar7;
+  uVar4 = ks->data[0x15] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[0x16] ^ uVar6;
+  uVar4 = ks->data[0x17] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[0x18] ^ uVar7;
+  uVar4 = ks->data[0x19] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[0x1a] ^ uVar6;
+  uVar4 = ks->data[0x1b] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar4 = ks->data[0x1c] ^ uVar7;
+  uVar2 = ks->data[0x1d] ^ uVar3 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar2;
+  uVar6 = uVar4 + uVar2 ^ uVar6;
+  uVar2 = ks->data[0x1e] ^ uVar6;
+  uVar4 = uVar1 ^ ks->data[0x1f] ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  *(ulong *)d = (((((((ulong)(uVar3 & 0xff) << 8 | (ulong)(uVar3 >> 8 & 0xff)) << 8 |
+                    (ulong)(uVar3 >> 0x10 & 0xff)) << 8 | (ulong)(uVar3 >> 0x18)) << 8 |
+                  (ulong)(uVar7 & 0xff)) << 8 | (ulong)(uVar7 >> 8 & 0xff)) << 8 |
+                (ulong)(uVar7 >> 0x10 & 0xff)) << 8 | (ulong)(uVar7 >> 0x18);
+  *(ulong *)(d + 8) =
+       (((((((ulong)(uVar1 & 0xff) << 8 | (ulong)(uVar1 >> 8 & 0xff)) << 8 |
+           (ulong)(uVar1 >> 0x10 & 0xff)) << 8 | (ulong)(uVar1 >> 0x18)) << 8 |
+         (ulong)(uVar6 & 0xff)) << 8 | (ulong)(uVar6 >> 8 & 0xff)) << 8 |
+       (ulong)(uVar6 >> 0x10 & 0xff)) << 8 | (ulong)(uVar6 >> 0x18);
+  return;
+}
+
+
+
+void SEED_decrypt(uchar *s,uchar *d,SEED_KEY_SCHEDULE *ks)
+
+{
+  uint uVar1;
+  uint uVar2;
+  uint uVar3;
+  uint uVar4;
+  uint uVar5;
+  uint uVar6;
+  uint uVar7;
+  
+  uVar6 = *(uint *)s;
+  uVar1 = *(uint *)(s + 4);
+  uVar4 = *(uint *)(s + 8);
+  uVar2 = *(uint *)(s + 0xc);
+  uVar7 = uVar4 >> 0x18 | (uVar4 & 0xff0000) >> 8 | (uVar4 & 0xff00) << 8 | uVar4 << 0x18;
+  uVar4 = ks->data[0x1e] ^ uVar7;
+  uVar3 = uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+  uVar2 = ks->data[0x1f] ^ uVar3 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar5 = *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 + uVar5;
+  uVar4 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) ^ uVar4;
+  uVar6 = uVar5 + uVar4 ^
+          (uVar6 >> 0x18 | (uVar6 & 0xff0000) >> 8 | (uVar6 & 0xff00) << 8 | uVar6 << 0x18);
+  uVar2 = ks->data[0x1c] ^ uVar6;
+  uVar4 = ks->data[0x1d] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[0x1a] ^ uVar7;
+  uVar4 = ks->data[0x1b] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[0x18] ^ uVar6;
+  uVar4 = ks->data[0x19] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[0x16] ^ uVar7;
+  uVar4 = ks->data[0x17] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar4 = ks->data[0x14] ^ uVar6;
+  uVar2 = ks->data[0x15] ^ uVar1 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar2;
+  uVar7 = uVar7 ^ uVar4 + uVar2;
+  uVar4 = ks->data[0x12] ^ uVar7;
+  uVar2 = ks->data[0x13] ^ uVar3 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar2;
+  uVar6 = uVar6 ^ uVar4 + uVar2;
+  uVar4 = ks->data[0x10] ^ uVar6;
+  uVar2 = ks->data[0x11] ^ uVar1 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar2;
+  uVar7 = uVar7 ^ uVar4 + uVar2;
+  uVar2 = ks->data[0xe] ^ uVar7;
+  uVar4 = ks->data[0xf] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[0xc] ^ uVar6;
+  uVar4 = ks->data[0xd] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[10] ^ uVar7;
+  uVar4 = ks->data[0xb] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[8] ^ uVar6;
+  uVar4 = ks->data[9] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar2 = ks->data[6] ^ uVar7;
+  uVar4 = ks->data[7] ^ uVar3 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar4;
+  uVar6 = uVar2 + uVar4 ^ uVar6;
+  uVar2 = ks->data[4] ^ uVar6;
+  uVar4 = ks->data[5] ^ uVar1 ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  uVar4 = ks->data[2] ^ uVar7;
+  uVar2 = ks->data[3] ^ uVar3 ^ uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(byte)(uVar4 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(byte)uVar4 * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(byte)uVar2 * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(byte)(uVar2 >> 8) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar1 = uVar1 ^ uVar2;
+  uVar6 = uVar4 + uVar2 ^ uVar6;
+  uVar2 = ks->data[0] ^ uVar6;
+  uVar4 = uVar1 ^ ks->data[1] ^ uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar2 = uVar2 + uVar4;
+  uVar2 = *(uint *)(SS + (ulong)(uVar2 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 8 & 0xff) * 4 + 0x400) ^
+          *(uint *)(SS + (ulong)(uVar2 >> 0x10 & 0xff) * 4 + 0x800);
+  uVar4 = uVar4 + uVar2;
+  uVar4 = *(uint *)(SS + (ulong)(uVar4 >> 0x10 & 0xff) * 4 + 0x800) ^
+          *(uint *)(SS + (ulong)(uVar4 & 0xff) * 4) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 0x18) * 4 + 0xc00) ^
+          *(uint *)(SS + (ulong)(uVar4 >> 8 & 0xff) * 4 + 0x400);
+  uVar3 = uVar3 ^ uVar4;
+  uVar7 = uVar2 + uVar4 ^ uVar7;
+  *(ulong *)d = (((((((ulong)(uVar3 & 0xff) << 8 | (ulong)(uVar3 >> 8 & 0xff)) << 8 |
+                    (ulong)(uVar3 >> 0x10 & 0xff)) << 8 | (ulong)(uVar3 >> 0x18)) << 8 |
+                  (ulong)(uVar7 & 0xff)) << 8 | (ulong)(uVar7 >> 8 & 0xff)) << 8 |
+                (ulong)(uVar7 >> 0x10 & 0xff)) << 8 | (ulong)(uVar7 >> 0x18);
+  *(ulong *)(d + 8) =
+       (((((((ulong)(uVar1 & 0xff) << 8 | (ulong)(uVar1 >> 8 & 0xff)) << 8 |
+           (ulong)(uVar1 >> 0x10 & 0xff)) << 8 | (ulong)(uVar1 >> 0x18)) << 8 |
+         (ulong)(uVar6 & 0xff)) << 8 | (ulong)(uVar6 >> 8 & 0xff)) << 8 |
+       (ulong)(uVar6 >> 0x10 & 0xff)) << 8 | (ulong)(uVar6 >> 0x18);
+  return;
+}
+
+

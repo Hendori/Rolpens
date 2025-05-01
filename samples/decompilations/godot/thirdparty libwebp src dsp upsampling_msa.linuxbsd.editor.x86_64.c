@@ -1,0 +1,8 @@
+
+void WebPInitUpsamplersMSA(void)
+
+{
+  return;
+}
+
+

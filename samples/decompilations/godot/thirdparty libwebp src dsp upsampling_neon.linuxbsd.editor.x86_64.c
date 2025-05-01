@@ -1,0 +1,8 @@
+
+void WebPInitUpsamplersNEON(void)
+
+{
+  return;
+}
+
+
