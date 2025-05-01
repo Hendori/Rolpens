@@ -43,8 +43,8 @@ for function in functions:
     output += decompiled_function.getDecompiledFunction().getC() + "\n"
 
 if "GHIDRA_C_OUTPUT_FILE" in os.environ:
-    with open(os.environ["GHIDRA_C_OUTPUT_FILE"], "w+") as f:
-        f.write(output)
+    with open(os.environ["GHIDRA_C_OUTPUT_FILE"], "wb+") as f:
+        f.write(output.encode("utf-8"))
 else:
     print(output)
 

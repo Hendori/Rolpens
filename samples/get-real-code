@@ -1,7 +1,9 @@
 #!/usr/bin/python
 import os, sys
 import multiprocessing
+import random
 import subprocess
+import time
 
 import requests
 try:
@@ -66,16 +68,19 @@ for project in ("openssl","coreutils","godot"):
         outfile = f"decompilations/{project}/" + " ".join(objfile.split("/")[3:])[:-2] + ".c"
         workload.append((objfile, outfile))
 
-print(len(workload))
-#import random
-#random.shuffle(workload)
-#workload = workload[-10:]
-#print(workload)
+random.shuffle(workload)
 
 
 def decompile(wu):
     objfile, outfile = wu
-    subprocess.call(["python", "./decomp-headless", objfile, "-o", outfile])
+    if os.path.exists(outfile):
+        return
+    try:
+        subprocess.call(["python", "./decomp-headless", objfile, "-o", outfile], timeout=60)
+    except subprocess.TimeoutExpired:
+        time.sleep(5)
+        with open(outfile, "a+") as f:
+            f.write("// This is taking way too long.")
 
 t = tqdm.tqdm(total=len(workload))
 
