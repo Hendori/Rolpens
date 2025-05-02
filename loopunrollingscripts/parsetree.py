@@ -1,6 +1,24 @@
-from typing import Self, Union
+import os
+from typing import Self, Union, Optional, List
+from ctypes import cdll, c_void_p
 
 from tree_sitter import Node as TSNode
+from tree_sitter import Language, Parser
+
+
+def get_parser():
+    def lang_from_so(path: str, name: str) -> Language:
+        lib = cdll.LoadLibrary(os.fspath(path))
+        language_function = getattr(lib, f"tree_sitter_{name}")
+        language_function.restype = c_void_p
+        language_ptr = language_function()
+        return Language(language_ptr)
+    C_LANGUAGE = lang_from_so(os.path.dirname(__file__)+"/treesitter-decomp-c.so", "decompc")
+
+    parser = Parser()
+    parser.language = C_LANGUAGE
+    return parser
+
 
 class TreeError(Exception):
     pass
@@ -10,9 +28,9 @@ class Node:
     def __init__(self, node_type: str, node_text: bytes = b""):
         self.type = node_type
 
-        self.parent = None
-        self.next_sibling = None
-        self.prev_sibling = None
+        self.parent: Optional[Self] = None
+        self.next_sibling: Optional[Self] = None
+        self.prev_sibling: Optional[Self] = None
 
         self.children = []
         self.child_names = []
@@ -21,6 +39,7 @@ class Node:
         self.grammar_id = 0
         self.grammar_name = ""
         self.id = 0
+        self.byte_range = (0,0)
 
     def __repr__(self) -> str:
         return str(self)
@@ -51,6 +70,7 @@ class Node:
     def from_tree_sitter(node: TSNode):
         rv = Node(node.type, node.text or b"")
         rv.id = node.id
+        rv.byte_range = node.byte_range
         for i, tschild in enumerate(node.children):
             child = Node.from_tree_sitter(tschild)
             child.parent = rv
@@ -61,18 +81,20 @@ class Node:
             rv.child_names.append(node.field_name_for_child(i) or "")
         return rv
 
-    def child_by_field_name(self, name: str):
+    def child_by_field_name(self, name: str) -> Optional[Self]:
         for i, node_name in enumerate(self.child_names):
             if node_name == name:
                 return self.children[i]
         return None
 
-    def field_name_for_child(self, child_index: Union[Self, int]):
+    def field_name_for_child(self, child_index: Union[Self, int]) -> str:
         if isinstance(child_index, Node):
             for i, ch in enumerate(self.children):
                 if ch == child_index:
                     return self.child_names[i]
-        return self.child_names[child_index]
+            return ""
+        else:
+            return self.child_names[child_index]
 
     def remove_child(self, node: Self):
         for i, child in enumerate(self.children):
@@ -110,3 +132,15 @@ class Node:
                 self.child_names.insert(i, name)
                 return
         raise TreeError("reference node not found")
+
+    def get_nodes_by_type(self, node_type: Union[str, List[str]], greedy: bool = False, descend_denylist: List[str] = []):
+        if isinstance(node_type, str):
+            node_type = [node_type]
+
+        if self.type in node_type:
+            yield self
+        if not greedy or self.type not in node_type:
+            for child in self.children:
+                if child.type in descend_denylist:
+                    continue
+                yield from child.get_nodes_by_type(node_type, greedy, descend_denylist)
