@@ -1,5 +1,5 @@
 import os
-from typing import Self, Union, Optional, List
+from typing import Self, Union, Optional, List, Callable
 from ctypes import cdll, c_void_p
 
 from tree_sitter import Node as TSNode
@@ -133,14 +133,20 @@ class Node:
                 return
         raise TreeError("reference node not found")
 
-    def get_nodes_by_type(self, node_type: Union[str, List[str]], greedy: bool = False, descend_denylist: List[str] = []):
+    def get_nodes_by_type(self, node_type: Union[str, List[str]], lazy: Union[bool, Callable[[Self], bool]] = False, descend_denylist: List[str] = []):
         if isinstance(node_type, str):
             node_type = [node_type]
 
+        descend = True
         if self.type in node_type:
             yield self
-        if not greedy or self.type not in node_type:
+            if isinstance(lazy, bool):
+                descend = not lazy
+            else:
+                descend = lazy(self)
+
+        if descend:
             for child in self.children:
                 if child.type in descend_denylist:
                     continue
-                yield from child.get_nodes_by_type(node_type, greedy, descend_denylist)
+                yield from child.get_nodes_by_type(node_type, lazy, descend_denylist)
