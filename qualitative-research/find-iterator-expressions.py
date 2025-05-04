@@ -11,7 +11,7 @@ def is_not_arithmetic(node: Node) -> bool:
     operator = node.child_by_field_name("operator")
     return operator.type not in ["+", "-", "*", "/", "&", "|", "~", "^"]
 
-parser = get_parser()
+parser = get_parser("treesitter-cpp.so", "cpp")
 
 argparser = argparse.ArgumentParser(
         prog="tree-analyse.py",
@@ -21,8 +21,10 @@ config = argparser.parse_args()
 
 for filename in config.files:
     source_code = b""
-    with open(filename, "r") as f:
-        source_code = f.read().encode()
+    with open(filename, "rb") as f:
+        source_code = f.read()
+
+    filename_printed = False
 
     # Parse the file into an abstract syntax tree
     tree = parser.parse(source_code)
@@ -80,6 +82,9 @@ for filename in config.files:
                 if n.text == varname:
                     has_iterator = True
             if has_iterator:
+                if not filename_printed:
+                    print(f"{filename}")
+                    filename_printed = True
                 if not loop_printed:
                     a,_ = for_loop.byte_range
                     b,_ = loop_body.byte_range
@@ -91,4 +96,6 @@ for filename in config.files:
 
         if loop_printed:
             print("}")
+    if filename_printed:
+        print("\n")
 

@@ -6,14 +6,14 @@ from tree_sitter import Node as TSNode
 from tree_sitter import Language, Parser
 
 
-def get_parser():
+def get_parser(sofile = "treesitter-decomp-c.so", language_name = "decompc"):
     def lang_from_so(path: str, name: str) -> Language:
         lib = cdll.LoadLibrary(os.fspath(path))
         language_function = getattr(lib, f"tree_sitter_{name}")
         language_function.restype = c_void_p
         language_ptr = language_function()
         return Language(language_ptr)
-    C_LANGUAGE = lang_from_so(os.path.dirname(__file__)+"/treesitter-decomp-c.so", "decompc")
+    C_LANGUAGE = lang_from_so(os.path.dirname(__file__)+"/" + sofile, language_name)
 
     parser = Parser()
     parser.language = C_LANGUAGE
