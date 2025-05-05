@@ -1,5 +1,5 @@
 import argparse
-from typing import List, Union
+from typing import List, Union, Optional
 
 import sys
 sys.path.insert(0, "..")
@@ -17,6 +17,7 @@ argparser = argparse.ArgumentParser(
         prog="tree-analyse.py",
         description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
 argparser.add_argument("files", nargs="+")
+argparser.add_argument("--junk-path", type=int, default=0)
 config = argparser.parse_args()
 
 for filename in config.files:
@@ -24,7 +25,32 @@ for filename in config.files:
     with open(filename, "rb") as f:
         source_code = f.read()
 
+    line_lengths = [len(x) for x in source_code.split(b"\n")]
+
     filename_printed = False
+    def print_file_header(node: Optional[Node]):
+        global filename_printed
+        filename_printed = True
+
+        # Display filename
+        filename_d = filename
+        if config.junk_path > 0:
+            filename_d = "/".join(filename.split("/")[config.junk_path:])
+            if filename_d == "":
+                filename_d = filename
+
+        if Node is None:
+            print(f"{filename_d}")
+            return
+
+        line = 1
+        (offset,_) = node.byte_range
+        for l in line_lengths:
+            if l > offset:
+                break
+            line += 1
+            offset -= l + 1
+        print(f"{filename_d}:{line}")
 
     # Parse the file into an abstract syntax tree
     tree = parser.parse(source_code)
@@ -45,19 +71,23 @@ for filename in config.files:
             if argument is not None and argument.type == "identifier":
                 varname = argument.text
             else:
+                print_file_header(for_loop)
                 print(initializer)
                 continue
         elif initializer.type == "declaration":
             declarator = initializer.child_by_field_name("declarator")
             if declarator is None or declarator.type != "init_declarator":
+                print_file_header(for_loop)
                 print(initializer)
                 continue
             declarator = declarator.child_by_field_name("declarator")
             if declarator is None or declarator.type != "identifier":
+                print_file_header(for_loop)
                 print(initializer)
                 continue
             varname = declarator.text
         else:
+            print_file_header(for_loop)
             print(initializer.type)
             print(for_loop)
             a,b = for_loop.byte_range
@@ -82,10 +112,8 @@ for filename in config.files:
                 if n.text == varname:
                     has_iterator = True
             if has_iterator:
-                if not filename_printed:
-                    print(f"{filename}")
-                    filename_printed = True
                 if not loop_printed:
+                    print_file_header(for_loop)
                     a,_ = for_loop.byte_range
                     b,_ = loop_body.byte_range
                     print(source_code[a:b].decode().rstrip() + " {")
