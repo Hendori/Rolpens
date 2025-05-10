@@ -6,124 +6,165 @@ sys.path.insert(0, "..")
 from loopunrollingscripts.parsetree import Node, get_parser
 
 def is_not_arithmetic(node: Node) -> bool:
+    if node.type in ("identifier"):
+        return False
     if node.type not in ("unary_expression", "binary_expression"):
         return True
     operator = node.child_by_field_name("operator")
-    return operator.type not in ["+", "-", "*", "/", "&", "|", "~", "^"]
+    return operator.type not in ["+", "-", "*", "/", "%", "<<", ">>", "&", "|", "~", "^"]
+
+def expr_shape(node: Node, iterator_name: bytes) -> str:
+    if node.type == "identifier":
+        if node.text == iterator_name:
+            return "𝑥"
+        elif node.text.decode().isupper():
+            return "const"
+        else:
+            return "ident"
+    elif node.type == "number_literal":
+        return "num"
+    elif node.type == "parenthesized_expression":
+        return " ".join([expr_shape(x, iterator_name) for x in node.children])
+
+    if len(node.type) < 4 and len(node.children) == 0:
+        return node.type
+
+    rv, sep = f"({node.type}", " "
+    if node.type in ("binary_expression", "unary_expression"):
+        rv, sep = "(", ""
+
+    for ch in node.children:
+        rv += sep + expr_shape(ch, iterator_name)
+        sep = " "
+    return rv + ")"
 
 parser = get_parser("treesitter-cpp.so", "cpp")
 
 argparser = argparse.ArgumentParser(
-        prog="tree-analyse.py",
+        prog="find-iterator-expressions.py",
         description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
 argparser.add_argument("files", nargs="+")
 argparser.add_argument("--junk-path", type=int, default=0)
+argparser.add_argument("--log-file", type=str, default="find-iterator-expressions.log")
 config = argparser.parse_args()
 
-for filename in config.files:
-    source_code = b""
-    with open(filename, "rb") as f:
-        source_code = f.read()
+shape_count = {}
 
-    line_lengths = [len(x) for x in source_code.split(b"\n")]
+with open(config.log_file, "a") as logf:
 
-    filename_printed = False
-    def print_file_header(node: Optional[Node]):
-        global filename_printed
-        filename_printed = True
+    for filename in config.files:
+        source_code = b""
+        with open(filename, "rb") as f:
+            source_code = f.read()
 
-        # Display filename
-        filename_d = filename
-        if config.junk_path > 0:
-            filename_d = "/".join(filename.split("/")[config.junk_path:])
-            if filename_d == "":
-                filename_d = filename
+        line_lengths = [len(x) for x in source_code.split(b"\n")]
 
-        if Node is None:
-            print(f"{filename_d}")
-            return
+        filename_printed = False
+        def print_file_header(node: Optional[Node]):
+            global filename_printed
+            filename_printed = True
 
-        line = 1
-        (offset,_) = node.byte_range
-        for l in line_lengths:
-            if l > offset:
-                break
-            line += 1
-            offset -= l + 1
-        print(f"{filename_d}:{line}")
+            # Display filename
+            filename_d = filename
+            if config.junk_path > 0:
+                filename_d = "/".join(filename.split("/")[config.junk_path:])
+                if filename_d == "":
+                    filename_d = filename
 
-    # Parse the file into an abstract syntax tree
-    tree = parser.parse(source_code)
-    tree_root = Node.from_tree_sitter(tree.root_node)
+            if Node is None:
+                logf.write(f"{filename_d}\n")
+                return
 
-    for for_loop in tree_root.get_nodes_by_type("for_statement"):
-        varname = b"i"
-        initializer = for_loop.child_by_field_name("initializer")
-        if initializer is None:
-            continue
-        elif initializer.type == "comma_expression":
-            # FIXME: hier worden waarschijnlijk twee of meer iteratorvariabelen gebruikt, maar er is misschien wel iets te verzinnen
-            continue
-        elif initializer.type == "assignment_expression":
-            varname = initializer.child_by_field_name("left").text
-        elif initializer.type == "update_expression":
-            argument = initializer.child_by_field_name("argument")
-            if argument is not None and argument.type == "identifier":
-                varname = argument.text
+            line = 1
+            (offset,_) = node.byte_range
+            for l in line_lengths:
+                if l > offset:
+                    break
+                line += 1
+                offset -= l + 1
+            logf.write(f"{filename_d}:{line}\n")
+
+        # Parse the file into an abstract syntax tree
+        tree = parser.parse(source_code)
+        tree_root = Node.from_tree_sitter(tree.root_node)
+
+        for for_loop in tree_root.get_nodes_by_type("for_statement"):
+            varname = b"i"
+            initializer = for_loop.child_by_field_name("initializer")
+            if initializer is None:
+                continue
+            elif initializer.type == "comma_expression":
+                # FIXME: hier worden waarschijnlijk twee of meer iteratorvariabelen gebruikt, maar er is misschien wel iets te verzinnen
+                continue
+            elif initializer.type == "assignment_expression":
+                varname = initializer.child_by_field_name("left").text
+            elif initializer.type == "update_expression":
+                argument = initializer.child_by_field_name("argument")
+                if argument is not None and argument.type == "identifier":
+                    varname = argument.text
+                else:
+                    print_file_header(for_loop)
+                    logf.write(str(initializer) + "\n")
+                    continue
+            elif initializer.type == "declaration":
+                declarator = initializer.child_by_field_name("declarator")
+                if declarator is None or declarator.type != "init_declarator":
+                    print_file_header(for_loop)
+                    logf.write(str(initializer) + "\n")
+                    continue
+                declarator = declarator.child_by_field_name("declarator")
+                if declarator is None or declarator.type != "identifier":
+                    print_file_header(for_loop)
+                    logf.write(str(initializer) + "\n")
+                    continue
+                varname = declarator.text
             else:
                 print_file_header(for_loop)
-                print(initializer)
-                continue
-        elif initializer.type == "declaration":
-            declarator = initializer.child_by_field_name("declarator")
-            if declarator is None or declarator.type != "init_declarator":
-                print_file_header(for_loop)
-                print(initializer)
-                continue
-            declarator = declarator.child_by_field_name("declarator")
-            if declarator is None or declarator.type != "identifier":
-                print_file_header(for_loop)
-                print(initializer)
-                continue
-            varname = declarator.text
-        else:
-            print_file_header(for_loop)
-            print(initializer.type)
-            print(for_loop)
-            a,b = for_loop.byte_range
-            loop_body = for_loop.child_by_field_name("body")
-            if loop_body is not None:
-                b,_ = loop_body.byte_range
-            print(source_code[a:b].decode() + " {")
-            continue
-
-        loop_body = for_loop.child_by_field_name("body")
-        if loop_body is None:
-            continue
-
-        loop_printed = False
-
-        for expr in loop_body.get_nodes_by_type(["binary_expression","unary_expression"], lazy=is_not_arithmetic):
-            if is_not_arithmetic(expr):
-                continue
-
-            has_iterator = False
-            for n in expr.get_nodes_by_type("identifier", lazy=False, descend_denylist=["call_expression", "subscript_expression"]):
-                if n.text == varname:
-                    has_iterator = True
-            if has_iterator:
-                if not loop_printed:
-                    print_file_header(for_loop)
-                    a,_ = for_loop.byte_range
+                logf.write(initializer.type + "\n")
+                logf.write(str(for_loop) + "\n")
+                a,b = for_loop.byte_range
+                loop_body = for_loop.child_by_field_name("body")
+                if loop_body is not None:
                     b,_ = loop_body.byte_range
-                    print(source_code[a:b].decode().rstrip() + " {")
-                    loop_printed = True
+                logf.write(source_code[a:b].decode() + " {\n")
+                continue
 
-                a,b = expr.byte_range
-                print("    " + source_code[a:b].decode())
+            loop_body = for_loop.child_by_field_name("body")
+            if loop_body is None:
+                continue
 
-        if loop_printed:
-            print("}")
-    if filename_printed:
-        print("\n")
+            loop_printed = False
+
+            for expr in loop_body.get_nodes_by_type(["binary_expression","unary_expression","identifier"], lazy=is_not_arithmetic):
+                if is_not_arithmetic(expr):
+                    continue
+
+                has_iterator = False
+                for n in expr.get_nodes_by_type("identifier", lazy=False, descend_denylist=["call_expression", "subscript_expression"]):
+                    if n.text == varname:
+                        has_iterator = True
+                if has_iterator:
+                    if not loop_printed:
+                        print_file_header(for_loop)
+                        a,_ = for_loop.byte_range
+                        b,_ = loop_body.byte_range
+                        logf.write(source_code[a:b].decode().rstrip() + " {\n")
+                        loop_printed = True
+
+                    a,b = expr.byte_range
+                    expr_source = source_code[a:b].decode()
+                    shape = expr_shape(expr, varname)
+
+                    logf.write("    " + expr_source + " #### " + shape + "\n")
+                    ct, og_repr = shape_count.get(shape, (0, expr_source))
+                    shape_count[shape] = (ct + 1, og_repr)
+
+            if loop_printed:
+                logf.write("}\n")
+        if filename_printed:
+            logf.write("\n\n")
+
+rows = [(ct, shape, og_repr) for shape, (ct, og_repr) in shape_count.items()]
+for (ct, shape, og_repr) in reversed(sorted(rows, key=lambda x: x[0])):
+    print(f"{ct:5d}   {shape}   {og_repr}")
 
