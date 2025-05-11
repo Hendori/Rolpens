@@ -4,6 +4,7 @@ from typing import List, Union, Optional
 import sys
 sys.path.insert(0, "..")
 from loopunrollingscripts.parsetree import Node, get_parser
+from realcode import find_code_files
 
 def is_not_arithmetic(node: Node) -> bool:
     if node.type in ("identifier"):
@@ -59,11 +60,7 @@ shape_count = {}
 
 with open(config.log_file, "a") as logf:
 
-    for filename in config.files:
-        project_name = "project"
-        if config.project_name_path_index >= 0:
-            project_name = filename.split("/")[config.project_name_path_index]
-
+    for project_name, filename in find_code_files(config.files, config.project_name_path_index):
         source_code = b""
         with open(filename, "rb") as f:
             source_code = f.read()
