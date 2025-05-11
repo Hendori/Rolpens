@@ -556,8 +556,9 @@ with open(config.log_file, "a") as logf:
         logf.write(f"            \"{shape}\",\n")
 
 
-    print("\\begin{tabular}[l|"+"c"*len([a for a in project_total.values() if a > 0])+"|c]")
+    print("\\begin{tabular}{l|"+"c"*len([a for a in project_total.values() if a > 0])+"|c}")
     print("                             & " + " & ".join([project_names[p] for p in project_column_order if project_total.get(p,0) > 0]) + " & Total \\\\")
+    print("    \\hline")
 
     for (shape,_) in canonical_shape:
         row = f"    {shape:25s}"
