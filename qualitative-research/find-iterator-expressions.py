@@ -21,8 +21,14 @@ def expr_shape(node: Node, iterator_name: bytes) -> str:
             return "const"
         else:
             return "ident"
+    elif node.type == "sizeof_expression":
+        return "const"
     elif node.type == "number_literal":
         return "num"
+    elif node.type == "char_literal":
+        return "char"
+    elif node.type == "call_expression":
+        return "call()"
     elif node.type == "parenthesized_expression":
         return " ".join([expr_shape(x, iterator_name) for x in node.children])
 
@@ -46,6 +52,7 @@ argparser = argparse.ArgumentParser(
 argparser.add_argument("files", nargs="+")
 argparser.add_argument("--junk-path", type=int, default=0)
 argparser.add_argument("--log-file", type=str, default="find-iterator-expressions.log")
+argparser.add_argument("--project-name-path-index", type=int, default=-1)
 config = argparser.parse_args()
 
 shape_count = {}
@@ -53,6 +60,10 @@ shape_count = {}
 with open(config.log_file, "a") as logf:
 
     for filename in config.files:
+        project_name = "project"
+        if config.project_name_path_index >= 0:
+            project_name = filename.split("/")[config.project_name_path_index]
+
         source_code = b""
         with open(filename, "rb") as f:
             source_code = f.read()
@@ -156,15 +167,190 @@ with open(config.log_file, "a") as logf:
                     shape = expr_shape(expr, varname)
 
                     logf.write("    " + expr_source + " #### " + shape + "\n")
-                    ct, og_repr = shape_count.get(shape, (0, expr_source))
-                    shape_count[shape] = (ct + 1, og_repr)
+                    ct, og_repr = shape_count.get((shape,project_name), (0, expr_source))
+                    shape_count[(shape,project_name)] = (ct + 1, og_repr)
 
             if loop_printed:
                 logf.write("}\n")
         if filename_printed:
             logf.write("\n\n")
 
-rows = [(ct, shape, og_repr) for shape, (ct, og_repr) in shape_count.items()]
-for (ct, shape, og_repr) in reversed(sorted(rows, key=lambda x: x[0])):
-    print(f"{ct:5d}   {shape}   {og_repr}")
+    project_names = {
+        "godot": "Godot",
+        "openssl": "OpenSSL",
+        "coreutils": "coreutils"
+    }
+    project_column_order = ["coreutils", "openssl", "godot"]
+
+    canonical_shape = [
+        ("Raw", set({
+            "𝑥",
+            "(𝑥 + ident)",
+            "(𝑥 - ident)",
+            "(𝑥 * ident)",
+            "(ident + 𝑥)",
+            "(ident - 𝑥)",
+            "(ident * 𝑥)",
+            "(𝑥 * call())",
+            "((ident + 𝑥) + ident)",
+            "(𝑥 + (subscript_expression ident (subscript_argument_list [ num ])))",
+            "(𝑥 * (field_expression ident -> (field_identifier)))",
+            "((ident + (𝑥 * ident)) + num)",
+            "((field_expression (field_expression ident . (field_identifier)) . (field_identifier)) + 𝑥)",
+            "((field_expression (field_expression ident -> (field_identifier)) -> (field_identifier)) + 𝑥)",
+            "(( (ident + 𝑥) ) % ident)",
+            "((ident * ident) + 𝑥)",
+            "((𝑥 * ident) + ident)",
+            "((subscript_expression ident (subscript_argument_list [ num ])) + (ident * 𝑥))",
+            "((ident * num) + 𝑥)",
+            "(ident + (𝑥 * ident))",
+            "((ident + ident) + 𝑥)",
+            "((const - num) - ( (𝑥 - (call_expression (primitive_type) (argument_list ( (call_expression (field_expression (field_expression ident -> (field_identifier)) . (field_identifier)) (argument_list ( ))) )))) ))", # I don't even
+            "(𝑥 + (update_expression ident ++))",
+            "((field_expression ident . (field_identifier)) + 𝑥)",
+            "((subscript_expression ident (subscript_argument_list [ ident ])) + (𝑥 * ident))",
+            "((𝑥 * ident) + (subscript_expression ident (subscript_argument_list [ ident ])))",
+            "(𝑥 + (ident * num))",
+            "(𝑥 + call())",
+            "(𝑥 + (ident * ident))",
+        })),
+        ("Degree 1 polynomial", set({
+            "(𝑥 + num)",
+            "(𝑥 - num)",
+            "(𝑥 * num)",
+            "(num + 𝑥)",
+            "(num - 𝑥)",
+            "(num * 𝑥)",
+            "(𝑥 + const)",
+            "(𝑥 - const)",
+            "(𝑥 * const)",
+            "(const + 𝑥)",
+            "(const - 𝑥)",
+            "(const * 𝑥)",
+            "((const + 𝑥) + num)",
+            "(ident + (𝑥 * const))",
+            "((𝑥 * num) + ident)",
+            "(num * ( (𝑥 + num) ))",
+            "(( (𝑥 + num) ) * const)",
+            "(num + (𝑥 * const))",
+            "(( (𝑥 + num) ) * ident)",
+            "((field_expression ident -> (field_identifier)) + 𝑥)",
+            "(num + (num * 𝑥))",
+            "((num * num) + 𝑥)",
+            "(ident + (𝑥 * num))",
+            "((𝑥 * num) + num)",
+            "((num * 𝑥) + num)",
+            "((ident + 𝑥) + num)",
+            "((ident + 𝑥) - num)",
+            "(( (𝑥 + num) ) % ident)",
+            "(( (𝑥 + num) ) % (call_expression (field_expression ident . (field_identifier)) (argument_list ( ))))",
+            "((num * 𝑥) + ident)",
+            "((𝑥 * ident) * num)",
+            "(((ident * num) + (𝑥 * num)) + num)",
+            "(((𝑥 * num) + (ident * num)) + num)",
+            "(( ((𝑥 * num) + num) ) * num)",
+            "((( (𝑥 + num) ) * num) + num)",
+            "((( (𝑥 - num) ) * num) + num)",
+            "((𝑥 - ident) - num)",
+            "((𝑥 * ident) + num)",
+            "(( (𝑥 * ident) ) + num)",
+            "((( ((ident * ident) + 𝑥) ) * num) + num)",
+            "((( ((𝑥 * ident) + ident) ) * num) + num)",
+            "(( (((( (( (num + (ident / num)) ) / ( (ident - num) )) ) * 𝑥) * ( (ident - num) )) + num) ) >> num)",
+            "((𝑥 * num) + (subscript_expression ident (subscript_argument_list [ (cast_expression ( (type_descriptor (primitive_type)) ) (pointer_expression * ident)) ])))",
+        })),
+        ("Polynomial, degree >1", set({
+            "(( (ident - 𝑥) ) * ( (ident - 𝑥) ))",
+        })),
+        ("Division/modulo", set({
+            "(𝑥 % num)",
+            "(( (𝑥 + num) ) % num)",
+            "(𝑥 / num)",
+        })),
+        ("Bit shift / mask", set({
+            "(𝑥 & num)",
+            "(𝑥 | num)",
+            "(𝑥 << num)",
+            "(𝑥 >> num)",
+            "(𝑥 >> const)",
+            "(𝑥 << const)",
+            "(~ 𝑥)",
+            "(( (𝑥 << num) ) | ( (𝑥 >> num) ))",
+            "(((cast_expression ( (type_descriptor (primitive_type)) ) ident) | ( (num << num) )) | ( (𝑥 << num) ))",
+        })),
+        ("Bit shift exponentiation", set({
+            "(num << 𝑥)",
+            "(num >> 𝑥)",
+            "(const >> 𝑥)",
+            "(const << 𝑥)",
+            "(( (ident >> ( (num - (𝑥 * num)) )) ) & num)",
+            "((cast_expression ( (type_descriptor (primitive_type)) ) num) << 𝑥)",
+            "((field_expression ident -> (field_identifier)) >> 𝑥)",
+        })),
+        ("Other", set({
+            "((field_expression 𝑥 -> (field_identifier)) & const)",
+            "((cast_expression ( (type_descriptor (primitive_type)) ) (field_expression 𝑥 -> (field_identifier))) / num)",
+            "((cast_expression ( (type_descriptor (primitive_type)) ) ident) - ((cast_expression ( (type_descriptor (primitive_type)) ) 𝑥) * num))",
+        })),
+        ("uncharacterised", set())
+    ]
+    uncharacterised = set()
+
+    logf.write("\n\n\n\nFinal tally:\n\n")
+    rows = []
+
+    project_total = {}
+    tally_table = {}
+
+    for (shape, project_name), (ct, og_repr) in shape_count.items():
+        if project_name not in project_names:
+            project_names[project_name] = project_name
+            project_column_order.append(project_name)
+
+        project_total[project_name] = project_total.get(project_name, 0) + ct
+
+        bucket = "uncharacterised"
+        for label, shapes in canonical_shape:
+            if shape in shapes:
+                bucket = label
+        tally_table[(bucket, project_name)] = tally_table.get((bucket, project_name), 0) + ct
+        tally_table[(bucket, "total")] = tally_table.get((bucket, "total"), 0) + ct
+
+        if bucket == "uncharacterised":
+            uncharacterised.add(shape)
+            rows.append((ct, shape, project_name, og_repr))
+
+    top_shapes = []
+    for (ct, shape, project_name, og_repr) in reversed(sorted(rows, key=lambda x: x[0])):
+        logf.write(f"{ct:5d}   {project_name}   {shape}   {og_repr.replace('\n',' ')}\n")
+        if ct > 1 and len(top_shapes) < 15:
+            top_shapes.append(shape)
+
+    logf.write("\n\nTop uncategorized shapes:\n")
+    for shape in top_shapes:
+        logf.write(f"            \"{shape}\",\n")
+
+
+    print("\\begin{tabular}[l|"+"c"*len([a for a in project_total.values() if a > 0])+"|c]")
+    print("                             & " + " & ".join([project_names[p] for p in project_column_order if project_total.get(p,0) > 0]) + " & Total \\\\")
+
+    for (shape,_) in canonical_shape:
+        row = f"    {shape:25s}"
+        total = 0
+        for project in project_column_order:
+            ct = tally_table.get((shape, project), 0)
+            total += ct
+            if project_total.get(project,0) == 0:
+                continue
+            row += f"   & {ct:5d}"
+        row += f"   & {total:5d} \\\\"
+        print(row)
+        if shape == "Polynomial, degree >1":
+            print("    \\hline")
+
+    print("    \\hline")
+    print("                             & " + " & ".join([str(project_total[p]) for p in project_column_order if project_total.get(p,0) > 0]) + " &")
+
+
+    print("\\end{tabular}")
 
