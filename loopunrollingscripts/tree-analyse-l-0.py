@@ -39,6 +39,7 @@ def compare_node_shapes(left, right):
             return False
     return True
 
+
 def compare_node_content(left, right):
     if not compare_node_shapes(left, right):
         return False
@@ -56,12 +57,14 @@ def find_duplicates(compound_node):
     children_list = list(compound_node.children)
     for l in range(1, len(children_list) // 2):
         for i, startnode in enumerate(children_list):
-            count = 1 # Die + 1 is er omdat het origineel van de loop ook meetelt
+            count = 1  # Die + 1 is er omdat het origineel van de loop ook meetelt
 
-            for j in range(i+l, len(children_list), l):
+            for j in range(i + l, len(children_list), l):
                 same = True
                 for k in range(l):
-                    if not compare_node_content(children_list[i+k], children_list[j+k]):
+                    if not compare_node_content(
+                        children_list[i + k], children_list[j + k]
+                    ):
                         same = False
                         break
                 if same:
@@ -69,17 +72,30 @@ def find_duplicates(compound_node):
                 else:
                     break
             if count >= 2:
-                yield (children_list[i:i+l], count)
+                yield (children_list[i : i + l], count)
 
 
-def find_numeric_constants(result: List[Union[int,float]], node: Node):
+def find_numeric_constants(result: List[Union[int, float]], node: Node):
     if node.type == "number_literal":
-        result.append(int(node.text.decode()))
+        result.append(parse_c_integer_literal(node.text.decode()))
     for child in node.children:
         find_numeric_constants(result, child)
 
 
-def find_polynomials_in_candidate_loop(loop_body: List[Node], repeat_count: int) -> List[Polynomial]:
+def parse_c_integer_literal(text):
+    text = text.strip().lower()
+    if text.startswith("0x"):
+        return int(text, 16)
+    if text.startswith("0b"):
+        return int(text, 2)
+    if text.startswith("0") and text != "0":
+        return int(text, 8)
+    return int(text)
+
+
+def find_polynomials_in_candidate_loop(
+    loop_body: List[Node], repeat_count: int
+) -> List[Polynomial]:
     num_values = []
     for n in loop_body:
         find_numeric_constants(num_values, n)
@@ -91,21 +107,25 @@ def find_polynomials_in_candidate_loop(loop_body: List[Node], repeat_count: int)
             find_numeric_constants(num_values, node)
 
     body_size = len(num_values) // repeat_count
-    rv = [None]*body_size
+    rv = [None] * body_size
     for i in range(body_size):
-        values = [0]*repeat_count
+        values = [0] * repeat_count
         for j in range(repeat_count):
-            values[j] = num_values[i + body_size*j]
+            values[j] = num_values[i + body_size * j]
         rv[i] = Polynomial.from_lagrange(list(zip(range(repeat_count), values)))
 
     return rv
 
 
-def splice_polynomial_for_numeric_constant(node: Node, ps: List[Polynomial], loop_var: str):
+def splice_polynomial_for_numeric_constant(
+    node: Node, ps: List[Polynomial], loop_var: str
+):
     if node.type == "number_literal":
         p = ps.pop(0)
         p_node = p.as_node(loop_var)
-        node.parent.insert_before(p_node, node, name=node.parent.field_name_for_child(node))
+        node.parent.insert_before(
+            p_node, node, name=node.parent.field_name_for_child(node)
+        )
         node.parent.remove_child(node)
     else:
         for child in node.children:
@@ -124,7 +144,9 @@ def new_identifier(reference_node: Node) -> str:
     return rv
 
 
-def insert_loop(reference_node: Node, loop_var: str, start: int, count: int = 0, step: int = 1):
+def insert_loop(
+    reference_node: Node, loop_var: str, start: int, count: int = 0, step: int = 1
+):
     if count == 0:
         count = start
         start = 0
@@ -183,10 +205,10 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
         loop_body.append_child(n)
 
 
-
 argparser = argparse.ArgumentParser(
-        prog="tree-analyse.py",
-        description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
+    prog="tree-analyse.py",
+    description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie",
+)
 argparser.add_argument("files", nargs="+")
 config = argparser.parse_args()
 
@@ -209,13 +231,13 @@ for filename in config.files:
         while changed:
             changed = False
             for loop_body, loop_count in sorted(
-                find_duplicates(child_node), key=lambda x: -(x[1]-1)*len(x[0])
+                find_duplicates(child_node), key=lambda x: -(x[1] - 1) * len(x[0])
             ):
                 ps = find_polynomials_in_candidate_loop(loop_body, loop_count)
                 its_working = True
                 for p in ps:
                     its_working = its_working and p.is_integer()
-                    its_working = its_working and (len(p) < loop_count//2)
+                    its_working = its_working and (len(p) < loop_count // 2)
                 if not its_working:
                     continue
 
@@ -224,13 +246,10 @@ for filename in config.files:
                 for node in loop_body:
                     splice_polynomial_for_numeric_constant(node, ps, loop_var)
 
-                # print(loop_body, loop_count)
                 # TODO: if deze_loop_werkt(loop_body, loop_count):
                 reroll_l0_loop(loop_body, loop_count, loop_var)
                 changed = True
-                # print(json.dumps(loop_body))
-                # print(child_node)
 
                 break
-
-    print(Formatter().format_tree(tree_root))
+    with open(filename + "processed", "w") as f:
+        print(Formatter().format_tree(tree_root), file=f)
