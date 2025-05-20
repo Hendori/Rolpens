@@ -290,6 +290,7 @@ class Formatter:
                 | "++"
                 | "--"
                 | "^"
+                | ">>"
             ):
                 return node.text.decode()
             case _:
