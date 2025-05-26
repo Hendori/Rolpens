@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
@@ -193,6 +194,9 @@ def insert_loop(
 
 
 def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
+    global loop_found
+    loop_found += 1
+    print("loop gevonden")
     # Bouw een for-loop die {repeat_count} keer herhaalt
     for_node, loop_body = insert_loop(nodes[0], loop_var, repeat_count)
 
@@ -217,10 +221,16 @@ C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
 parser = Parser()
 parser.language = C_LANGUAGE
 
+loop_found = 0
+
 for filename in config.files:
     # Read the C file
     with open(filename, "r") as f:
         source_code = f.read().encode()
+
+    file = Path(filename)
+    filename = file.name
+    location = file.parent
 
     # Parse the file into an abstract syntax tree
     tree = parser.parse(source_code)
@@ -251,5 +261,7 @@ for filename in config.files:
                 changed = True
 
                 break
-    with open(filename + "processed", "w") as f:
-        print(Formatter().format_tree(tree_root), file=f)
+    if loop_found:
+        print(str(location) + " " + filename)
+        with open(str(location) + "/" + str(loop_found) + filename, "w") as f:
+            print(Formatter().format_tree(tree_root), file=f)
