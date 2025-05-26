@@ -276,22 +276,9 @@ class Formatter:
                 return node.text.decode()
             case "+" | "-" | "*" | "/" | "%" | "&" | "|":
                 return node.text.decode()
-            case (
-                "="
-                | "+="
-                | "-="
-                | "*="
-                | "/="
-                | "%="
-                | "&="
-                | "|="
-                | "&&="
-                | "||="
-                | "++"
-                | "--"
-                | "^"
-                | ">>"
-            ):
+            case "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=":
+                return node.text.decode()
+            case "|=" | "&&=" | "||=" | "++" | "--" | "^" | ">>" | "<<":
                 return node.text.decode()
             case _:
                 raise ValueError(
@@ -477,17 +464,19 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_field_expression(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
 
     def _format_field_identifier(self, node) -> str:
         raise NotImplementedError()
 
     def _format_for_statement(self, node) -> str:
-        init_f = self.format_node(node.child_by_field_name("initializer"))
         test_f = self.format_node(node.child_by_field_name("condition"))
         update_f = self.format_node(node.child_by_field_name("update"))
         body_f = self.format_node(node.child_by_field_name("body"))
-        return f"for ({init_f}; {test_f}; {update_f}) {body_f}"
+        if node.child_by_field_name("iterator") != None:
+            init_f = self.format_node(node.child_by_field_name("initializer"))
+            return f"for ({init_f}; {test_f}; {update_f}) {body_f}"
+        return f"for (; {test_f}; {update_f}) {body_f}"
 
     def _format_function_declarator(self, node) -> str:
         ident_f = self.format_node(node.child_by_field_name("declarator"))
@@ -769,4 +758,6 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_while_statement(self, node) -> str:
-        raise NotImplementedError()
+        f_body = self.format_node(node.child_by_field_name("body"))
+        f_condition = self.format_node(node.child_by_field_name("condition"))
+        return f"while {f_condition} {f_body};"
