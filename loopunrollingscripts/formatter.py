@@ -552,7 +552,7 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_macro_type_specifier(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_ms_based_modifier(self, node) -> str:
         raise NotImplementedError()
@@ -604,7 +604,7 @@ class Formatter:
         )
 
     def _format_parenthesized_declarator(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
 
     def _format_parenthesized_expression(self, node) -> str:
         for child in node.children:

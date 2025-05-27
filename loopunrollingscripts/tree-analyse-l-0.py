@@ -1,4 +1,4 @@
-import argparse
+import sys
 from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
@@ -209,22 +209,9 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
         loop_body.append_child(n)
 
 
-argparser = argparse.ArgumentParser(
-    prog="tree-analyse.py",
-    description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie",
-)
-argparser.add_argument("files", nargs="+")
-config = argparser.parse_args()
-
-C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
-
-parser = Parser()
-parser.language = C_LANGUAGE
-
-loop_found = 0
-
-for filename in config.files:
+def process_file(filename):
     # Read the C file
+    print("processing file " + str(filename))
     with open(filename, "r") as f:
         source_code = f.read().encode()
 
@@ -261,7 +248,19 @@ for filename in config.files:
                 changed = True
 
                 break
-    if loop_found:
-        print(str(location) + " " + filename)
-        with open(str(location) + "/" + str(loop_found) + filename, "w") as f:
-            print(Formatter().format_tree(tree_root), file=f)
+        if loop_found:
+            with open(
+                str(location) + "/" + str(loop_found) + filename + "out", "w"
+            ) as f:
+                print(Formatter().format_tree(tree_root), file=f)
+
+
+C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
+
+parser = Parser()
+parser.language = C_LANGUAGE
+
+folder = Path(sys.argv[1])
+for file in folder.glob("*.c"):
+    loop_found = 0
+    process_file(file)
