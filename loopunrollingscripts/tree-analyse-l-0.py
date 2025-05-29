@@ -45,7 +45,9 @@ def compare_node_content(left, right):
     if not compare_node_shapes(left, right):
         return False
     match left.type:
-        case "identifier" | "field_identifier" | "string_literal":
+        case "identifier" | "field_identifier" | "type_identifier" | "statement_identifier":
+            return left.text == right.text
+        case "string_literal":
             return left.text == right.text
         case _:
             for i, left_child in enumerate(left.children):
@@ -60,7 +62,7 @@ def find_duplicates(compound_node):
         for i, startnode in enumerate(children_list):
             count = 1  # Die + 1 is er omdat het origineel van de loop ook meetelt
 
-            for j in range(i + l, len(children_list), l):
+            for j in range(i + l, len(children_list) - l, l):
                 same = True
                 for k in range(l):
                     if not compare_node_content(
