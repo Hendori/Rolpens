@@ -45,7 +45,7 @@ def compare_node_content(left, right):
     if not compare_node_shapes(left, right):
         return False
     match left.type:
-        case "identifier" | "string_literal":
+        case "identifier" | "field_identifier" | "string_literal":
             return left.text == right.text
         case _:
             for i, left_child in enumerate(left.children):
