@@ -84,12 +84,12 @@ def find_numeric_constants(result: List[Union[int, float]], node: Node):
 
 
 def parse_c_integer_literal(text):
-    text = text.strip().lower()
-    if text.startswith("0x"):
+    text = text.strip().lower().rstrip("uUlL")
+    if text.startswith("0x") or text.startswith("-0x"):
         return int(text, 16)
-    if text.startswith("0b"):
+    if text.startswith("0b") or text.startswith("-0b"):
         return int(text, 2)
-    if text.startswith("0") and text != "0":
+    if (text.startswith("0") or (text.startswith("-0"))) and text != "0":
         return int(text, 8)
     return int(text)
 

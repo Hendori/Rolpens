@@ -558,7 +558,7 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_ms_call_modifier(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
 
     def _format_ms_declspec_modifier(self, node) -> str:
         raise NotImplementedError()
@@ -620,10 +620,11 @@ class Formatter:
         return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_preproc_arg(self, node) -> str:
-        raise NotImplementedError()
+        print("doing preproc_arg dingen")
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_preproc_call(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_preproc_def(self, node) -> str:
         raise NotImplementedError()
@@ -632,7 +633,7 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_preproc_directive(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
 
     def _format_preproc_elif(self, node) -> str:
         raise NotImplementedError()
@@ -755,7 +756,7 @@ class Formatter:
         return f"{left_f}{op_f}"
 
     def _format_variadic_parameter(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
 
     def _format_while_statement(self, node) -> str:
         f_body = self.format_node(node.child_by_field_name("body"))
