@@ -473,7 +473,7 @@ class Formatter:
         test_f = self.format_node(node.child_by_field_name("condition"))
         update_f = self.format_node(node.child_by_field_name("update"))
         body_f = self.format_node(node.child_by_field_name("body"))
-        if node.child_by_field_name("iterator") != None:
+        if node.child_by_field_name("initializer") != None:
             init_f = self.format_node(node.child_by_field_name("initializer"))
             return f"for ({init_f}; {test_f}; {update_f}) {body_f}"
         return f"for (; {test_f}; {update_f}) {body_f}"
