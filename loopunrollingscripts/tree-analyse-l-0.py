@@ -1,4 +1,4 @@
-import sys
+import argparse
 from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
@@ -257,12 +257,23 @@ def process_file(filename):
                 print(Formatter().format_tree(tree_root), file=f)
 
 
+argparser = argparse.ArgumentParser(
+        prog="tree-analyse.py",
+        description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
+argparser.add_argument("files", nargs="+")
+config = argparser.parse_args()
+
 C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
 
 parser = Parser()
 parser.language = C_LANGUAGE
 
-folder = Path(sys.argv[1])
-for file in folder.glob("*.c"):
-    loop_found = 0
-    process_file(file)
+for file in config.files:
+    folder = Path(file)
+    if folder.is_dir():
+        for file in folder.glob("*.c"):
+            loop_found = 0
+            process_file(file)
+    else:
+        loop_found = 0
+        process_file(file)
