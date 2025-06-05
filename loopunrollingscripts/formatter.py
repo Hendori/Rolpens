@@ -1,6 +1,6 @@
-
 class NotImplementedError(Exception):
     pass
+
 
 class Formatter:
     def format_tree(self, root_node):
@@ -234,6 +234,8 @@ class Formatter:
                 return self._format_character(node)
             case "comment":
                 return self._format_comment(node)
+            case "ERROR":
+                return self._format_ERROR(node)
             case "escape_sequence":
                 return self._format_escape_sequence(node)
             case "false":
@@ -274,50 +276,72 @@ class Formatter:
                 return node.text.decode()
             case "+" | "-" | "*" | "/" | "%" | "&" | "|":
                 return node.text.decode()
-            case "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "&&=" | "||=" | "++" | "--":
+            case "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=":
+                return node.text.decode()
+            case "|=" | "&&=" | "||=" | "++" | "--" | "^" | ">>" | "<<":
                 return node.text.decode()
             case _:
-                raise ValueError(f"Unknown node type {node.type} within node of type {node.parent.type}")
+                raise ValueError(
+                    f"Unknown node type {node.type} within node of type {node.parent.type}"
+                )
 
     def _ind(self) -> str:
         return "   " * self.indent
- 
+
     def _format_abstract_array_declarator(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_abstract_function_declarator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_abstract_parenthesized_declarator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_abstract_pointer_declarator(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_alignas_qualifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_alignof_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_argument_list(self, node) -> str:
         self.indent += 1
         try:
-            args = [self.format_node(x) for x in node.children if x.type not in ["(",",",")"]]
+            args = [
+                self.format_node(x)
+                for x in node.children
+                if x.type not in ["(", ",", ")"]
+            ]
             return "(" + ", ".join(args) + ")"
         finally:
             self.indent -= 1
+
     def _format_array_declarator(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_assignment_expression(self, node) -> str:
         left_f = self.format_node(node.child_by_field_name("left"))
         op_f = self.format_node(node.child_by_field_name("operator"))
         right_f = self.format_node(node.child_by_field_name("right"))
         return f"{left_f} {op_f} {right_f}"
+
     def _format_attribute(self, node) -> str:
         raise NotImplementedError()
+
     def _format_attribute_declaration(self, node) -> str:
         raise NotImplementedError()
+
     def _format_attribute_specifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_attributed_declarator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_attributed_statement(self, node) -> str:
         raise NotImplementedError()
+
     def _format_binary_expression(self, node) -> str:
         left_f = self.format_node(node.child_by_field_name("left"))
         op_f = self.format_node(node.child_by_field_name("operator"))
@@ -325,46 +349,66 @@ class Formatter:
         if getattr(node, "tight", False):
             return f"{left_f}{op_f}{right_f}"
         return f"{left_f} {op_f} {right_f}"
+
     def _format_bitfield_clause(self, node) -> str:
         raise NotImplementedError()
+
     def _format_break_statement(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_call_expression(self, node) -> str:
         function_f = self.format_node(node.child_by_field_name("function"))
         arguments_f = self.format_node(node.child_by_field_name("arguments"))
         return function_f + arguments_f
+
     def _format_case_statement(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_cast_expression(self, node) -> str:
         type_f = self.format_node(node.child_by_field_name("type"))
         value_f = self.format_node(node.child_by_field_name("value"))
         return f"({type_f}){value_f}"
+
     def _format_char_literal(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_character(self, node) -> str:
         raise NotImplementedError()
+
     def _format_comma_expression(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_comment(self, node) -> str:
         return node.text.decode()
+
+    def _format_ERROR(self, node) -> str:
+        return node.text.decode()
+
     def _format_compound_literal_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_compound_statement(self, node) -> str:
         close = "\n" + self._ind() + "}"
         self.indent += 1
         try:
-            stmts = [self.format_node(x) for x in node.children if x.type not in ["{","}"]]
+            stmts = [
+                self.format_node(x) for x in node.children if x.type not in ["{", "}"]
+            ]
             if len(stmts) == 0:
                 return "{}"
-            return "{\n" + self._ind() + ("\n"+self._ind()).join(stmts) + close
+            return "{\n" + self._ind() + ("\n" + self._ind()).join(stmts) + close
         finally:
             self.indent -= 1
+
     def _format_concatenated_string(self, node) -> str:
         raise NotImplementedError()
+
     def _format_conditional_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_continue_statement(self, node) -> str:
         raise NotImplementedError()
+
     def _format_declaration(self, node) -> str:
         type_f = self.format_node(node.child_by_field_name("type"))
         decl_f = self.format_node(node.child_by_field_name("declarator"))
@@ -374,75 +418,110 @@ class Formatter:
             return f"{type_f} {decl_f};"
         else:
             return f"{type_f} {decl_f}"
+
     def _format_declaration_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_do_statement(self, node) -> str:
-        raise NotImplementedError()
+        f_body = self.format_node(node.child_by_field_name("body"))
+        f_condition = self.format_node(node.child_by_field_name("condition"))
+        return f"do {f_body} while {f_condition};"
+
     def _format_else_clause(self, node) -> str:
         return "else " + self.format_node(node.children[1])
+
     def _format_enum_specifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_enumerator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_enumerator_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_escape_sequence(self, node) -> str:
         raise NotImplementedError()
+
     def _format_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_expression_statement(self, node) -> str:
         return self.format_node(node.children[0]) + ";"
+
     def _format_extension_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_false(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_field_declaration(self, node) -> str:
         raise NotImplementedError()
+
     def _format_field_declaration_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_field_designator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_field_expression(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_field_identifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_for_statement(self, node) -> str:
-        init_f = self.format_node(node.child_by_field_name("initializer"))
         test_f = self.format_node(node.child_by_field_name("condition"))
         update_f = self.format_node(node.child_by_field_name("update"))
         body_f = self.format_node(node.child_by_field_name("body"))
-        return f"for ({init_f}; {test_f}; {update_f}) {body_f}"
+        if node.child_by_field_name("initializer") != None:
+            init_f = self.format_node(node.child_by_field_name("initializer"))
+            return f"for ({init_f}; {test_f}; {update_f}) {body_f}"
+        return f"for (; {test_f}; {update_f}) {body_f}"
+
     def _format_function_declarator(self, node) -> str:
         ident_f = self.format_node(node.child_by_field_name("declarator"))
         params_f = self.format_node(node.child_by_field_name("parameters"))
         return ident_f + params_f
+
     def _format_function_definition(self, node) -> str:
         type_f = self.format_node(node.child_by_field_name("type"))
         decl_f = self.format_node(node.child_by_field_name("declarator"))
         body_f = self.format_node(node.child_by_field_name("body"))
         return "\n" + type_f + " " + decl_f + " " + body_f + "\n"
+
     def _format_generic_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_clobber_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_goto_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_input_operand(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_input_operand_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_output_operand(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_output_operand_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_gnu_asm_qualifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_goto_statement(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_identifier(self, node) -> str:
         return node.text.decode()
+
     def _format_if_statement(self, node) -> str:
         condition_f = self.format_node(node.child_by_field_name("condition"))
         consequence_f = self.format_node(node.child_by_field_name("consequence"))
@@ -451,6 +530,7 @@ class Formatter:
             alternative_f = self.format_node(alternative_node)
             return f"if {condition_f} {consequence_f} {alternative_f}"
         return f"if {condition_f} {consequence_f}"
+
     def _format_init_declarator(self, node) -> str:
         ident_f = self.format_node(node.child_by_field_name("declarator"))
         value_node = node.child_by_field_name("value")
@@ -458,145 +538,227 @@ class Formatter:
             value_f = self.format_node(value_node)
             return f"{ident_f} = {value_f}"
         return ident_f
+
     def _format_initializer_list(self, node) -> str:
         raise NotImplementedError()
+
     def _format_initializer_pair(self, node) -> str:
         raise NotImplementedError()
+
     def _format_labeled_statement(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_linkage_specification(self, node) -> str:
         raise NotImplementedError()
+
     def _format_macro_type_specifier(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_ms_based_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_ms_call_modifier(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_ms_declspec_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_ms_pointer_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_ms_restrict_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_ms_signed_ptr_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_ms_unaligned_ptr_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_ms_unsigned_ptr_modifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_null(self, node) -> str:
         raise NotImplementedError()
+
     def _format_number_literal(self, node) -> str:
         return node.text.decode()
+
     def _format_offsetof_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_parameter_declaration(self, node) -> str:
         return " ".join([self.format_node(x) for x in node.children])
+
     def _format_parameter_list(self, node) -> str:
-        return "(" + ", ".join([self.format_node(x) for x in node.children if x.type not in ["(",",",")"]]) + ")"
+        return (
+            "("
+            + ", ".join(
+                [
+                    self.format_node(x)
+                    for x in node.children
+                    if x.type not in ["(", ",", ")"]
+                ]
+            )
+            + ")"
+        )
+
     def _format_parenthesized_declarator(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_parenthesized_expression(self, node) -> str:
         for child in node.children:
             if child.type in ["(", ")"]:
                 continue
             return f"( {self.format_node(child)} )"
         return "()"
+
     def _format_pointer_declarator(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_pointer_expression(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_preproc_arg(self, node) -> str:
-        raise NotImplementedError()
+        print("doing preproc_arg dingen")
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_preproc_call(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_preproc_def(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_defined(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_directive(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_preproc_elif(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_elifdef(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_else(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_function_def(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_if(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_ifdef(self, node) -> str:
         raise NotImplementedError()
+
     def _format_preproc_include(self, node) -> str:
         return "#include " + self.format_node(node.child_by_field_name("path")) + "\n"
+
     def _format_preproc_params(self, node) -> str:
         raise NotImplementedError()
+
     def _format_primitive_type(self, node) -> str:
         return node.text.decode()
+
     def _format_return_statement(self, node) -> str:
         for child in node.children:
             if child.type in ["return", ";"]:
                 continue
             return f"return {self.format_node(child)};"
         return "return;"
+
     def _format_seh_except_clause(self, node) -> str:
         raise NotImplementedError()
+
     def _format_seh_finally_clause(self, node) -> str:
         raise NotImplementedError()
+
     def _format_seh_leave_statement(self, node) -> str:
         raise NotImplementedError()
+
     def _format_seh_try_statement(self, node) -> str:
         raise NotImplementedError()
+
     def _format_sized_type_specifier(self, node) -> str:
         return " ".join([self.format_node(ch) for ch in node.children])
+
     def _format_sizeof_expression(self, node) -> str:
         raise NotImplementedError()
+
     def _format_statement(self, node) -> str:
         raise NotImplementedError()
+
     def _format_statement_identifier(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_storage_class_specifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_string_content(self, node) -> str:
         raise NotImplementedError()
+
     def _format_string_literal(self, node) -> str:
         return node.text.decode()
+
     def _format_struct_specifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_subscript_designator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_subscript_expression(self, node) -> str:
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_subscript_range_designator(self, node) -> str:
         raise NotImplementedError()
+
     def _format_switch_statement(self, node) -> str:
-        raise NotImplementedError()
+        f_body = self.format_node(node.child_by_field_name("body"))
+        f_condition = self.format_node(node.child_by_field_name("condition"))
+        return f"switch {f_condition} {f_body}"
+
     def _format_system_lib_string(self, node) -> str:
         return node.text.decode()
+
     def _format_translation_unit(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_true(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_type_definition(self, node) -> str:
         raise NotImplementedError()
+
     def _format_type_descriptor(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_type_identifier(self, node) -> str:
-        raise NotImplementedError()
+        # TODO: check of dit klopt
+        return node.text.decode()
+
     def _format_type_qualifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_type_specifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_unary_expression(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_union_specifier(self, node) -> str:
         raise NotImplementedError()
+
     def _format_update_expression(self, node) -> str:
         left_f = self.format_node(node.child_by_field_name("argument"))
         op_f = self.format_node(node.child_by_field_name("operator"))
         return f"{left_f}{op_f}"
+
     def _format_variadic_parameter(self, node) -> str:
-        raise NotImplementedError()
+        return node.text.decode()
+
     def _format_while_statement(self, node) -> str:
-        raise NotImplementedError()
+        f_body = self.format_node(node.child_by_field_name("body"))
+        f_condition = self.format_node(node.child_by_field_name("condition"))
+        return f"while {f_condition} {f_body};"
