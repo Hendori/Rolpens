@@ -3,7 +3,7 @@ from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
-from typing import List, Union
+from typing import List, Union, Set
 
 from polynomials import Polynomial
 from parsetree import Node
@@ -76,7 +76,19 @@ def compare_node_content(left, right):
     return result
 
 
-ident_count = 0
+def variables_in_scope(node) -> Set[str]:
+    rv = set()
+
+    for ch in node.children:
+        if ch.type == "identifier":
+            rv.add(ch.text.decode())
+        elif ch.type in ("function_definition",):
+            continue
+        elif len(ch.children) > 0:
+            for id in variables_in_scope(ch):
+                rv.add(id)
+
+    return rv
 
 
 class CandidateLoop:
@@ -109,12 +121,24 @@ class CandidateLoop:
         return rv
 
     def new_identifier(self) -> str:
-        global ident_count
-        rv = f"i_{ident_count}"
-        ident_count += 1
-        # TODO: ga omhoog in de tree vanaf reference_node, en kijk of de
-        # kandidaatvariabele al bestaat. Indien ja, verzin een andere.
-        return rv
+        def all_identifiers():
+            yield from ("i","j","k")
+            i = 1
+            while True:
+                yield f"i{i}"
+
+        for ident in all_identifiers():
+            # Ga omhoog in de tree waar deze loop zou moeten staan, en kijk of
+            # deze kandidaatvariabele al bestaat. Indien nee, klaar.
+            ident_exists = False
+            ref_node = self.body[0]
+            while ref_node is not None:
+                if ref_node.type in ("function_definition", "translation_unit"):
+                    ident_exists = ident_exists or ident in variables_in_scope(ref_node)
+                ref_node = ref_node.parent
+            if not ident_exists:
+                return ident
+        return "i∞"
 
 
 def find_duplicates(compound_node):
