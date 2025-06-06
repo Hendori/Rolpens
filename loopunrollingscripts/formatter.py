@@ -421,9 +421,7 @@ class Formatter:
             self.indent -= 1
 
     def _format_concatenated_string(self, node) -> str:
-        print(node)
-        print(node.text.decode())
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_conditional_expression(self, node) -> str:
         print(node)
