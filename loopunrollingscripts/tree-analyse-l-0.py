@@ -76,6 +76,47 @@ def compare_node_content(left, right):
     return result
 
 
+ident_count = 0
+
+
+class CandidateLoop:
+    def __init__(self, body, count):
+        self.body = body
+        self.count = count
+
+    def reduction_size(self):
+        return len(self.body) * (self.count - 1)
+
+    def find_polynomials(self) -> List[Polynomial]:
+        num_values = []
+        for n in self.body:
+            find_numeric_constants(num_values, n)
+
+        node = self.body[-1]
+        for _ in range(1, self.count):
+            for _ in self.body:
+                node = node.next_sibling
+                find_numeric_constants(num_values, node)
+
+        body_size = len(num_values) // self.count
+        rv = [None] * body_size
+        for i in range(body_size):
+            values = [0] * self.count
+            for j in range(self.count):
+                values[j] = num_values[i + body_size * j]
+            rv[i] = Polynomial.from_lagrange(list(zip(range(self.count), values)))
+
+        return rv
+
+    def new_identifier(self) -> str:
+        global ident_count
+        rv = f"i_{ident_count}"
+        ident_count += 1
+        # TODO: ga omhoog in de tree vanaf reference_node, en kijk of de
+        # kandidaatvariabele al bestaat. Indien ja, verzin een andere.
+        return rv
+
+
 def find_duplicates(compound_node):
     children_list = list(compound_node.children)
     for l in range(1, len(children_list) // 2):
@@ -95,7 +136,7 @@ def find_duplicates(compound_node):
                 else:
                     break
             if count >= 2:
-                yield (children_list[i : i + l], count)
+                yield CandidateLoop(children_list[i : i + l], count)
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
@@ -128,30 +169,6 @@ def parse_c_integer_literal(text):
         raise ValueError(f"'{text}' is geen echt getal")
 
 
-def find_polynomials_in_candidate_loop(
-    loop_body: List[Node], repeat_count: int
-) -> List[Polynomial]:
-    num_values = []
-    for n in loop_body:
-        find_numeric_constants(num_values, n)
-
-    node = loop_body[-1]
-    for _ in range(1, repeat_count):
-        for _ in loop_body:
-            node = node.next_sibling
-            find_numeric_constants(num_values, node)
-
-    body_size = len(num_values) // repeat_count
-    rv = [None] * body_size
-    for i in range(body_size):
-        values = [0] * repeat_count
-        for j in range(repeat_count):
-            values[j] = num_values[i + body_size * j]
-        rv[i] = Polynomial.from_lagrange(list(zip(range(repeat_count), values)))
-
-    return rv
-
-
 def splice_polynomial_for_numeric_constant(
     node: Node, ps: List[Polynomial], loop_var: str
 ):
@@ -165,18 +182,6 @@ def splice_polynomial_for_numeric_constant(
     else:
         for child in node.children:
             splice_polynomial_for_numeric_constant(child, ps, loop_var)
-
-
-ident_count = 0
-
-
-def new_identifier(reference_node: Node) -> str:
-    global ident_count
-    rv = f"i_{ident_count}"
-    ident_count += 1
-    # TODO: ga omhoog in de tree vanaf reference_node, en kijk of de
-    # kandidaatvariabele al bestaat. Indien ja, verzin een andere.
-    return rv
 
 
 def insert_loop(
@@ -266,24 +271,24 @@ def process_file(filename):
         changed = True
         while changed:
             changed = False
-            for loop_body, loop_count in sorted(
-                find_duplicates(child_node), key=lambda x: -(x[1] - 1) * len(x[0])
+            for loop in sorted(
+                find_duplicates(child_node), key=lambda x: -x.reduction_size()
             ):
-                ps = find_polynomials_in_candidate_loop(loop_body, loop_count)
+                ps = loop.find_polynomials()
                 its_working = True
                 for p in ps:
                     its_working = its_working and p.is_integer()
-                    its_working = its_working and (len(p) < loop_count // 2)
+                    its_working = its_working and (len(p) < loop.count // 2)
                 if not its_working:
                     continue
 
-                loop_var = new_identifier(loop_body[0])
+                loop_var = loop.new_identifier()
 
-                for node in loop_body:
+                for node in loop.body:
                     splice_polynomial_for_numeric_constant(node, ps, loop_var)
 
                 # TODO: if deze_loop_werkt(loop_body, loop_count):
-                reroll_l0_loop(loop_body, loop_count, loop_var)
+                reroll_l0_loop(loop.body, loop.count, loop_var)
                 changed = True
 
                 break
