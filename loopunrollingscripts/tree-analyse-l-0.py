@@ -85,8 +85,12 @@ def variables_in_scope(node) -> Set[str]:
         elif ch.type in ("function_definition",):
             continue
         elif len(ch.children) > 0:
-            for id in variables_in_scope(ch):
-                rv.add(id)
+            child_vars = variables_in_scope(ch)
+            if ch.type in ("for_statement"):
+                # HACK: beschouw de lokale iteratorvariabele niet als onderdeel van de parent scope
+                child_vars.discard(getattr(ch, "local_iterator", ""))
+
+            rv |= child_vars
 
     return rv
 
@@ -131,11 +135,15 @@ class CandidateLoop:
             # Ga omhoog in de tree waar deze loop zou moeten staan, en kijk of
             # deze kandidaatvariabele al bestaat. Indien nee, klaar.
             ident_exists = False
+            for body_node in self.body:
+                ident_exists = ident_exists or ident in variables_in_scope(body_node)
+
             ref_node = self.body[0]
             while ref_node is not None:
-                if ref_node.type in ("function_definition", "translation_unit"):
+                if ref_node.type in ("function_definition", "translation_unit", "for_statement"):
                     ident_exists = ident_exists or ident in variables_in_scope(ref_node)
                 ref_node = ref_node.parent
+
             if not ident_exists:
                 return ident
         return "i∞"
@@ -215,22 +223,23 @@ def insert_loop(
         count = start
         start = 0
 
-    loop_var = loop_var.encode()
-
     for_node = Node("for_statement")
     for_node.append_child(Node("(", b"("))
+
+    # The iterator variable is local to this loop only.
+    for_node.local_iterator = loop_var
 
     init_node = Node("declaration")
     init_node.append_child(Node("primitive_type", b"int"), "type")
     init_decl = Node("init_declarator")
-    init_decl.append_child(Node("identifier", loop_var), "declarator")
+    init_decl.append_child(Node("identifier", loop_var.encode()), "declarator")
     init_decl.append_child(Node("number_literal", str(start).encode()), "value")
     init_node.append_child(init_decl, "declarator")
     for_node.append_child(init_node, "initializer")
     for_node.append_child(Node(";", b";"))
 
     cond_node = Node("binary_expression")
-    cond_node.append_child(Node("identifier", loop_var), "left")
+    cond_node.append_child(Node("identifier", loop_var.encode()), "left")
     cond_node.append_child(Node("<", b"<"), "operator")
     cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
     for_node.append_child(cond_node, "condition")
@@ -238,11 +247,11 @@ def insert_loop(
 
     upd_node = Node("update_expression")
     if step == 1:
-        upd_node.append_child(Node("identifier", loop_var), "argument")
+        upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
         upd_node.append_child(Node("++", b"++"), "operator")
     else:
         upd_node = Node("assignment_expression")
-        upd_node.append_child(Node("identifier", loop_var), "argument")
+        upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
         upd_node.append_child(Node("+=", b"+="), "operator")
         upd_node.append_child(Node("number_literal", str(step).encode()), "value")
     for_node.append_child(upd_node, "update")
