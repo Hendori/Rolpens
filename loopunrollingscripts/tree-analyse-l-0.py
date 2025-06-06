@@ -8,6 +8,9 @@ from typing import List, Union
 from polynomials import Polynomial
 from parsetree import Node
 from formatter import Formatter
+import sys
+
+sys.setrecursionlimit(3000)
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -45,7 +48,12 @@ def compare_node_content(left, right):
     if not compare_node_shapes(left, right):
         return False
     match left.type:
-        case "identifier" | "field_identifier" | "type_identifier" | "statement_identifier":
+        case (
+            "identifier"
+            | "field_identifier"
+            | "type_identifier"
+            | "statement_identifier"
+        ):
             return left.text == right.text
         case "string_literal":
             return left.text == right.text
@@ -91,9 +99,21 @@ def parse_c_integer_literal(text):
         return int(text, 16)
     if text.startswith("0b") or text.startswith("-0b"):
         return int(text, 2)
-    if (text.startswith("0") or (text.startswith("-0"))) and text != "0":
+    if (
+        (text.startswith("0") or (text.startswith("-0")))
+        and text != "0"
+        and not text.startswith("0.")
+        and not text.startswith("-0.")
+    ):
         return int(text, 8)
-    return int(text)
+    try:
+        number = float(text)
+        if number.is_integer:
+            return int(number)
+        else:
+            raise ValueError(f"'{text}' is echt een float.")
+    except ValueError:
+        raise ValueError(f"'{text}' is geen echt getal")
 
 
 def find_polynomials_in_candidate_loop(
@@ -198,7 +218,7 @@ def insert_loop(
 def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
     global loop_found
     loop_found += 1
-    print("loop gevonden")
+    print(f"loop gevonden '{loop_found}'")
     # Bouw een for-loop die {repeat_count} keer herhaalt
     for_node, loop_body = insert_loop(nodes[0], loop_var, repeat_count)
 
@@ -214,6 +234,14 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
 def process_file(filename):
     # Read the C file
     print("processing file " + str(filename))
+
+    cout_pad = filename.with_suffix(filename.suffix + "out")
+
+    pad = Path(str(cout_pad))
+    if pad.suffix == ".cout" and pad.exists():
+        print(f"{filename} al behandeld")
+        return
+
     with open(filename, "r") as f:
         source_code = f.read().encode()
 
@@ -250,11 +278,9 @@ def process_file(filename):
                 changed = True
 
                 break
-        if loop_found:
-            with open(
-                str(location) + "/" + str(loop_found) + filename + "out", "w"
-            ) as f:
-                print(Formatter().format_tree(tree_root), file=f)
+    if loop_found > 0:
+        with open(str(location) + "/" + filename + "out", "w") as f:
+            print(Formatter().format_tree(tree_root), file=f)
 
 
 argparser = argparse.ArgumentParser(
