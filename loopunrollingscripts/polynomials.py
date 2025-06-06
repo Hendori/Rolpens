@@ -46,7 +46,7 @@ class Polynomial:
                 if x == None:
                     node = Node("number_literal", str(a).encode())
                 else:
-                    if n == 1:
+                    if n == 1 or (n == -1 and i == 1):
                         ax = x.clone()
                     else:
                         ax = Node("binary_expression")
@@ -57,6 +57,12 @@ class Polynomial:
 
                     if node == None:
                         node = ax
+                    elif n == -1 and i == 1:
+                        bx = Node("binary_expression")
+                        bx.append_child(node, "left")
+                        bx.append_child(Node("-", b"-"), "operator")
+                        bx.append_child(ax, "right")
+                        node = bx
                     else:
                         bx = Node("binary_expression")
                         bx.append_child(ax, "left")
