@@ -40,17 +40,21 @@ class Polynomial:
         node = None
 
         x = None
-        for a in self.coefficients:
+        for i,a in enumerate(self.coefficients):
             n, _ = a.as_integer_ratio()
             if n != 0:
                 if x == None:
                     node = Node("number_literal", str(a).encode())
                 else:
-                    ax = Node("binary_expression")
-                    ax.append_child(Node("number_literal", str(a).encode()), "left")
-                    ax.append_child(Node("*", b"*"), "operator")
-                    ax.append_child(x, "right")
-                    ax.tight = True
+                    if n == 1:
+                        ax = x.clone()
+                    else:
+                        ax = Node("binary_expression")
+                        ax.append_child(Node("number_literal", str(a).encode()), "left")
+                        ax.append_child(Node("*", b"*"), "operator")
+                        ax.append_child(x.clone(), "right")
+                        ax.tight = True
+
                     if node == None:
                         node = ax
                     else:
@@ -69,6 +73,9 @@ class Polynomial:
                 xx.append_child(x, "right")
                 xx.tight = True
                 x = xx
+
+        if node != None and node.type == "identifier":
+            return node
 
         rv = Node("parenthesized_expression")
         rv.append_child(Node("(", b"("))
