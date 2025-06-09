@@ -34,8 +34,8 @@ class Node:
         self.next_sibling: Optional[Self] = None
         self.prev_sibling: Optional[Self] = None
 
-        self.children = []
-        self.child_names = []
+        self.children: List[Self] = []
+        self.child_names: List[str] = []
 
         self.text = node_text
         self.grammar_id = 0

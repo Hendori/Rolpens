@@ -3,7 +3,7 @@ from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
-from typing import List, Union, Set
+from typing import Optional, List, Tuple, Union, Set
 
 from polynomials import Polynomial
 from parsetree import Node
@@ -100,10 +100,15 @@ class CandidateLoop:
         self.body = body
         self.count = count
 
+        self._polynomials: Optional[List[Polynomial]] = None
+
     def reduction_size(self):
         return len(self.body) * (self.count - 1)
 
     def find_polynomials(self) -> List[Polynomial]:
+        if self._polynomials is not None:
+            return [x for x in self._polynomials]
+
         num_values = []
         for n in self.body:
             find_numeric_constants(num_values, n)
@@ -115,14 +120,24 @@ class CandidateLoop:
                 find_numeric_constants(num_values, node)
 
         body_size = len(num_values) // self.count
-        rv = [None] * body_size
+        rv = []
         for i in range(body_size):
             values = [0] * self.count
             for j in range(self.count):
                 values[j] = num_values[i + body_size * j]
-            rv[i] = Polynomial.from_lagrange(list(zip(range(self.count), values)))
+            rv.append(Polynomial.from_lagrange(list(zip(range(self.count), values))))
 
+        self._polynomials = rv
         return rv
+
+    def is_valid_loop(self) -> bool:
+        ps = self.find_polynomials()
+        its_working = True
+        for p in ps:
+            its_working = its_working and p.is_integer()
+            its_working = its_working and (len(p) < self.count // 2)
+
+        return its_working
 
     def new_identifier(self) -> str:
         def all_identifiers():
@@ -147,6 +162,84 @@ class CandidateLoop:
             if not ident_exists:
                 return ident
         return "i∞"
+
+
+    def splice_polynomial_for_numeric_constant(self, node: Node, ps: List[Polynomial], loop_var: str):
+        if node.type == "number_literal":
+            p = ps.pop(0)
+            p_node = p.as_node(loop_var)
+            node.parent.insert_before(
+                p_node, node, name=node.parent.field_name_for_child(node)
+            )
+            node.parent.remove_child(node)
+        else:
+            for child in node.children:
+                self.splice_polynomial_for_numeric_constant(child, ps, loop_var)
+
+
+    def insert_for_statement(self, loop_var: str, start: int, count: int = 0, step: int = 1) -> Tuple[Node, Node]:
+        if count == 0:
+            count = start
+            start = 0
+
+        for_node = Node("for_statement")
+        for_node.append_child(Node("(", b"("))
+
+        # The iterator variable is local to this loop only.
+        for_node.local_iterator = loop_var
+
+        init_node = Node("declaration")
+        init_node.append_child(Node("primitive_type", b"int"), "type")
+        init_decl = Node("init_declarator")
+        init_decl.append_child(Node("identifier", loop_var.encode()), "declarator")
+        init_decl.append_child(Node("number_literal", str(start).encode()), "value")
+        init_node.append_child(init_decl, "declarator")
+        for_node.append_child(init_node, "initializer")
+        for_node.append_child(Node(";", b";"))
+
+        cond_node = Node("binary_expression")
+        cond_node.append_child(Node("identifier", loop_var.encode()), "left")
+        cond_node.append_child(Node("<", b"<"), "operator")
+        cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
+        for_node.append_child(cond_node, "condition")
+        for_node.append_child(Node(";", b";"))
+
+        upd_node = Node("update_expression")
+        if step == 1:
+            upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
+            upd_node.append_child(Node("++", b"++"), "operator")
+        else:
+            upd_node = Node("assignment_expression")
+            upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
+            upd_node.append_child(Node("+=", b"+="), "operator")
+            upd_node.append_child(Node("number_literal", str(step).encode()), "value")
+        for_node.append_child(upd_node, "update")
+        for_node.append_child(Node(")", b")"))
+
+        loop_body = Node("compound_statement")
+        for_node.append_child(loop_body, "body")
+
+        # Zet 'm voor de oorspronkelijke node
+        self.body[0].parent.insert_before(for_node, self.body[0])
+        return for_node, loop_body
+
+    def reroll(self):
+        loop_var = self.new_identifier()
+
+        ps = self.find_polynomials()
+        for node in self.body:
+            self.splice_polynomial_for_numeric_constant(node, ps, loop_var)
+
+        # bouw een for-loop die {repeat_count} keer herhaalt
+        for_node, loop_body = self.insert_for_statement(loop_var, self.count)
+
+        # verwijder alle herhalingen, inclusief het origineel
+        for _ in range(self.count * len(self.body)):
+            for_node.parent.remove_child(for_node.next_sibling)
+
+        # en verplaats de nodes naar het loop-body
+        for n in self.body:
+            loop_body.append_child(n)
 
 
 def find_duplicates(compound_node):
@@ -201,86 +294,6 @@ def parse_c_integer_literal(text):
         raise ValueError(f"'{text}' is geen echt getal")
 
 
-def splice_polynomial_for_numeric_constant(
-    node: Node, ps: List[Polynomial], loop_var: str
-):
-    if node.type == "number_literal":
-        p = ps.pop(0)
-        p_node = p.as_node(loop_var)
-        node.parent.insert_before(
-            p_node, node, name=node.parent.field_name_for_child(node)
-        )
-        node.parent.remove_child(node)
-    else:
-        for child in node.children:
-            splice_polynomial_for_numeric_constant(child, ps, loop_var)
-
-
-def insert_loop(
-    reference_node: Node, loop_var: str, start: int, count: int = 0, step: int = 1
-):
-    if count == 0:
-        count = start
-        start = 0
-
-    for_node = Node("for_statement")
-    for_node.append_child(Node("(", b"("))
-
-    # The iterator variable is local to this loop only.
-    for_node.local_iterator = loop_var
-
-    init_node = Node("declaration")
-    init_node.append_child(Node("primitive_type", b"int"), "type")
-    init_decl = Node("init_declarator")
-    init_decl.append_child(Node("identifier", loop_var.encode()), "declarator")
-    init_decl.append_child(Node("number_literal", str(start).encode()), "value")
-    init_node.append_child(init_decl, "declarator")
-    for_node.append_child(init_node, "initializer")
-    for_node.append_child(Node(";", b";"))
-
-    cond_node = Node("binary_expression")
-    cond_node.append_child(Node("identifier", loop_var.encode()), "left")
-    cond_node.append_child(Node("<", b"<"), "operator")
-    cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
-    for_node.append_child(cond_node, "condition")
-    for_node.append_child(Node(";", b";"))
-
-    upd_node = Node("update_expression")
-    if step == 1:
-        upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
-        upd_node.append_child(Node("++", b"++"), "operator")
-    else:
-        upd_node = Node("assignment_expression")
-        upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
-        upd_node.append_child(Node("+=", b"+="), "operator")
-        upd_node.append_child(Node("number_literal", str(step).encode()), "value")
-    for_node.append_child(upd_node, "update")
-    for_node.append_child(Node(")", b")"))
-
-    loop_body = Node("compound_statement")
-    for_node.append_child(loop_body, "body")
-
-    # Zet 'm voor de oorspronkelijke node
-    reference_node.parent.insert_before(for_node, reference_node)
-    return for_node, loop_body
-
-
-def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
-    global loop_found
-    loop_found += 1
-    print(f"loop gevonden '{loop_found}'")
-    # Bouw een for-loop die {repeat_count} keer herhaalt
-    for_node, loop_body = insert_loop(nodes[0], loop_var, repeat_count)
-
-    # Verwijder alle herhalingen, inclusief het origineel
-    for _ in range(repeat_count * len(nodes)):
-        for_node.parent.remove_child(for_node.next_sibling)
-
-    # En verplaats de nodes naar het loop-body
-    for n in nodes:
-        loop_body.append_child(n)
-
-
 def process_file(filename):
     # reset memoization cache
     _content_memo.clear()
@@ -307,24 +320,15 @@ def process_file(filename):
             for loop in sorted(
                 find_duplicates(child_node), key=lambda x: -x.reduction_size()
             ):
-                ps = loop.find_polynomials()
-                its_working = True
-                for p in ps:
-                    its_working = its_working and p.is_integer()
-                    its_working = its_working and (len(p) < loop.count // 2)
-                if not its_working:
-                    continue
+                if loop.is_valid_loop():
+                    global loop_found
+                    loop_found += 1
+                    print("loop gevonden")
 
-                loop_var = loop.new_identifier()
+                    loop.reroll()
+                    changed = True
 
-                for node in loop.body:
-                    splice_polynomial_for_numeric_constant(node, ps, loop_var)
-
-                # TODO: if deze_loop_werkt(loop_body, loop_count):
-                reroll_l0_loop(loop.body, loop.count, loop_var)
-                changed = True
-
-                break
+                    break
     if loop_found > 0:
         with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
             print(Formatter().format_tree(tree_root), file=f)
