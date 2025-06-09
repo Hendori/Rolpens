@@ -24,6 +24,8 @@ class Formatter:
                 return self._format_abstract_parenthesized_declarator(node)
             case "abstract_pointer_declarator":
                 return self._format_abstract_pointer_declarator(node)
+            case "abstract_reference_declarator":
+                return self._format_abstract_reference_declarator(node)
             case "alignas_qualifier":
                 return self._format_alignas_qualifier(node)
             case "alignof_expression":
@@ -76,6 +78,8 @@ class Formatter:
                 return self._format_declaration(node)
             case "declaration_list":
                 return self._format_declaration_list(node)
+            case "destructor_name":
+                return self._format_destructor_name(node)
             case "do_statement":
                 return self._format_do_statement(node)
             case "else_clause":
@@ -128,6 +132,8 @@ class Formatter:
                 return self._format_if_statement(node)
             case "init_declarator":
                 return self._format_init_declarator(node)
+            case "init_statement":
+                return self._format_init_statement(node)
             case "initializer_list":
                 return self._format_initializer_list(node)
             case "initializer_pair":
@@ -154,10 +160,16 @@ class Formatter:
                 return self._format_null(node)
             case "offsetof_expression":
                 return self._format_offsetof_expression(node)
+            case "operator_name":
+                return self._format_operator_name(node)
+            case "optional_parameter_declaration":
+                return self._format_parameter_declaration(node)
             case "parameter_declaration":
                 return self._format_parameter_declaration(node)
             case "parameter_list":
                 return self._format_parameter_list(node)
+            case "parameter_pack_expansion":
+                return self._format_parameter_pack_expansion(node)
             case "parenthesized_declarator":
                 return self._format_parenthesized_declarator(node)
             case "parenthesized_expression":
@@ -166,6 +178,8 @@ class Formatter:
                 return self._format_pointer_declarator(node)
             case "pointer_expression":
                 return self._format_pointer_expression(node)
+            case "pointer_type_declarator":
+                return self._format_pointer_type_declarator(node)
             case "preproc_call":
                 return self._format_preproc_call(node)
             case "preproc_def":
@@ -190,6 +204,8 @@ class Formatter:
                 return self._format_preproc_params(node)
             case "qualified_identifier":
                 return self._format_qualified_identifier(node)
+            case "ref_qualifier":
+                return self._format_ref_qualifier(node)
             case "return_statement":
                 return self._format_return_statement(node)
             case "seh_except_clause":
@@ -210,6 +226,8 @@ class Formatter:
                 return self._format_string_literal(node)
             case "struct_specifier":
                 return self._format_struct_specifier(node)
+            case "structured_binding_declarator":
+                return self._format_structured_binding_declarator(node)
             case "subscript_argument_list":
                 return self._format_subscript_argument_list(node)
             case "subscript_designator":
@@ -220,6 +238,12 @@ class Formatter:
                 return self._format_subscript_range_designator(node)
             case "switch_statement":
                 return self._format_switch_statement(node)
+            case "template_argument_list":
+                return self._format_template_argument_list(node)
+            case "template_function":
+                return self._format_template_function(node)
+            case "template_type":
+                return self._format_template_type(node)
             case "translation_unit":
                 return self._format_translation_unit(node)
             case "type_definition":
@@ -276,17 +300,19 @@ class Formatter:
                 return self._format_true(node)
             case "type_identifier":
                 return self._format_type_identifier(node)
-            case "signed" | "unsigned" | "long" | "short":
+            case "signed" | "unsigned" | "long" | "short" | "this" | "operator":
                 return node.text.decode()
             case "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":" | "::":
                 return node.text.decode()
             case "<" | ">" | "<=" | ">=" | "!=" | "==" | "!" | "||" | "&&":
                 return node.text.decode()
-            case "+" | "-" | "*" | "/" | "%" | "&" | "|":
+            case "+" | "-" | "*" | "/" | "%" | "&" | "|" | "..." | "->" | "<-":
                 return node.text.decode()
             case "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=":
                 return node.text.decode()
-            case "|=" | "&&=" | "||=" | "++" | "--" | "^" | ">>" | "<<":
+            case "[]" | "()":
+                return node.text.decode()
+            case "|=" | "&&=" | "||=" | "++" | "--" | "^" | ">>" | "<<" | "~":
                 return node.text.decode()
             case _:
                 print(node)
@@ -307,11 +333,12 @@ class Formatter:
         return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_abstract_parenthesized_declarator(self, node) -> str:
-        print(node)
-        print(node.text.decode())
-        raise NotImplementedError()
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_abstract_pointer_declarator(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
+    def _format_abstract_reference_declarator(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_alignas_qualifier(self, node) -> str:
@@ -463,6 +490,9 @@ class Formatter:
         print(node.text.decode())
         raise NotImplementedError()
 
+    def _format_destructor_name(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_do_statement(self, node) -> str:
         f_body = self.format_node(node.child_by_field_name("body"))
         f_condition = self.format_node(node.child_by_field_name("condition"))
@@ -543,10 +573,20 @@ class Formatter:
         return ident_f + params_f
 
     def _format_function_definition(self, node) -> str:
-        type_f = self.format_node(node.child_by_field_name("type"))
         decl_f = self.format_node(node.child_by_field_name("declarator"))
-        body_f = self.format_node(node.child_by_field_name("body"))
-        return "\n" + type_f + " " + decl_f + " " + body_f + "\n"
+        if node.child_by_field_name("type") != None and node.child_by_field_name(
+            "body"
+        ):
+            type_f = self.format_node(node.child_by_field_name("type"))
+            body_f = self.format_node(node.child_by_field_name("body"))
+            return type_f + " " + decl_f + " " + body_f
+        if node.child_by_field_name("body") != None:
+            body_f = self.format_node(node.child_by_field_name("body"))
+            return decl_f + " " + body_f
+        if node.child_by_field_name("type") != None:
+            type_f = self.format_node(node.child_by_field_name("type"))
+            return type_f + " " + decl_f
+        return decl_f
 
     def _format_generic_expression(self, node) -> str:
         print(node)
@@ -616,6 +656,9 @@ class Formatter:
             return f"{ident_f} = {value_f}"
         return ident_f
 
+    def _format_init_statement(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_initializer_list(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
@@ -684,7 +727,13 @@ class Formatter:
         print(node.text.decode())
         raise NotImplementedError()
 
+    def _format_operator_name(self, node) -> str:
+        return " ".join([self.format_node(x) for x in node.children])
+
     def _format_parameter_declaration(self, node) -> str:
+        return " ".join([self.format_node(x) for x in node.children])
+
+    def _format_parameter_pack_expansion(self, node) -> str:
         return " ".join([self.format_node(x) for x in node.children])
 
     def _format_parameter_list(self, node) -> str:
@@ -716,6 +765,9 @@ class Formatter:
     def _format_pointer_expression(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
+    def _format_pointer_type_declarator(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_preproc_arg(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
@@ -733,6 +785,9 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_qualified_identifier(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
+    def _format_ref_qualifier(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_preproc_directive(self, node) -> str:
@@ -769,7 +824,7 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_preproc_include(self, node) -> str:
-        return "#include " + self.format_node(node.child_by_field_name("path")) + "\n"
+        return "#include " + self.format_node(node.child_by_field_name("path"))
 
     def _format_preproc_params(self, node) -> str:
         print(node)
@@ -840,6 +895,9 @@ class Formatter:
         print(node.text.decode())
         raise NotImplementedError()
 
+    def _format_structured_binding_declarator(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_subscript_argument_list(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
@@ -855,6 +913,15 @@ class Formatter:
         print(node)
         print(node.text.decode())
         raise NotImplementedError()
+
+    def _format_template_argument_list(self, node):
+        return "".join([self.format_node(ch) for ch in node.children])
+
+    def _format_template_function(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
+    def _format_template_type(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_switch_statement(self, node) -> str:
         f_body = self.format_node(node.child_by_field_name("body"))
