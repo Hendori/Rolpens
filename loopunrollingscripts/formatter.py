@@ -66,6 +66,8 @@ class Formatter:
                 return self._format_compound_statement(node)
             case "concatenated_string":
                 return self._format_concatenated_string(node)
+            case "condition_clause":
+                return self._format_condition_clause(node)
             case "conditional_expression":
                 return self._format_conditional_expression(node)
             case "continue_statement":
@@ -146,6 +148,8 @@ class Formatter:
                 return self._format_ms_pointer_modifier(node)
             case "ms_unaligned_ptr_modifier":
                 return self._format_ms_unaligned_ptr_modifier(node)
+            case "namespace_identifier":
+                return self._format_identifier(node)
             case "null":
                 return self._format_null(node)
             case "offsetof_expression":
@@ -184,6 +188,8 @@ class Formatter:
                 return self._format_preproc_include(node)
             case "preproc_params":
                 return self._format_preproc_params(node)
+            case "qualified_identifier":
+                return self._format_qualified_identifier(node)
             case "return_statement":
                 return self._format_return_statement(node)
             case "seh_except_clause":
@@ -204,6 +210,8 @@ class Formatter:
                 return self._format_string_literal(node)
             case "struct_specifier":
                 return self._format_struct_specifier(node)
+            case "subscript_argument_list":
+                return self._format_subscript_argument_list(node)
             case "subscript_designator":
                 return self._format_subscript_designator(node)
             case "subscript_expression":
@@ -270,7 +278,7 @@ class Formatter:
                 return self._format_type_identifier(node)
             case "signed" | "unsigned" | "long" | "short":
                 return node.text.decode()
-            case "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":":
+            case "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":" | "::":
                 return node.text.decode()
             case "<" | ">" | "<=" | ">=" | "!=" | "==" | "!" | "||" | "&&":
                 return node.text.decode()
@@ -281,6 +289,10 @@ class Formatter:
             case "|=" | "&&=" | "||=" | "++" | "--" | "^" | ">>" | "<<":
                 return node.text.decode()
             case _:
+                print(node)
+                print(node.byte_range)
+                print("".join([self.format_node(ch) for ch in node.children]))
+                print(node.text.decode())
                 raise ValueError(
                     f"Unknown node type {node.type} within node of type {node.parent.type}"
                 )
@@ -421,6 +433,9 @@ class Formatter:
             self.indent -= 1
 
     def _format_concatenated_string(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
+    def _format_condition_clause(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_conditional_expression(self, node) -> str:
@@ -717,6 +732,9 @@ class Formatter:
         print(node.text.decode())
         raise NotImplementedError()
 
+    def _format_qualified_identifier(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_preproc_directive(self, node) -> str:
         return node.text.decode()
 
@@ -821,6 +839,9 @@ class Formatter:
         print(node)
         print(node.text.decode())
         raise NotImplementedError()
+
+    def _format_subscript_argument_list(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_subscript_designator(self, node) -> str:
         print(node)

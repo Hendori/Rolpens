@@ -284,12 +284,13 @@ def process_file(filename):
 
 
 argparser = argparse.ArgumentParser(
-        prog="tree-analyse.py",
-        description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
+    prog="tree-analyse.py",
+    description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie",
+)
 argparser.add_argument("files", nargs="+")
 config = argparser.parse_args()
 
-C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
+C_LANGUAGE = lang_from_so("./treesitter-cpp.so", "cpp")
 
 parser = Parser()
 parser.language = C_LANGUAGE
