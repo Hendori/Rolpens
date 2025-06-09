@@ -96,36 +96,34 @@ def variables_in_scope(node) -> Set[str]:
 
 
 class CandidateLoop:
-    def __init__(self, body, count):
+    def __init__(self, body, instances):
         self.body = body
-        self.count = count
+        self.instances = instances
 
         self._polynomials: Optional[List[Polynomial]] = None
 
     def reduction_size(self):
-        return len(self.body) * (self.count - 1)
+        return len(self.body) * (len(self.instances) - 1)
 
     def find_polynomials(self) -> List[Polynomial]:
         if self._polynomials is not None:
             return [x for x in self._polynomials]
 
         num_values = []
-        for n in self.body:
-            find_numeric_constants(num_values, n)
+        for inst in self.instances:
+            for n in inst:
+                find_numeric_constants(num_values, n)
 
-        node = self.body[-1]
-        for _ in range(1, self.count):
-            for _ in self.body:
-                node = node.next_sibling
-                find_numeric_constants(num_values, node)
+        # Hoe veel numerieke constantes staan er in elke instance?
+        body_size = len(num_values) // len(self.instances)
 
-        body_size = len(num_values) // self.count
         rv = []
+        xs = list(range(len(self.instances)))
         for i in range(body_size):
-            values = [0] * self.count
-            for j in range(self.count):
+            values = [0] * len(self.instances)
+            for j in xs:
                 values[j] = num_values[i + body_size * j]
-            rv.append(Polynomial.from_lagrange(list(zip(range(self.count), values))))
+            rv.append(Polynomial.from_lagrange(list(zip(xs, values))))
 
         self._polynomials = rv
         return rv
@@ -135,7 +133,7 @@ class CandidateLoop:
         its_working = True
         for p in ps:
             its_working = its_working and p.is_integer()
-            its_working = its_working and (len(p) < self.count // 2)
+            its_working = its_working and (len(p) < len(self.instances) // 2)
 
         return its_working
 
@@ -153,7 +151,7 @@ class CandidateLoop:
             for body_node in self.body:
                 ident_exists = ident_exists or ident in variables_in_scope(body_node)
 
-            ref_node = self.body[0]
+            ref_node = self.instances[0][0]
             while ref_node is not None:
                 if ref_node.type in ("function_definition", "translation_unit", "for_statement"):
                     ident_exists = ident_exists or ident in variables_in_scope(ref_node)
@@ -219,8 +217,6 @@ class CandidateLoop:
         loop_body = Node("compound_statement")
         for_node.append_child(loop_body, "body")
 
-        # Zet 'm voor de oorspronkelijke node
-        self.body[0].parent.insert_before(for_node, self.body[0])
         return for_node, loop_body
 
     def reroll(self):
@@ -231,22 +227,27 @@ class CandidateLoop:
             self.splice_polynomial_for_numeric_constant(node, ps, loop_var)
 
         # bouw een for-loop die {repeat_count} keer herhaalt
-        for_node, loop_body = self.insert_for_statement(loop_var, self.count)
+        for_node, loop_body = self.insert_for_statement(loop_var, len(self.instances))
 
-        # verwijder alle herhalingen, inclusief het origineel
-        for _ in range(self.count * len(self.body)):
-            for_node.parent.remove_child(for_node.next_sibling)
+        # Zet 'm voor de oorspronkelijke node
+        self.instances[0][0].parent.insert_before(for_node, self.instances[0][0])
 
-        # en verplaats de nodes naar het loop-body
+        # verplaats de nodes naar het loop-body
         for n in self.body:
             loop_body.append_child(n)
+
+        # en verwijder alle herhalingen, inclusief het origineel
+        for inst in self.instances:
+            for n in inst:
+                n.parent.remove_child(n)
 
 
 def find_duplicates(compound_node):
     children_list = list(compound_node.children)
     for l in range(1, len(children_list) // 2):
         for i, startnode in enumerate(children_list):
-            count = 1  # Die + 1 is er omdat het origineel van de loop ook meetelt
+            instances = []
+            instances.append(children_list[i : i + l])
 
             for j in range(i + l, len(children_list) - l, l):
                 same = True
@@ -257,11 +258,12 @@ def find_duplicates(compound_node):
                         same = False
                         break
                 if same:
-                    count += 1
+                    instances.append(children_list[j : j + l])
                 else:
                     break
-            if count >= 2:
-                yield CandidateLoop(children_list[i : i + l], count)
+            if len(instances) >= 2:
+                loop_body = [x.clone() for x in instances[0]]
+                yield CandidateLoop(loop_body, instances)
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
