@@ -334,4 +334,4 @@ for file in config.files:
             process_file(file)
     else:
         loop_found = 0
-        process_file(file)
+        process_file(Path(file))
