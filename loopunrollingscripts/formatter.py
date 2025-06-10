@@ -78,6 +78,8 @@ class Formatter:
                 return self._format_declaration(node)
             case "declaration_list":
                 return self._format_declaration_list(node)
+            case "delete_expression":
+                return self._format_delete_expression(node)
             case "destructor_name":
                 return self._format_destructor_name(node)
             case "do_statement":
@@ -300,7 +302,9 @@ class Formatter:
                 return self._format_true(node)
             case "type_identifier":
                 return self._format_type_identifier(node)
-            case "signed" | "unsigned" | "long" | "short" | "this" | "operator":
+            case "signed" | "unsigned" | "long" | "short" | "this" | "operator" | "new":
+                return node.text.decode()
+            case "delete":
                 return node.text.decode()
             case "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":" | "::":
                 return node.text.decode()
@@ -484,6 +488,9 @@ class Formatter:
             return f"{type_f} {decl_f};"
         else:
             return f"{type_f} {decl_f}"
+
+    def _format_delete_expression(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_declaration_list(self, node) -> str:
         print(node)
@@ -713,6 +720,9 @@ class Formatter:
         print(node)
         print(node.text.decode())
         raise NotImplementedError()
+
+    def _format_new_expression(self, node) -> str:
+        return "".join([self.format_node(x) for x in node.children])
 
     def _format_null(self, node) -> str:
         print(node)
