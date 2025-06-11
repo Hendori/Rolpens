@@ -1,4 +1,5 @@
 import os
+import hashlib
 from typing import Self, Union, Optional, List, Callable
 from ctypes import cdll, c_void_p
 
@@ -6,14 +7,15 @@ from tree_sitter import Node as TSNode
 from tree_sitter import Language, Parser
 
 
-def get_parser(sofile = "treesitter-decomp-c.so", language_name = "decompc"):
+def get_parser(sofile="treesitter-decomp-c.so", language_name="decompc"):
     def lang_from_so(path: str, name: str) -> Language:
         lib = cdll.LoadLibrary(os.fspath(path))
         language_function = getattr(lib, f"tree_sitter_{name}")
         language_function.restype = c_void_p
         language_ptr = language_function()
         return Language(language_ptr)
-    C_LANGUAGE = lang_from_so(os.path.dirname(__file__)+"/" + sofile, language_name)
+
+    C_LANGUAGE = lang_from_so(os.path.dirname(__file__) + "/" + sofile, language_name)
 
     parser = Parser()
     parser.language = C_LANGUAGE
@@ -39,7 +41,8 @@ class Node:
         self.grammar_id = 0
         self.grammar_name = ""
         self.id = 0
-        self.byte_range = (0,0)
+        self.byte_range = (0, 0)
+        self._hash = None
 
     def __repr__(self) -> str:
         return str(self)
@@ -133,7 +136,12 @@ class Node:
                 return
         raise TreeError("reference node not found")
 
-    def get_nodes_by_type(self, node_type: Union[str, List[str]], lazy: Union[bool, Callable[[Self], bool]] = False, descend_denylist: List[str] = []):
+    def get_nodes_by_type(
+        self,
+        node_type: Union[str, List[str]],
+        lazy: Union[bool, Callable[[Self], bool]] = False,
+        descend_denylist: List[str] = [],
+    ):
         if isinstance(node_type, str):
             node_type = [node_type]
 
@@ -150,3 +158,19 @@ class Node:
                 if child.type in descend_denylist:
                     continue
                 yield from child.get_nodes_by_type(node_type, lazy, descend_denylist)
+
+    def compute_hash(self):
+        if self._hash is not None:
+            return self._hash
+
+        m = hashlib.sha256()
+        m.update(self.type.encode())
+
+        if self.text:
+            m.update(self.text)
+
+        for child in self.children:
+            m.update(child.compute_hash())
+
+        self._hash = m.digest()
+        return self._hash

@@ -158,6 +158,8 @@ class Formatter:
                 return self._format_ms_unaligned_ptr_modifier(node)
             case "namespace_identifier":
                 return self._format_identifier(node)
+            case "new_expression":
+                return self._format_new_expression(node)
             case "null":
                 return self._format_null(node)
             case "offsetof_expression":

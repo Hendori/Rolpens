@@ -44,6 +44,38 @@ def compare_node_shapes(left, right):
     return True
 
 
+# _content_memo = {}
+
+
+# def compare_node_content(left, right):
+#    key = (id(left), id(right))
+#    if key in _content_memo:
+#        return _content_memo[key]
+#
+#    if not compare_node_shapes(left, right):
+#        _content_memo[key] = False
+#        return False
+#
+#    match left.type:
+#        case (
+#            "identifier"
+#            | "field_identifier"
+#            | "type_identifier"
+#            | "statement_identifier"
+#        ):
+#            result = left.text == right.text
+#        case "string_literal":
+#            result = left.text == right.text
+#        case _:
+#            result = all(
+#                compare_node_content(left.children[i], right.children[i])
+#                for i in range(len(left.children))
+#            )
+#
+#    _content_memo[key] = result
+#    return result
+
+
 def compare_node_content(left, right):
     if not compare_node_shapes(left, right):
         return False
@@ -66,24 +98,23 @@ def compare_node_content(left, right):
 
 def find_duplicates(compound_node):
     children_list = list(compound_node.children)
-    for l in range(1, len(children_list) // 2):
-        for i, startnode in enumerate(children_list):
-            count = 1  # Die + 1 is er omdat het origineel van de loop ook meetelt
+    node_hashes = [n.compute_hash() for n in children_list]
 
-            for j in range(i + l, len(children_list) - l, l):
-                same = True
-                for k in range(l):
-                    if not compare_node_content(
-                        children_list[i + k], children_list[j + k]
-                    ):
-                        same = False
-                        break
-                if same:
+    for l in range(1, len(children_list) // 2):
+        for i in range(len(children_list) - l * 2 + 1):
+            count = 1
+            for j in range(i + l, len(children_list) - l + 1, l):
+                if all(node_hashes[i + k] == node_hashes[j + k] for k in range(l)):
                     count += 1
                 else:
                     break
             if count >= 2:
-                yield (children_list[i : i + l], count)
+                # Optional: deep verify content to rule out hash collisions
+                if all(
+                    compare_node_content(children_list[i + k], children_list[i + l + k])
+                    for k in range(l)
+                ):
+                    yield (children_list[i : i + l], count)
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
@@ -279,7 +310,7 @@ def process_file(filename):
 
                 break
     if loop_found > 0:
-        with open(str(location) + "/" + filename + "out", "w") as f:
+        with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
             print(Formatter().format_tree(tree_root), file=f)
 
 
