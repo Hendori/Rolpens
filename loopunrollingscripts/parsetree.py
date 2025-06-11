@@ -42,7 +42,6 @@ class Node:
         self.grammar_name = ""
         self.id = 0
         self.byte_range = (0, 0)
-        self._hash = None
 
     def __repr__(self) -> str:
         return str(self)
@@ -158,19 +157,3 @@ class Node:
                 if child.type in descend_denylist:
                     continue
                 yield from child.get_nodes_by_type(node_type, lazy, descend_denylist)
-
-    def compute_hash(self):
-        if self._hash is not None:
-            return self._hash
-
-        m = hashlib.sha256()
-        m.update(self.type.encode())
-
-        if self.text:
-            m.update(self.text)
-
-        for child in self.children:
-            m.update(child.compute_hash())
-
-        self._hash = m.digest()
-        return self._hash

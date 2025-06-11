@@ -98,23 +98,24 @@ def compare_node_content(left, right):
 
 def find_duplicates(compound_node):
     children_list = list(compound_node.children)
-    node_hashes = [n.compute_hash() for n in children_list]
-
     for l in range(1, len(children_list) // 2):
-        for i in range(len(children_list) - l * 2 + 1):
-            count = 1
-            for j in range(i + l, len(children_list) - l + 1, l):
-                if all(node_hashes[i + k] == node_hashes[j + k] for k in range(l)):
+        for i, startnode in enumerate(children_list):
+            count = 1  # Die + 1 is er omdat het origineel van de loop ook meetelt
+
+            for j in range(i + l, len(children_list) - l, l):
+                same = True
+                for k in range(l):
+                    if not compare_node_content(
+                        children_list[i + k], children_list[j + k]
+                    ):
+                        same = False
+                        break
+                if same:
                     count += 1
                 else:
                     break
             if count >= 2:
-                # Optional: deep verify content to rule out hash collisions
-                if all(
-                    compare_node_content(children_list[i + k], children_list[i + l + k])
-                    for k in range(l)
-                ):
-                    yield (children_list[i : i + l], count)
+                yield (children_list[i : i + l], count)
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
@@ -265,13 +266,6 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
 def process_file(filename):
     # Read the C file
     print("processing file " + str(filename))
-
-    cout_pad = filename.with_suffix(filename.suffix + "out")
-
-    pad = Path(str(cout_pad))
-    if pad.suffix == ".cout" and pad.exists():
-        print(f"{filename} al behandeld")
-        return
 
     with open(filename, "r") as f:
         source_code = f.read().encode()
