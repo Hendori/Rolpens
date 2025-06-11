@@ -175,7 +175,7 @@ class CandidateLoop:
                 self.splice_polynomial_for_numeric_constant(child, ps, loop_var)
 
 
-    def insert_for_statement(self, loop_var: str, start: int, count: int = 0, step: int = 1) -> Tuple[Node, Node]:
+    def create_for_statement(self, loop_var: str, start: int, count: int = 0, step: int = 1) -> Tuple[Node, Node]:
         if count == 0:
             count = start
             start = 0
@@ -227,7 +227,7 @@ class CandidateLoop:
             self.splice_polynomial_for_numeric_constant(node, ps, loop_var)
 
         # bouw een for-loop die {repeat_count} keer herhaalt
-        for_node, loop_body = self.insert_for_statement(loop_var, len(self.instances))
+        for_node, loop_body = self.create_for_statement(loop_var, len(self.instances))
 
         # Zet 'm voor de oorspronkelijke node
         self.instances[0][0].parent.insert_before(for_node, self.instances[0][0])
