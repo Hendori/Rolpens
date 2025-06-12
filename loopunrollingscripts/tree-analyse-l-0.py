@@ -243,9 +243,20 @@ class CandidateLoop:
 
 
 def find_duplicates(compound_node):
+    if getattr(compound_node, "candidate_cache", None) is None:
+        compound_node.candidate_cache = {}
+        compound_node.cache_hits = 0
+
+    cache = getattr(compound_node, "candidate_cache", {})
+
     children_list = list(compound_node.children)
     for l in range(1, len(children_list) // 2):
         for i, startnode in enumerate(children_list):
+            if (startnode, l) in cache:
+                yield cache[(startnode, l)]
+                compound_node.cache_hits += 1
+                continue
+
             instances = []
             instances.append(children_list[i : i + l])
 
@@ -261,9 +272,13 @@ def find_duplicates(compound_node):
                     instances.append(children_list[j : j + l])
                 else:
                     break
-            if len(instances) >= 2:
+            if len(instances) > 2:
                 loop_body = [x.clone() for x in instances[0]]
                 yield CandidateLoop(loop_body, instances)
+
+                # Pre-cache deze en alle kortere loops met een later startpunt ook alvast
+                for j, inst in enumerate(instances):
+                    cache[(inst[0], l)] = CandidateLoop(loop_body, instances[j:])
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
@@ -329,6 +344,9 @@ def process_file(filename):
 
                     loop.reroll()
                     changed = True
+
+                    # Invalideer het cache kandidaatloops
+                    child_node.candidate_cache = None
 
                     break
     if loop_found > 0:
