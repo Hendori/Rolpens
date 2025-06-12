@@ -253,7 +253,7 @@ def find_duplicates(compound_node):
     for l in range(1, len(children_list) // 2):
         for i, startnode in enumerate(children_list):
             if (startnode, l) in cache:
-                yield cache[(startnode, l)]
+                # yield cache[(startnode, l)]
                 compound_node.cache_hits += 1
                 continue
 
