@@ -44,41 +44,18 @@ def compare_node_shapes(left, right):
     return True
 
 
-# _content_memo = {}
-
-
-# def compare_node_content(left, right):
-#    key = (id(left), id(right))
-#    if key in _content_memo:
-#        return _content_memo[key]
-#
-#    if not compare_node_shapes(left, right):
-#        _content_memo[key] = False
-#        return False
-#
-#    match left.type:
-#        case (
-#            "identifier"
-#            | "field_identifier"
-#            | "type_identifier"
-#            | "statement_identifier"
-#        ):
-#            result = left.text == right.text
-#        case "string_literal":
-#            result = left.text == right.text
-#        case _:
-#            result = all(
-#                compare_node_content(left.children[i], right.children[i])
-#                for i in range(len(left.children))
-#            )
-#
-#    _content_memo[key] = result
-#    return result
+_content_memo = {}
 
 
 def compare_node_content(left, right):
+    key = (id(left), id(right))
+    if key in _content_memo:
+        return _content_memo[key]
+
     if not compare_node_shapes(left, right):
+        _content_memo[key] = False
         return False
+
     match left.type:
         case (
             "identifier"
@@ -86,14 +63,17 @@ def compare_node_content(left, right):
             | "type_identifier"
             | "statement_identifier"
         ):
-            return left.text == right.text
+            result = left.text == right.text
         case "string_literal":
-            return left.text == right.text
+            result = left.text == right.text
         case _:
-            for i, left_child in enumerate(left.children):
-                if not compare_node_content(left_child, right.children[i]):
-                    return False
-            return True
+            result = all(
+                compare_node_content(left.children[i], right.children[i])
+                for i in range(len(left.children))
+            )
+
+    _content_memo[key] = result
+    return result
 
 
 def find_duplicates(compound_node):
@@ -264,7 +244,11 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
 
 
 def process_file(filename):
+    # reset memoization cache
+    _content_memo.clear()
+
     # Read the C file
+
     print("processing file " + str(filename))
 
     with open(filename, "r") as f:
