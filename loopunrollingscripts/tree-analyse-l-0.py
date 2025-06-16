@@ -3,7 +3,7 @@ from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
-from typing import Optional, List, Tuple, Union, Set
+from typing import Iterator, TypeVar, Generic, Optional, List, Tuple, Union, Set
 
 from polynomials import Polynomial
 from parsetree import Node
@@ -11,6 +11,9 @@ from formatter import Formatter
 import sys
 
 sys.setrecursionlimit(3000)
+
+
+T = TypeVar('T')
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -96,9 +99,10 @@ def variables_in_scope(node) -> Set[str]:
 
 
 class CandidateLoop:
-    def __init__(self, body, instances):
+    def __init__(self, body, instances, node_range):
         self.body = body
         self.instances = instances
+        self.child_node_range = node_range
 
         self._polynomials: Optional[List[Polynomial]] = None
 
@@ -133,7 +137,7 @@ class CandidateLoop:
         its_working = True
         for p in ps:
             its_working = its_working and p.is_integer()
-            its_working = its_working and (len(p) < len(self.instances) // 2)
+            its_working = its_working and (len(p) <= len(self.instances) // 2)
 
         return its_working
 
@@ -242,6 +246,49 @@ class CandidateLoop:
                 n.parent.remove_child(n)
 
 
+class IntervalMap(Generic[T]):
+    def __init__(self):
+        self._map = {}
+
+    def add(self, interval: Tuple[int, int], value: T):
+        values : List[T] = [value]
+        todelete = []
+        for (bxs, bvalues) in self._map.items():
+            if self._overlap(interval, bxs):
+                interval = self._union(interval, bxs)
+                values = values + bvalues
+                todelete.append(bxs)
+
+        for bxs in todelete:
+            del self._map[bxs]
+
+        self._map[interval] = values
+
+    def items(self) -> Iterator[Tuple[Tuple[int, int], List[T]]]:
+        for k, v in self._map.items():
+            yield k, v
+
+    def _overlap(self, a: Tuple[int, int], b: Tuple[int, int]) -> bool:
+        if b[0] >= a[0] and b[0] < a[1]:
+            return True
+        elif b[1]-1 >= a[0] and b[1]-1 < a[1]:
+            return True
+        elif b[0] < a[0] and b[1] >= a[1]:
+            return True
+        else:
+            return False
+
+    def _union(self, a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, int]:
+        if b[0] >= a[0] and b[0] < a[1]:
+            return (a[0], max(a[1], b[1]))
+        elif b[1]-1 >= a[0] and b[1]-1 < a[1]:
+            return (min(a[0], b[0]), a[1])
+        elif b[0] < a[0] and b[1] >= a[1]:
+            return b
+        else:
+            return a
+
+
 def find_duplicates(compound_node):
     if getattr(compound_node, "candidate_cache", None) is None:
         compound_node.candidate_cache = {}
@@ -259,6 +306,7 @@ def find_duplicates(compound_node):
 
             instances = []
             instances.append(children_list[i : i + l])
+            imax = i + l
 
             for j in range(i + l, len(children_list) - l, l):
                 same = True
@@ -270,15 +318,18 @@ def find_duplicates(compound_node):
                         break
                 if same:
                     instances.append(children_list[j : j + l])
+                    imax = j + l
                 else:
                     break
             if len(instances) > 2:
                 loop_body = [x.clone() for x in instances[0]]
-                yield CandidateLoop(loop_body, instances)
+                yield CandidateLoop(loop_body, instances, (i, imax))
 
                 # Pre-cache deze en alle kortere loops met een later startpunt ook alvast
+                imin = i
                 for j, inst in enumerate(instances):
-                    cache[(inst[0], l)] = CandidateLoop(loop_body, instances[j:])
+                    cache[(inst[0], l)] = CandidateLoop(loop_body, instances[j:], (imin, imax))
+                    imin += len(inst)
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
@@ -331,24 +382,31 @@ def process_file(filename):
     tree_root = Node.from_tree_sitter(tree.root_node)
 
     for child_node in get_compound_statement_node(tree_root):
+        print(f"Found compound statement with {len(child_node.children)} child nodes")
         changed = True
         while changed:
             changed = False
-            for loop in sorted(
-                find_duplicates(child_node), key=lambda x: -x.reduction_size()
-            ):
-                if loop.is_valid_loop():
-                    global loop_found
-                    loop_found += 1
-                    print("loop gevonden")
+            ivm = IntervalMap[CandidateLoop]()
+            for loop in find_duplicates(child_node):
+                ivm.add(loop.child_node_range, loop)
 
-                    loop.reroll()
-                    changed = True
+            for nrange, loops in ivm.items():
+                print(f"Trying to reroll {len(loops)} candidates in subnode range {nrange}")
+                loops = sorted(loops, key=lambda x: -x.reduction_size())
 
-                    # Invalideer het cache kandidaatloops
-                    child_node.candidate_cache = None
+                for loop in loops:
+                    if loop.is_valid_loop():
+                        global loop_found
+                        loop_found += 1
+                        print("loop gevonden")
 
-                    break
+                        loop.reroll()
+                        changed = True
+
+                        # Invalideer het cache kandidaatloops
+                        child_node.candidate_cache = None
+
+                        break
     if loop_found > 0:
         with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
             print(Formatter().format_tree(tree_root), file=f)
