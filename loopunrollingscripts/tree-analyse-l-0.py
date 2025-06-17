@@ -8,6 +8,9 @@ from typing import List, Union
 from polynomials import Polynomial
 from parsetree import Node
 from formatter import Formatter
+import sys
+
+sys.setrecursionlimit(3000)
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -41,19 +44,36 @@ def compare_node_shapes(left, right):
     return True
 
 
+_content_memo = {}
+
+
 def compare_node_content(left, right):
+    key = (id(left), id(right))
+    if key in _content_memo:
+        return _content_memo[key]
+
     if not compare_node_shapes(left, right):
+        _content_memo[key] = False
         return False
+
     match left.type:
-        case "identifier" | "field_identifier" | "type_identifier" | "statement_identifier":
-            return left.text == right.text
+        case (
+            "identifier"
+            | "field_identifier"
+            | "type_identifier"
+            | "statement_identifier"
+        ):
+            result = left.text == right.text
         case "string_literal":
-            return left.text == right.text
+            result = left.text == right.text
         case _:
-            for i, left_child in enumerate(left.children):
-                if not compare_node_content(left_child, right.children[i]):
-                    return False
-            return True
+            result = all(
+                compare_node_content(left.children[i], right.children[i])
+                for i in range(len(left.children))
+            )
+
+    _content_memo[key] = result
+    return result
 
 
 def find_duplicates(compound_node):
@@ -91,9 +111,21 @@ def parse_c_integer_literal(text):
         return int(text, 16)
     if text.startswith("0b") or text.startswith("-0b"):
         return int(text, 2)
-    if (text.startswith("0") or (text.startswith("-0"))) and text != "0":
+    if (
+        (text.startswith("0") or (text.startswith("-0")))
+        and text != "0"
+        and not text.startswith("0.")
+        and not text.startswith("-0.")
+    ):
         return int(text, 8)
-    return int(text)
+    try:
+        number = float(text)
+        if number.is_integer:
+            return int(number)
+        else:
+            raise ValueError(f"'{text}' is echt een float.")
+    except ValueError:
+        raise ValueError(f"'{text}' is geen echt getal")
 
 
 def find_polynomials_in_candidate_loop(
@@ -198,7 +230,7 @@ def insert_loop(
 def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
     global loop_found
     loop_found += 1
-    print("loop gevonden")
+    print(f"loop gevonden '{loop_found}'")
     # Bouw een for-loop die {repeat_count} keer herhaalt
     for_node, loop_body = insert_loop(nodes[0], loop_var, repeat_count)
 
@@ -212,8 +244,13 @@ def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
 
 
 def process_file(filename):
+    # reset memoization cache
+    _content_memo.clear()
+
     # Read the C file
+
     print("processing file " + str(filename))
+
     with open(filename, "r") as f:
         source_code = f.read().encode()
 
@@ -250,20 +287,19 @@ def process_file(filename):
                 changed = True
 
                 break
-        if loop_found:
-            with open(
-                str(location) + "/" + str(loop_found) + filename + "out", "w"
-            ) as f:
-                print(Formatter().format_tree(tree_root), file=f)
+    if loop_found > 0:
+        with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
+            print(Formatter().format_tree(tree_root), file=f)
 
 
 argparser = argparse.ArgumentParser(
-        prog="tree-analyse.py",
-        description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
+    prog="tree-analyse.py",
+    description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie",
+)
 argparser.add_argument("files", nargs="+")
 config = argparser.parse_args()
 
-C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
+C_LANGUAGE = lang_from_so("./treesitter-cpp.so", "cpp")
 
 parser = Parser()
 parser.language = C_LANGUAGE
@@ -276,4 +312,4 @@ for file in config.files:
             process_file(file)
     else:
         loop_found = 0
-        process_file(file)
+        process_file(Path(file))

@@ -8,6 +8,7 @@ tree-sitter-cpp-0.22.3.tar.gz:
 
 treesitter-cpp.so: tree-sitter-cpp-0.22.3.tar.gz
 	tar -xf tree-sitter-cpp-0.22.3.tar.gz
+	cd tree-sitter-cpp-0.22.3 && npm i
 	cd tree-sitter-cpp-0.22.3 && tree-sitter generate --abi 14
 	cd tree-sitter-cpp-0.22.3 && gcc -I src -c src/parser.c -o src/parser.a
 	cd tree-sitter-cpp-0.22.3 && gcc -I src -c src/scanner.c -o src/scanner.a

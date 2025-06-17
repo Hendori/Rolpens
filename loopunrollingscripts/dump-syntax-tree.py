@@ -6,16 +6,9 @@ from os import fspath
 from typing import List, Union
 
 from polynomials import Polynomial
-from parsetree import Node
+from parsetree import Node, get_parser
 from formatter import Formatter
 
-
-def lang_from_so(path: str, name: str) -> Language:
-    lib = cdll.LoadLibrary(fspath(path))
-    language_function = getattr(lib, f"tree_sitter_{name}")
-    language_function.restype = c_void_p
-    language_ptr = language_function()
-    return Language(language_ptr)
 
 def dump_node(node, level=0) -> str:
     if len(node.children) == 0:
@@ -32,10 +25,7 @@ def dump_node(node, level=0) -> str:
     return rv + ")"
 
 
-C_LANGUAGE = lang_from_so("./treesitter-decomp-c.so", "decompc")
-
-parser = Parser()
-parser.language = C_LANGUAGE
+parser = get_parser("treesitter-cpp.so", "cpp")
 
 source_code = sys.stdin.read().encode()
 
