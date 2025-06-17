@@ -91,7 +91,7 @@ def variables_in_scope(node) -> Set[str]:
             child_vars = variables_in_scope(ch)
             if ch.type in ("for_statement"):
                 # HACK: beschouw de lokale iteratorvariabele niet als onderdeel van de parent scope
-                child_vars.discard(getattr(ch, "local_iterator", ""))
+                child_vars.discard(ch.local_iterator)
 
             rv |= child_vars
 
@@ -290,11 +290,11 @@ class IntervalMap(Generic[T]):
 
 
 def find_duplicates(compound_node):
-    if getattr(compound_node, "candidate_cache", None) is None:
+    if compound_node.candidate_cache is None:
         compound_node.candidate_cache = {}
         compound_node.cache_hits = 0
 
-    cache = getattr(compound_node, "candidate_cache", {})
+    cache = compound_node.candidate_cache
 
     children_list = list(compound_node.children)
     for l in range(1, len(children_list) // 2):

@@ -43,6 +43,22 @@ class Node:
         self.id = 0
         self.byte_range = (0, 0)
 
+
+        # Velden die niet voorkomen in tree-sitter:
+
+        # Candidate cache: een dict die een node en de lengte van een loop-body
+        # mapt naar de CandidateLoop met die body-lengte die daar begint
+        self.candidate_cache = {}
+        self.cache_hits = 0
+
+        # Lokale iterator: deze variabele is speciaal gedefinieerd voor deze
+        # for-loop, en is daarbuiten niet in scope.
+        self.local_iterator = ""
+
+        # Strak: moet deze binaire expressie witruimte rondom de operator
+        # krijgen, of juist liever niet?
+        self.tight = False
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -62,6 +78,9 @@ class Node:
 
     def clone(self) -> Self:
         rv = Node(self.type, self.text)
+
+        rv.local_iterator = self.local_iterator
+        rv.tight = self.tight
 
         for i, ch in enumerate(self.children):
             rv.append_child(ch.clone(), self.child_names[i])
@@ -114,6 +133,8 @@ class Node:
         raise TreeError("node not found")
 
     def append_child(self, node: Self, name: str = ""):
+        if node.parent is not None:
+            node.parent.remove_child(node)
         node.parent = self
         if len(self.children) > 0:
             node.prev_sibling = self.children[-1]
@@ -124,6 +145,8 @@ class Node:
     def insert_before(self, node: Self, reference_node: Self, name: str = ""):
         for i, child in enumerate(self.children):
             if child == reference_node:
+                if node.parent is not None:
+                    node.parent.remove_child(node)
                 node.parent = self
                 node.next_sibling = child
                 child.prev_sibling = node
