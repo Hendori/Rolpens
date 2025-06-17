@@ -51,32 +51,7 @@ _content_memo = {}
 
 
 def compare_node_content(left, right):
-    key = (id(left), id(right))
-    if key in _content_memo:
-        return _content_memo[key]
-
-    if not compare_node_shapes(left, right):
-        _content_memo[key] = False
-        return False
-
-    match left.type:
-        case (
-            "identifier"
-            | "field_identifier"
-            | "type_identifier"
-            | "statement_identifier"
-        ):
-            result = left.text == right.text
-        case "string_literal":
-            result = left.text == right.text
-        case _:
-            result = all(
-                compare_node_content(left.children[i], right.children[i])
-                for i in range(len(left.children))
-            )
-
-    _content_memo[key] = result
-    return result
+    return left.content_hash() == right.content_hash()
 
 
 def variables_in_scope(node) -> Set[str]:

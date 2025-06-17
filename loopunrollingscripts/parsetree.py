@@ -59,6 +59,9 @@ class Node:
         # krijgen, of juist liever niet?
         self.tight = False
 
+        # Content hash: de gecachete versie van de content_hash()
+        self._hash: bytes = b""
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -84,6 +87,8 @@ class Node:
 
         for i, ch in enumerate(self.children):
             rv.append_child(ch.clone(), self.child_names[i])
+
+        rv._hash = self._hash
 
         return rv
 
@@ -129,18 +134,21 @@ class Node:
                 node.prev_sibling = None
                 del self.children[i]
                 del self.child_names[i]
+                self._invalidate_content_hash()
                 return node
         raise TreeError("node not found")
 
     def append_child(self, node: Self, name: str = ""):
         if node.parent is not None:
             node.parent.remove_child(node)
+
         node.parent = self
         if len(self.children) > 0:
             node.prev_sibling = self.children[-1]
             self.children[-1].next_sibling = node
         self.children.append(node)
         self.child_names.append(name)
+        self._invalidate_content_hash()
 
     def insert_before(self, node: Self, reference_node: Self, name: str = ""):
         for i, child in enumerate(self.children):
@@ -155,6 +163,7 @@ class Node:
                     self.children[i - 1].next_sibling = node
                 self.children.insert(i, node)
                 self.child_names.insert(i, name)
+                self._invalidate_content_hash()
                 return
         raise TreeError("reference node not found")
 
@@ -180,3 +189,29 @@ class Node:
                 if child.type in descend_denylist:
                     continue
                 yield from child.get_nodes_by_type(node_type, lazy, descend_denylist)
+
+    def content_hash(self) -> bytes:
+        if len(self._hash) > 0:
+            return self._hash
+
+        m = hashlib.sha256()
+        m.update(self.type.encode())
+
+        if self.type in ("identifier", "field_identifier", "type_identifier", "statement_identifier"):
+            m.update(self.text)
+        elif self.type in ("string_literal",):
+            m.update(self.text)
+        elif self.type in ("number_literal",):
+            pass
+        else:
+            for child in self.children:
+                m.update(child.content_hash())
+
+        self._hash = m.digest()
+        return self._hash
+
+    def _invalidate_content_hash(self):
+        nd = self
+        while nd is not None:
+            nd._hash = b""
+            nd = nd.parent
