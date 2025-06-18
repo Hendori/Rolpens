@@ -351,7 +351,6 @@ def process_file(filename):
     tree_root = Node.from_tree_sitter(tree.root_node)
 
     for child_node in get_compound_statement_node(tree_root):
-        print(f"Found compound statement with {len(child_node.children)} child nodes")
         changed = True
         while changed:
             changed = False
@@ -359,8 +358,7 @@ def process_file(filename):
             for loop in find_duplicates(child_node):
                 ivm.add(loop.child_node_range, loop)
 
-            for nrange, loops in ivm.items():
-                print(f"Trying to reroll {len(loops)} candidates in subnode range {nrange}")
+            for _, loops in ivm.items():
                 loops = sorted(loops, key=lambda x: -x.reduction_size())
 
                 for loop in loops:
