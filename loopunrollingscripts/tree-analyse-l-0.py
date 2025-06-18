@@ -47,9 +47,6 @@ def compare_node_shapes(left, right):
     return True
 
 
-_content_memo = {}
-
-
 def compare_node_content(left, right):
     return left.content_hash() == right.content_hash()
 
@@ -338,9 +335,6 @@ def parse_c_integer_literal(text):
 
 
 def process_file(filename):
-    # reset memoization cache
-    _content_memo.clear()
-
     # Read the C file
 
     print("processing file " + str(filename))
