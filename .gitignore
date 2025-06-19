@@ -1,4 +1,3 @@
-*.out
 *.gpr
 *.lock
 *.lock~
@@ -11,5 +10,4 @@ gradlew.bat
 run_ghidra/gradle
 __pycache__
 .cache
-*.cout
 *.*out
