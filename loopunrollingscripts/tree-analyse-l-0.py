@@ -287,8 +287,8 @@ def process_file(filename):
                 changed = True
 
                 break
-    if loop_found > 0:
-        with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
+    with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
+        if loop_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
 
 
