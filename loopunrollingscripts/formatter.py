@@ -407,7 +407,7 @@ class Formatter:
         left_f = self.format_node(node.child_by_field_name("left"))
         op_f = self.format_node(node.child_by_field_name("operator"))
         right_f = self.format_node(node.child_by_field_name("right"))
-        if getattr(node, "tight", False):
+        if node.tight:
             return f"{left_f}{op_f}{right_f}"
         return f"{left_f} {op_f} {right_f}"
 

@@ -3,7 +3,7 @@ from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
 from os import fspath
-from typing import List, Union
+from typing import Iterator, TypeVar, Generic, Optional, List, Tuple, Union, Set
 
 from polynomials import Polynomial
 from parsetree import Node
@@ -11,6 +11,9 @@ from formatter import Formatter
 import sys
 
 sys.setrecursionlimit(3000)
+
+
+T = TypeVar('T')
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -44,43 +47,238 @@ def compare_node_shapes(left, right):
     return True
 
 
-_content_memo = {}
-
-
 def compare_node_content(left, right):
-    key = (id(left), id(right))
-    if key in _content_memo:
-        return _content_memo[key]
+    return left.content_hash() == right.content_hash()
 
-    if not compare_node_shapes(left, right):
-        _content_memo[key] = False
-        return False
 
-    match left.type:
-        case (
-            "identifier"
-            | "field_identifier"
-            | "type_identifier"
-            | "statement_identifier"
-        ):
-            result = left.text == right.text
-        case "string_literal":
-            result = left.text == right.text
-        case _:
-            result = all(
-                compare_node_content(left.children[i], right.children[i])
-                for i in range(len(left.children))
+def variables_in_scope(node) -> Set[str]:
+    rv = set()
+
+    for ch in node.children:
+        if ch.type == "identifier":
+            rv.add(ch.text.decode())
+        elif ch.type in ("function_definition",):
+            continue
+        elif len(ch.children) > 0:
+            child_vars = variables_in_scope(ch)
+            if ch.type in ("for_statement"):
+                # HACK: beschouw de lokale iteratorvariabele niet als onderdeel van de parent scope
+                child_vars.discard(ch.local_iterator)
+
+            rv |= child_vars
+
+    return rv
+
+
+class CandidateLoop:
+    def __init__(self, body, instances, node_range):
+        self.body = body
+        self.instances = instances
+        self.child_node_range = node_range
+
+        self._polynomials: Optional[List[Polynomial]] = None
+
+    def reduction_size(self):
+        return len(self.body) * (len(self.instances) - 1)
+
+    def find_polynomials(self) -> List[Polynomial]:
+        if self._polynomials is not None:
+            return [x for x in self._polynomials]
+
+        num_values = []
+        for inst in self.instances:
+            for n in inst:
+                find_numeric_constants(num_values, n)
+
+        # Hoe veel numerieke constantes staan er in elke instance?
+        body_size = len(num_values) // len(self.instances)
+
+        rv = []
+        xs = list(range(len(self.instances)))
+        for i in range(body_size):
+            values = [0] * len(self.instances)
+            for j in xs:
+                values[j] = num_values[i + body_size * j]
+            rv.append(Polynomial.from_lagrange(list(zip(xs, values))))
+
+        self._polynomials = rv
+        return rv
+
+    def is_valid_loop(self) -> bool:
+        ps = self.find_polynomials()
+        its_working = True
+        for p in ps:
+            its_working = its_working and p.is_integer()
+            its_working = its_working and (len(p) <= len(self.instances) // 2)
+
+        return its_working
+
+    def new_identifier(self) -> str:
+        def all_identifiers():
+            yield from ("i","j","k")
+            i = 1
+            while True:
+                yield f"i{i}"
+
+        for ident in all_identifiers():
+            # Ga omhoog in de tree waar deze loop zou moeten staan, en kijk of
+            # deze kandidaatvariabele al bestaat. Indien nee, klaar.
+            ident_exists = False
+            for body_node in self.body:
+                ident_exists = ident_exists or ident in variables_in_scope(body_node)
+
+            ref_node = self.instances[0][0]
+            while ref_node is not None:
+                if ref_node.type in ("function_definition", "translation_unit", "for_statement"):
+                    ident_exists = ident_exists or ident in variables_in_scope(ref_node)
+                ref_node = ref_node.parent
+
+            if not ident_exists:
+                return ident
+        return "i∞"
+
+
+    def splice_polynomial_for_numeric_constant(self, node: Node, ps: List[Polynomial], loop_var: str):
+        if node.type == "number_literal":
+            p = ps.pop(0)
+            p_node = p.as_node(loop_var)
+            node.parent.insert_before(
+                p_node, node, name=node.parent.field_name_for_child(node)
             )
+            node.parent.remove_child(node)
+        else:
+            for child in node.children:
+                self.splice_polynomial_for_numeric_constant(child, ps, loop_var)
 
-    _content_memo[key] = result
-    return result
+
+    def create_for_statement(self, loop_var: str, start: int, count: int = 0, step: int = 1) -> Tuple[Node, Node]:
+        if count == 0:
+            count = start
+            start = 0
+
+        for_node = Node("for_statement")
+        for_node.append_child(Node("(", b"("))
+
+        # The iterator variable is local to this loop only.
+        for_node.local_iterator = loop_var
+
+        init_node = Node("declaration")
+        init_node.append_child(Node("primitive_type", b"int"), "type")
+        init_decl = Node("init_declarator")
+        init_decl.append_child(Node("identifier", loop_var.encode()), "declarator")
+        init_decl.append_child(Node("number_literal", str(start).encode()), "value")
+        init_node.append_child(init_decl, "declarator")
+        for_node.append_child(init_node, "initializer")
+        for_node.append_child(Node(";", b";"))
+
+        cond_node = Node("binary_expression")
+        cond_node.append_child(Node("identifier", loop_var.encode()), "left")
+        cond_node.append_child(Node("<", b"<"), "operator")
+        cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
+        for_node.append_child(cond_node, "condition")
+        for_node.append_child(Node(";", b";"))
+
+        upd_node = Node("update_expression")
+        if step == 1:
+            upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
+            upd_node.append_child(Node("++", b"++"), "operator")
+        else:
+            upd_node = Node("assignment_expression")
+            upd_node.append_child(Node("identifier", loop_var.encode()), "argument")
+            upd_node.append_child(Node("+=", b"+="), "operator")
+            upd_node.append_child(Node("number_literal", str(step).encode()), "value")
+        for_node.append_child(upd_node, "update")
+        for_node.append_child(Node(")", b")"))
+
+        loop_body = Node("compound_statement")
+        for_node.append_child(loop_body, "body")
+
+        return for_node, loop_body
+
+    def reroll(self):
+        loop_var = self.new_identifier()
+
+        ps = self.find_polynomials()
+        for node in self.body:
+            self.splice_polynomial_for_numeric_constant(node, ps, loop_var)
+
+        # bouw een for-loop die {repeat_count} keer herhaalt
+        for_node, loop_body = self.create_for_statement(loop_var, len(self.instances))
+
+        # Zet 'm voor de oorspronkelijke node
+        self.instances[0][0].parent.insert_before(for_node, self.instances[0][0])
+
+        # verplaats de nodes naar het loop-body
+        for n in self.body:
+            loop_body.append_child(n)
+
+        # en verwijder alle herhalingen, inclusief het origineel
+        for inst in self.instances:
+            for n in inst:
+                n.parent.remove_child(n)
+
+
+class IntervalMap(Generic[T]):
+    def __init__(self):
+        self._map = {}
+
+    def add(self, interval: Tuple[int, int], value: T):
+        values : List[T] = [value]
+        todelete = []
+        for (bxs, bvalues) in self._map.items():
+            if self._overlap(interval, bxs):
+                interval = self._union(interval, bxs)
+                values = values + bvalues
+                todelete.append(bxs)
+
+        for bxs in todelete:
+            del self._map[bxs]
+
+        self._map[interval] = values
+
+    def items(self) -> Iterator[Tuple[Tuple[int, int], List[T]]]:
+        for k, v in self._map.items():
+            yield k, v
+
+    def _overlap(self, a: Tuple[int, int], b: Tuple[int, int]) -> bool:
+        if b[0] >= a[0] and b[0] < a[1]:
+            return True
+        elif b[1]-1 >= a[0] and b[1]-1 < a[1]:
+            return True
+        elif b[0] < a[0] and b[1] >= a[1]:
+            return True
+        else:
+            return False
+
+    def _union(self, a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, int]:
+        if b[0] >= a[0] and b[0] < a[1]:
+            return (a[0], max(a[1], b[1]))
+        elif b[1]-1 >= a[0] and b[1]-1 < a[1]:
+            return (min(a[0], b[0]), a[1])
+        elif b[0] < a[0] and b[1] >= a[1]:
+            return b
+        else:
+            return a
 
 
 def find_duplicates(compound_node):
+    if compound_node.candidate_cache is None:
+        compound_node.candidate_cache = {}
+        compound_node.cache_hits = 0
+
+    cache = compound_node.candidate_cache
+
     children_list = list(compound_node.children)
     for l in range(1, len(children_list) // 2):
         for i, startnode in enumerate(children_list):
-            count = 1  # Die + 1 is er omdat het origineel van de loop ook meetelt
+            if (startnode, l) in cache:
+                # yield cache[(startnode, l)]
+                compound_node.cache_hits += 1
+                continue
+
+            instances = []
+            instances.append(children_list[i : i + l])
+            imax = i + l
 
             for j in range(i + l, len(children_list) - l, l):
                 same = True
@@ -91,11 +289,19 @@ def find_duplicates(compound_node):
                         same = False
                         break
                 if same:
-                    count += 1
+                    instances.append(children_list[j : j + l])
+                    imax = j + l
                 else:
                     break
-            if count >= 2:
-                yield (children_list[i : i + l], count)
+            if len(instances) > 2:
+                loop_body = [x.clone() for x in instances[0]]
+                yield CandidateLoop(loop_body, instances, (i, imax))
+
+                # Pre-cache deze en alle kortere loops met een later startpunt ook alvast
+                imin = i
+                for j, inst in enumerate(instances):
+                    cache[(inst[0], l)] = CandidateLoop(loop_body, instances[j:], (imin, imax))
+                    imin += len(inst)
 
 
 def find_numeric_constants(result: List[Union[int, float]], node: Node):
@@ -128,125 +334,7 @@ def parse_c_integer_literal(text):
         raise ValueError(f"'{text}' is geen echt getal")
 
 
-def find_polynomials_in_candidate_loop(
-    loop_body: List[Node], repeat_count: int
-) -> List[Polynomial]:
-    num_values = []
-    for n in loop_body:
-        find_numeric_constants(num_values, n)
-
-    node = loop_body[-1]
-    for _ in range(1, repeat_count):
-        for _ in loop_body:
-            node = node.next_sibling
-            find_numeric_constants(num_values, node)
-
-    body_size = len(num_values) // repeat_count
-    rv = [None] * body_size
-    for i in range(body_size):
-        values = [0] * repeat_count
-        for j in range(repeat_count):
-            values[j] = num_values[i + body_size * j]
-        rv[i] = Polynomial.from_lagrange(list(zip(range(repeat_count), values)))
-
-    return rv
-
-
-def splice_polynomial_for_numeric_constant(
-    node: Node, ps: List[Polynomial], loop_var: str
-):
-    if node.type == "number_literal":
-        p = ps.pop(0)
-        p_node = p.as_node(loop_var)
-        node.parent.insert_before(
-            p_node, node, name=node.parent.field_name_for_child(node)
-        )
-        node.parent.remove_child(node)
-    else:
-        for child in node.children:
-            splice_polynomial_for_numeric_constant(child, ps, loop_var)
-
-
-ident_count = 0
-
-
-def new_identifier(reference_node: Node) -> str:
-    global ident_count
-    rv = f"i_{ident_count}"
-    ident_count += 1
-    # TODO: ga omhoog in de tree vanaf reference_node, en kijk of de
-    # kandidaatvariabele al bestaat. Indien ja, verzin een andere.
-    return rv
-
-
-def insert_loop(
-    reference_node: Node, loop_var: str, start: int, count: int = 0, step: int = 1
-):
-    if count == 0:
-        count = start
-        start = 0
-
-    loop_var = loop_var.encode()
-
-    for_node = Node("for_statement")
-    for_node.append_child(Node("(", b"("))
-
-    init_node = Node("declaration")
-    init_node.append_child(Node("primitive_type", b"int"), "type")
-    init_decl = Node("init_declarator")
-    init_decl.append_child(Node("identifier", loop_var), "declarator")
-    init_decl.append_child(Node("number_literal", str(start).encode()), "value")
-    init_node.append_child(init_decl, "declarator")
-    for_node.append_child(init_node, "initializer")
-    for_node.append_child(Node(";", b";"))
-
-    cond_node = Node("binary_expression")
-    cond_node.append_child(Node("identifier", loop_var), "left")
-    cond_node.append_child(Node("<", b"<"), "operator")
-    cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
-    for_node.append_child(cond_node, "condition")
-    for_node.append_child(Node(";", b";"))
-
-    upd_node = Node("update_expression")
-    if step == 1:
-        upd_node.append_child(Node("identifier", loop_var), "argument")
-        upd_node.append_child(Node("++", b"++"), "operator")
-    else:
-        upd_node = Node("assignment_expression")
-        upd_node.append_child(Node("identifier", loop_var), "argument")
-        upd_node.append_child(Node("+=", b"+="), "operator")
-        upd_node.append_child(Node("number_literal", str(step).encode()), "value")
-    for_node.append_child(upd_node, "update")
-    for_node.append_child(Node(")", b")"))
-
-    loop_body = Node("compound_statement")
-    for_node.append_child(loop_body, "body")
-
-    # Zet 'm voor de oorspronkelijke node
-    reference_node.parent.insert_before(for_node, reference_node)
-    return for_node, loop_body
-
-
-def reroll_l0_loop(nodes: List[Node], repeat_count: int, loop_var: str):
-    global loop_found
-    loop_found += 1
-    print(f"loop gevonden '{loop_found}'")
-    # Bouw een for-loop die {repeat_count} keer herhaalt
-    for_node, loop_body = insert_loop(nodes[0], loop_var, repeat_count)
-
-    # Verwijder alle herhalingen, inclusief het origineel
-    for _ in range(repeat_count * len(nodes)):
-        for_node.parent.remove_child(for_node.next_sibling)
-
-    # En verplaats de nodes naar het loop-body
-    for n in nodes:
-        loop_body.append_child(n)
-
-
 def process_file(filename):
-    # reset memoization cache
-    _content_memo.clear()
-
     # Read the C file
 
     print("processing file " + str(filename))
@@ -266,27 +354,26 @@ def process_file(filename):
         changed = True
         while changed:
             changed = False
-            for loop_body, loop_count in sorted(
-                find_duplicates(child_node), key=lambda x: -(x[1] - 1) * len(x[0])
-            ):
-                ps = find_polynomials_in_candidate_loop(loop_body, loop_count)
-                its_working = True
-                for p in ps:
-                    its_working = its_working and p.is_integer()
-                    its_working = its_working and (len(p) < loop_count // 2)
-                if not its_working:
-                    continue
+            ivm = IntervalMap[CandidateLoop]()
+            for loop in find_duplicates(child_node):
+                ivm.add(loop.child_node_range, loop)
 
-                loop_var = new_identifier(loop_body[0])
+            for _, loops in ivm.items():
+                loops = sorted(loops, key=lambda x: -x.reduction_size())
 
-                for node in loop_body:
-                    splice_polynomial_for_numeric_constant(node, ps, loop_var)
+                for loop in loops:
+                    if loop.is_valid_loop():
+                        global loop_found
+                        loop_found += 1
+                        print("loop gevonden")
 
-                # TODO: if deze_loop_werkt(loop_body, loop_count):
-                reroll_l0_loop(loop_body, loop_count, loop_var)
-                changed = True
+                        loop.reroll()
+                        changed = True
 
-                break
+                        # Invalideer het cache kandidaatloops
+                        child_node.candidate_cache = None
+
+                        break
     with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
         if loop_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
