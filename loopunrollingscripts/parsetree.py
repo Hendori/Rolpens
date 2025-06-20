@@ -199,7 +199,7 @@ class Node:
 
         if self.type in ("identifier", "field_identifier", "type_identifier", "statement_identifier"):
             m.update(self.text)
-        elif self.type in ("string_literal",):
+        elif self.type in ("string_literal","comment"):
             m.update(self.text)
         elif self.type in ("number_literal",):
             pass
