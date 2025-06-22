@@ -299,7 +299,6 @@ def find_duplicates(compound_node):
                 same = True
                 for k in range(l):
                     if not is_comment(children_list[i + k]):
-                        print("not all comments")
                         all_comments = False
                     if not compare_node_content(
                         children_list[i + k], children_list[j + k]
