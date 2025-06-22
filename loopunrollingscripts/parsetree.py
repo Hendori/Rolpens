@@ -203,7 +203,7 @@ class Node:
             "statement_identifier",
         ):
             m.update(self.text)
-        elif self.type in ("string_literal",):
+        elif self.type in ("string_literal","comment"):
             m.update(self.text)
         elif self.type in ("comment",):
             m.update(self.text)
