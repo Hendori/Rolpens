@@ -47,6 +47,9 @@ def compare_node_content(left, right):
 
 
 def is_comment(node):
+    print("check node type")
+    print(node.type)
+    print(node.text.decode())
     return node.type not in (
         "identifier",
         "field_identifier",
@@ -299,6 +302,7 @@ def find_duplicates(compound_node):
                 same = True
                 for k in range(l):
                     if not is_comment(children_list[i + k]):
+                        print("not all comments")
                         all_comments = False
                     if not compare_node_content(
                         children_list[i + k], children_list[j + k]

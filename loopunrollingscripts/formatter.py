@@ -453,7 +453,7 @@ class Formatter:
         return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_compound_statement(self, node) -> str:
-        close = "\n" + self._ind() + "}"
+        close = "\n" + self._ind() + "}\n"
         self.indent += 1
         try:
             stmts = [
@@ -836,7 +836,7 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_preproc_include(self, node) -> str:
-        return "#include " + self.format_node(node.child_by_field_name("path"))
+        return "#include " + self.format_node(node.child_by_field_name("path")) + "\n"
 
     def _format_preproc_params(self, node) -> str:
         print(node)
