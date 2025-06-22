@@ -203,11 +203,8 @@ class Node:
             "statement_identifier",
         ):
             m.update(self.text)
-        elif self.type in ("string_literal","comment"):
+        elif self.type in ("string_literal", "comment"):
             m.update(self.text)
-        elif self.type in ("comment",):
-            m.update(self.text)
-            m.update(os.urandom(16))
         elif self.type in ("number_literal",):
             pass
         else:
