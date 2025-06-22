@@ -43,7 +43,6 @@ class Node:
         self.id = 0
         self.byte_range = (0, 0)
 
-
         # Velden die niet voorkomen in tree-sitter:
 
         # Candidate cache: een dict die een node en de lengte van een loop-body
@@ -197,10 +196,18 @@ class Node:
         m = hashlib.sha256()
         m.update(self.type.encode())
 
-        if self.type in ("identifier", "field_identifier", "type_identifier", "statement_identifier"):
+        if self.type in (
+            "identifier",
+            "field_identifier",
+            "type_identifier",
+            "statement_identifier",
+        ):
             m.update(self.text)
         elif self.type in ("string_literal",):
             m.update(self.text)
+        elif self.type in ("comment",):
+            m.update(self.text)
+            m.update(os.urandom(16))
         elif self.type in ("number_literal",):
             pass
         else:
