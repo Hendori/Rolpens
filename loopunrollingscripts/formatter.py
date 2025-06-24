@@ -78,6 +78,8 @@ class Formatter:
                 return self._format_declaration(node)
             case "declaration_list":
                 return self._format_declaration_list(node)
+            case "decltype":
+                return self._format_decltype(node)
             case "delete_expression":
                 return self._format_delete_expression(node)
             case "destructor_name":
@@ -162,6 +164,8 @@ class Formatter:
                 return self._format_new_expression(node)
             case "null":
                 return self._format_null(node)
+            case "nullptr":
+                return self._format_nullptr(node)
             case "offsetof_expression":
                 return self._format_offsetof_expression(node)
             case "operator_name":
@@ -491,6 +495,9 @@ class Formatter:
         else:
             return f"{type_f} {decl_f}"
 
+    def _format_decltype(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
+
     def _format_delete_expression(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
@@ -727,9 +734,10 @@ class Formatter:
         return "".join([self.format_node(x) for x in node.children])
 
     def _format_null(self, node) -> str:
-        print(node)
-        print(node.text.decode())
-        raise NotImplementedError()
+        return " ".join([self.format_node(x) for x in node.children])
+
+    def _format_null(self, node) -> str:
+        return node.text.decode()
 
     def _format_number_literal(self, node) -> str:
         return node.text.decode()
