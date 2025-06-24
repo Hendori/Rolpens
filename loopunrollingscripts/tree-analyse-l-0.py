@@ -357,6 +357,8 @@ def process_file(filename):
 
     with open(filename, "r") as f:
         source_code = f.read().encode()
+        global total_line_numbers
+        total_line_numbers += sum(1 for _ in source_code)
 
     file = Path(filename)
     filename = file.name
@@ -368,6 +370,7 @@ def process_file(filename):
 
     for child_node in get_compound_statement_node(tree_root):
         changed = True
+        loop_reduction_size = 0
         while changed:
             changed = False
             ivm = IntervalMap[CandidateLoop]()
@@ -381,7 +384,10 @@ def process_file(filename):
                     if loop.is_valid_loop():
                         global loop_found
                         loop_found += 1
-                        print("loop gevonden")
+                        global reduction_through_loops
+                        loop_reduction_size += loop.reduction_size()
+                        reduction_through_loops += loop_reduction_size
+                        print("reduction_size is " + str(loop_reduction_size))
 
                         loop.reroll()
                         changed = True
@@ -393,6 +399,8 @@ def process_file(filename):
     with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
         if loop_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
+            global count_loops
+            count_loops += loop_found
 
 
 argparser = argparse.ArgumentParser(
@@ -406,6 +414,9 @@ C_LANGUAGE = lang_from_so("./treesitter-cpp.so", "cpp")
 
 parser = Parser()
 parser.language = C_LANGUAGE
+reduction_through_loops = 0
+count_loops = 0
+total_line_numbers = 0
 
 for file in config.files:
     folder = Path(file)
@@ -416,3 +427,7 @@ for file in config.files:
     else:
         loop_found = 0
         process_file(Path(file))
+print("totaal loops gevonden is " + str(count_loops))
+print("totaal reductie regels is  " + str(reduction_through_loops))
+print("totaal aantal regels is  " + str(total_line_numbers))
+print("gereduceerd is " + str(reduction_through_loops / total_line_numbers))
