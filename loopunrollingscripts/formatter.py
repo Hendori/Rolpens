@@ -736,7 +736,7 @@ class Formatter:
     def _format_null(self, node) -> str:
         return " ".join([self.format_node(x) for x in node.children])
 
-    def _format_null(self, node) -> str:
+    def _format_nullptr(self, node) -> str:
         return node.text.decode()
 
     def _format_number_literal(self, node) -> str:
