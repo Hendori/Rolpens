@@ -49,7 +49,7 @@ with open(config.output_file, "w") as outf:
             else:
                 print(nd.type)
 
-        csvw.writerow([filename, for_loops, while_loops, do_loops, for_loops + while_loops])
+        csvw.writerow([filename, for_loops, while_loops, do_loops, for_loops + while_loops + do_loops])
 
         total_for_loops[project_name] = total_for_loops.get(project_name, 0) + for_loops
         total_while_loops[project_name] = total_while_loops.get(project_name, 0) + while_loops
