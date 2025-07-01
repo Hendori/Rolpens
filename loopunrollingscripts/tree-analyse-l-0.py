@@ -13,7 +13,7 @@ import sys
 sys.setrecursionlimit(3000)
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def lang_from_so(path: str, name: str) -> Language:
@@ -22,11 +22,6 @@ def lang_from_so(path: str, name: str) -> Language:
     language_function.restype = c_void_p
     language_ptr = language_function()
     return Language(language_ptr)
-
-
-def get_node_text(node):
-    # print(node)
-    return source_code[node.start_byte : node.end_byte].decode()
 
 
 def get_compound_statement_node(node):
@@ -49,6 +44,17 @@ def compare_node_shapes(left, right):
 
 def compare_node_content(left, right):
     return left.content_hash() == right.content_hash()
+
+
+def is_comment(node):
+    return node.type not in (
+        "identifier",
+        "field_identifier",
+        "type_identifier",
+        "statement_identifier",
+        "string_literal",
+        "expression_statement",
+    )
 
 
 def variables_in_scope(node) -> Set[str]:
@@ -115,7 +121,7 @@ class CandidateLoop:
 
     def new_identifier(self) -> str:
         def all_identifiers():
-            yield from ("i","j","k")
+            yield from ("i", "j", "k")
             i = 1
             while True:
                 yield f"i{i}"
@@ -129,7 +135,11 @@ class CandidateLoop:
 
             ref_node = self.instances[0][0]
             while ref_node is not None:
-                if ref_node.type in ("function_definition", "translation_unit", "for_statement"):
+                if ref_node.type in (
+                    "function_definition",
+                    "translation_unit",
+                    "for_statement",
+                ):
                     ident_exists = ident_exists or ident in variables_in_scope(ref_node)
                 ref_node = ref_node.parent
 
@@ -137,8 +147,9 @@ class CandidateLoop:
                 return ident
         return "i∞"
 
-
-    def splice_polynomial_for_numeric_constant(self, node: Node, ps: List[Polynomial], loop_var: str):
+    def splice_polynomial_for_numeric_constant(
+        self, node: Node, ps: List[Polynomial], loop_var: str
+    ):
         if node.type == "number_literal":
             p = ps.pop(0)
             p_node = p.as_node(loop_var)
@@ -150,8 +161,9 @@ class CandidateLoop:
             for child in node.children:
                 self.splice_polynomial_for_numeric_constant(child, ps, loop_var)
 
-
-    def create_for_statement(self, loop_var: str, start: int, count: int = 0, step: int = 1) -> Tuple[Node, Node]:
+    def create_for_statement(
+        self, loop_var: str, start: int, count: int = 0, step: int = 1
+    ) -> Tuple[Node, Node]:
         if count == 0:
             count = start
             start = 0
@@ -174,7 +186,9 @@ class CandidateLoop:
         cond_node = Node("binary_expression")
         cond_node.append_child(Node("identifier", loop_var.encode()), "left")
         cond_node.append_child(Node("<", b"<"), "operator")
-        cond_node.append_child(Node("number_literal", str(start + count).encode()), "right")
+        cond_node.append_child(
+            Node("number_literal", str(start + count).encode()), "right"
+        )
         for_node.append_child(cond_node, "condition")
         for_node.append_child(Node(";", b";"))
 
@@ -223,9 +237,9 @@ class IntervalMap(Generic[T]):
         self._map = {}
 
     def add(self, interval: Tuple[int, int], value: T):
-        values : List[T] = [value]
+        values: List[T] = [value]
         todelete = []
-        for (bxs, bvalues) in self._map.items():
+        for bxs, bvalues in self._map.items():
             if self._overlap(interval, bxs):
                 interval = self._union(interval, bxs)
                 values = values + bvalues
@@ -243,7 +257,7 @@ class IntervalMap(Generic[T]):
     def _overlap(self, a: Tuple[int, int], b: Tuple[int, int]) -> bool:
         if b[0] >= a[0] and b[0] < a[1]:
             return True
-        elif b[1]-1 >= a[0] and b[1]-1 < a[1]:
+        elif b[1] - 1 >= a[0] and b[1] - 1 < a[1]:
             return True
         elif b[0] < a[0] and b[1] >= a[1]:
             return True
@@ -253,7 +267,7 @@ class IntervalMap(Generic[T]):
     def _union(self, a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, int]:
         if b[0] >= a[0] and b[0] < a[1]:
             return (a[0], max(a[1], b[1]))
-        elif b[1]-1 >= a[0] and b[1]-1 < a[1]:
+        elif b[1] - 1 >= a[0] and b[1] - 1 < a[1]:
             return (min(a[0], b[0]), a[1])
         elif b[0] < a[0] and b[1] >= a[1]:
             return b
@@ -262,6 +276,7 @@ class IntervalMap(Generic[T]):
 
 
 def find_duplicates(compound_node):
+    all_comments = True
     if compound_node.candidate_cache is None:
         compound_node.candidate_cache = {}
         compound_node.cache_hits = 0
@@ -283,12 +298,14 @@ def find_duplicates(compound_node):
             for j in range(i + l, len(children_list) - l, l):
                 same = True
                 for k in range(l):
+                    if not is_comment(children_list[i + k]):
+                        all_comments = False
                     if not compare_node_content(
                         children_list[i + k], children_list[j + k]
                     ):
                         same = False
                         break
-                if same:
+                if same and not all_comments:
                     instances.append(children_list[j : j + l])
                     imax = j + l
                 else:
@@ -300,7 +317,9 @@ def find_duplicates(compound_node):
                 # Pre-cache deze en alle kortere loops met een later startpunt ook alvast
                 imin = i
                 for j, inst in enumerate(instances):
-                    cache[(inst[0], l)] = CandidateLoop(loop_body, instances[j:], (imin, imax))
+                    cache[(inst[0], l)] = CandidateLoop(
+                        loop_body, instances[j:], (imin, imax)
+                    )
                     imin += len(inst)
 
 
