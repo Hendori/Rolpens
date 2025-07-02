@@ -3,8 +3,8 @@ import csv
 import difflib
 
 # Paden naar de CSV bestanden
-voor_path = "voor-compilatie.csv"
-na_path = "na-decompilatie.csv"
+voor_path = "all_unrolled.csv"
+na_path = "rerolled.csv"
 output_path = "vergelijking.csv"
 
 
