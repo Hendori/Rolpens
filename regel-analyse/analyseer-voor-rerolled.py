@@ -3,9 +3,9 @@ import csv
 import difflib
 
 # Paden naar de CSV bestanden
-voor_path = "voor-compilatie.csv"
-na_path = "rerolled.csv"
-output_path = "vergelijking.csv"
+voor_path = "voor-compilatie-stripped.csv"
+na_path = "rerolled-stripped.csv"
+output_path = "vergelijking-stripped.csv"
 
 
 def extract_original_filename(pad_str):
@@ -14,7 +14,7 @@ def extract_original_filename(pad_str):
     Bijvoorbeeld: '../samples/.cache/coreutils/coreutils-9.7/src/groups.c'
     -> 'groups.c'
     """
-    return os.path.basename(pad_str.strip())
+    return pad_str
 
 
 def extract_filename(pad_str):
@@ -23,12 +23,7 @@ def extract_filename(pad_str):
     Er wordt ervan uitgegaan dat in de na-data het pad en bestandsnaam mogelijk
     door spaties gescheiden zijn, waarbij het laatste deel de daadwerkelijke bestandsnaam is.
     """
-    pad_str = pad_str.strip()
-    # Als er spaties in het pad zitten, neem dan het laatste gedeelte
-    if " " in pad_str:
-        return os.path.basename(pad_str.split()[-1])
-    else:
-        return os.path.basename(pad_str)
+    return pad_str
 
 
 def lees_compiled_csv(pad):
@@ -41,12 +36,12 @@ def lees_compiled_csv(pad):
         reader = csv.reader(f)
         for rij in reader:
             if rij:  # negeer lege regels
-                orig_path = rij[0]
+                orig_path = rij[1]
                 pure_name = extract_original_filename(
                     orig_path
                 ).lower()  # gebruik lower-case voor case-insensitive match
                 # Stel dat de overige 4 kolommen altijd aanwezig zijn
-                waarden = rij[1:]
+                waarden = rij[0:]
                 data[pure_name] = (orig_path, waarden)
     return data
 
