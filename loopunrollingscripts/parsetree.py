@@ -201,9 +201,10 @@ class Node:
             "field_identifier",
             "type_identifier",
             "statement_identifier",
+            "string_literal",
+            "comment",
+            "char_literal",
         ):
-            m.update(self.text)
-        elif self.type in ("string_literal", "comment"):
             m.update(self.text)
         elif self.type in ("number_literal",):
             pass

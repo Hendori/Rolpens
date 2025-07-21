@@ -1,11 +1,10 @@
-import os
 import csv
 import difflib
 
 # Paden naar de CSV bestanden
-voor_path = "voor-compilatie-stripped.csv"
-na_path = "rerolled-stripped.csv"
-output_path = "vergelijking-stripped.csv"
+voor_path = "voor-compilatie.csv"
+na_path = "vergelijking-godot.csv"
+output_path = "vergelijking-godot-stripped.csv"
 
 
 def extract_original_filename(pad_str):
@@ -56,7 +55,7 @@ def lees_csv(pad):
         reader = csv.reader(f)
         for rij in reader:
             if rij:  # negeer lege regels
-                orig_path = rij[0]
+                orig_path = rij[1]
                 pure_name = extract_filename(
                     orig_path
                 ).lower()  # gebruik lower-case voor case-insensitive match
@@ -86,7 +85,7 @@ def vind_match(bestandsnaam):
     if bestandsnaam in na_data:
         return bestandsnaam
     # Als geen exacte match, probeer fuzzy matching (n=1: beste match, cutoff=0.8)
-    matches = difflib.get_close_matches(bestandsnaam, na_keys, n=1, cutoff=0.95)
+    matches = difflib.get_close_matches(bestandsnaam, na_keys, n=1, cutoff=0.99)
     if matches:
         return matches[0]
     return None

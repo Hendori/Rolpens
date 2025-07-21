@@ -1,0 +1,21 @@
+file,File,for loops,while loops,do-while loops,total,File,for loops,while loops,do-while loops,total
+src/blake2/b2sum-blake2b-ref.c,src/blake2/b2sum-blake2b-ref.c,2,0,3,2,src/blake2/b2sum-blake2b-ref.c,12,0,3,15
+src/head.c,src/head.c,0,6,15,6,src/head.c,3,6,15,24
+src/env.c,src/env.c,2,3,13,5,src/env.c,4,3,13,20
+lib/libcoreutils_a-i-ring.c,lib/libcoreutils_a-i-ring.c,0,0,0,0,lib/libcoreutils_a-i-ring.c,1,0,0,1
+src/printf.c,src/printf.c,1,6,8,7,src/printf.c,2,6,8,16
+src/copy.c,src/copy.c,4,3,7,7,src/copy.c,7,3,7,17
+lib/libcoreutils_a-sm3.c,lib/libcoreutils_a-sm3.c,0,0,8,0,lib/libcoreutils_a-sm3.c,1,0,8,9
+lib/libcoreutils_a-parse-datetime.c,lib/libcoreutils_a-parse-datetime.c,0,7,20,7,lib/libcoreutils_a-parse-datetime.c,1,7,20,28
+lib/libcoreutils_a-sha512.c,lib/libcoreutils_a-sha512.c,0,0,0,0,lib/libcoreutils_a-sha512.c,6,0,0,6
+src/libcksum_avx2_a-cksum_avx2.c,src/libcksum_avx2_a-cksum_avx2.c,0,0,3,0,src/libcksum_avx2_a-cksum_avx2.c,1,0,3,4
+src/tr.c,src/tr.c,2,3,34,5,src/tr.c,3,3,34,40
+lib/libcoreutils_a-quotearg.c,lib/libcoreutils_a-quotearg.c,0,2,5,2,lib/libcoreutils_a-quotearg.c,5,2,5,12
+src/od.c,src/od.c,0,7,35,7,src/od.c,1,7,35,43
+src/sort.c,src/sort.c,2,50,57,52,src/sort.c,5,49,57,111
+src/cp.c,src/cp.c,3,10,4,13,src/cp.c,4,10,4,18
+src/libwc_avx2_a-wc_avx2.c,src/libwc_avx2_a-wc_avx2.c,0,1,3,1,src/libwc_avx2_a-wc_avx2.c,1,1,3,5
+src/blake2/cksum-blake2b-ref.c,src/blake2/cksum-blake2b-ref.c,2,0,3,2,src/blake2/cksum-blake2b-ref.c,12,0,3,15
+lib/libcoreutils_a-readtokens0.c,lib/libcoreutils_a-readtokens0.c,0,0,1,0,lib/libcoreutils_a-readtokens0.c,1,0,1,2
+lib/libcoreutils_a-readtokens.c,lib/libcoreutils_a-readtokens.c,0,2,2,2,lib/libcoreutils_a-readtokens.c,1,2,2,5
+src/pr.c,src/pr.c,3,12,36,15,src/pr.c,3,12,36,51

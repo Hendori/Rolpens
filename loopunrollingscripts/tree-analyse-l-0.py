@@ -396,7 +396,7 @@ def process_file(filename):
                         child_node.candidate_cache = None
 
                         break
-    with open(str(location) + "/" + filename + str(loop_found) + "out", "w") as f:
+    with open(str(location) + "/rerolled" + filename, "w") as f:
         if loop_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
             global count_loops

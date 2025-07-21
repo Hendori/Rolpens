@@ -3,9 +3,9 @@ import csv
 import difflib
 
 # Paden naar de CSV bestanden
-voor_path = "all_unrolled.csv"
-na_path = "rerolled.csv"
-output_path = "vergelijking.csv"
+voor_path = "na-decompilatie-coreutils.csv"
+na_path = "rerolled-coreutils.csv"
+output_path = "vergelijking-coreutils.csv"
 
 
 def extract_filename(pad_str):
@@ -14,12 +14,8 @@ def extract_filename(pad_str):
     Er wordt ervan uitgegaan dat in de na-data het pad en bestandsnaam mogelijk
     door spaties gescheiden zijn, waarbij het laatste deel de daadwerkelijke bestandsnaam is.
     """
-    pad_str = pad_str.strip()
     # Als er spaties in het pad zitten, neem dan het laatste gedeelte
-    if " " in pad_str:
-        return os.path.basename(pad_str.split()[-1])
-    else:
-        return os.path.basename(pad_str)
+    return pad_str
 
 
 def lees_csv(pad):
@@ -62,7 +58,7 @@ def vind_match(bestandsnaam):
     if bestandsnaam in na_data:
         return bestandsnaam
     # Als geen exacte match, probeer fuzzy matching (n=1: beste match, cutoff=0.8)
-    matches = difflib.get_close_matches(bestandsnaam, na_keys, n=1, cutoff=0.95)
+    matches = difflib.get_close_matches(bestandsnaam, na_keys, n=1, cutoff=0.99)
     if matches:
         return matches[0]
     return None
