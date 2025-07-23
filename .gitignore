@@ -11,4 +11,3 @@ run_ghidra/gradle
 __pycache__
 .cache
 *.*out
-samples/decompilations/rerolled/*
