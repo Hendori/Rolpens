@@ -569,7 +569,9 @@ class Formatter:
         raise NotImplementedError()
 
     def _format_field_expression(self, node) -> str:
-        return node.text.decode()
+        argument = self.format_node(node.child_by_field_name("argument"))
+        field = self.format_node(node.child_by_field_name("field"))
+        return argument + "." + field
 
     def _format_field_identifier(self, node) -> str:
         return node.text.decode()
