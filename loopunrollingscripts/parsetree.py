@@ -220,3 +220,18 @@ class Node:
         while nd is not None:
             nd._hash = b""
             nd = nd.parent
+
+
+def dump_node(node, level=0) -> str:
+    if len(node.children) == 0:
+        if len(node.type) < 5:
+            return f"'{node.type}'"
+        else:
+            return f"({node.type})"
+    rv = f"({node.type}"
+    for i, ch in enumerate(node.children):
+        rv += "\n" + "   "*(level+1)
+        if node.child_names[i] != "":
+            rv += f"{node.child_names[i]}: "
+        rv += dump_node(ch, level+1)
+    return rv + ")"
