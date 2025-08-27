@@ -1,4 +1,5 @@
 import argparse
+from fractions import Fraction
 from pathlib import Path
 from tree_sitter import Language, Parser
 from ctypes import cdll, c_void_p
@@ -323,32 +324,28 @@ def find_duplicates(compound_node):
                     imin += len(inst)
 
 
-def find_numeric_constants(result: List[Union[int, float]], node: Node):
+def find_numeric_constants(result: List[Fraction], node: Node):
     if node.type == "number_literal":
-        result.append(parse_c_integer_literal(node.text.decode()))
+        result.append(parse_c_number_literal(node.text.decode()))
     for child in node.children:
         find_numeric_constants(result, child)
 
 
-def parse_c_integer_literal(text):
+def parse_c_number_literal(text) -> Fraction:
     text = text.strip().lower().rstrip("uUlL")
     if text.startswith("0x") or text.startswith("-0x"):
-        return int(text, 16)
+        return Fraction(int(text, 16))
     if text.startswith("0b") or text.startswith("-0b"):
-        return int(text, 2)
+        return Fraction(int(text, 2))
     if (
         (text.startswith("0") or (text.startswith("-0")))
         and text != "0"
         and not text.startswith("0.")
         and not text.startswith("-0.")
     ):
-        return int(text, 8)
+        return Fraction(int(text, 8))
     try:
-        number = float(text)
-        if number.is_integer:
-            return int(number)
-        else:
-            raise ValueError(f"'{text}' is echt een float.")
+        return Fraction(text)
     except ValueError:
         raise ValueError(f"'{text}' is geen echt getal")
 

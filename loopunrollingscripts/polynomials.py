@@ -8,18 +8,18 @@ class Polynomial:
         self.coefficients = [Fraction(numerator=x, denominator=1) if isinstance(x, int) else x for x in coefficients]
 
     @staticmethod
-    def from_lagrange(points: typing.List[typing.Tuple[int,int]]) -> typing.Self:
+    def from_lagrange(points: typing.List[typing.Tuple[int,Fraction]]) -> typing.Self:
         rv = Polynomial([0])
         for i, (x0,y0) in enumerate(points):
             term = Polynomial([1])
-            den = 1
+            den = y0.denominator
             for j, (x,_) in enumerate(points):
                 if i != j:
                     den *= x0 - x
                     term *= Polynomial([-x, 1])
             if den == 0:
                 raise ValueError("X coordinates should be distinct")
-            rv += term * Polynomial([Fraction(y0, den)])
+            rv += term * Polynomial([Fraction(y0.numerator, den)])
 
         return rv
 
