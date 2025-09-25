@@ -146,6 +146,8 @@ class Formatter:
                 return self._format_labeled_statement(node)
             case "linkage_specification":
                 return self._format_linkage_specification(node)
+            case "literal_suffix":
+                return self._format_literal_suffix(node)
             case "macro_type_specifier":
                 return self._format_macro_type_specifier(node)
             case "ms_based_modifier":
@@ -308,6 +310,8 @@ class Formatter:
                 return self._format_true(node)
             case "type_identifier":
                 return self._format_type_identifier(node)
+            case "user_defined_literal":
+                return self._format_user_defined_literal(node)
             case "signed" | "unsigned" | "long" | "short" | "this" | "operator" | "new":
                 return node.text.decode()
             case "delete":
@@ -691,6 +695,9 @@ class Formatter:
         print(node.text.decode())
         raise NotImplementedError()
 
+    def _format_literal_suffix(self, node) -> str:
+        return node.text.decode()
+
     def _format_macro_type_specifier(self, node) -> str:
         return "".join([self.format_node(ch) for ch in node.children])
 
@@ -978,6 +985,9 @@ class Formatter:
         print(node)
         print(node.text.decode())
         raise NotImplementedError()
+
+    def _format_user_defined_literal(self, node) -> str:
+        return "".join([self.format_node(ch) for ch in node.children])
 
     def _format_unary_expression(self, node) -> str:
         return node.text.decode()

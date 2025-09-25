@@ -3,8 +3,8 @@ import difflib
 
 # Paden naar de CSV bestanden
 voor_path = "voor-compilatie.csv"
-na_path = "vergelijking-godot.csv"
-output_path = "vergelijking-godot-stripped.csv"
+na_path = "vergelijking-openssl.csv"
+output_path = "vergelijking-openssl-compleet.csv"
 
 
 def extract_original_filename(pad_str):

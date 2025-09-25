@@ -1,21 +1,500 @@
-File,for loops,while loops,do-while loops,total
-lib/libcoreutils_a-i-ring.c,1,0,0,1
-lib/libcoreutils_a-parse-datetime.c,1,7,20,28
-lib/libcoreutils_a-quotearg.c,5,2,5,12
-lib/libcoreutils_a-readtokens0.c,1,0,1,2
-lib/libcoreutils_a-readtokens.c,1,2,2,5
-lib/libcoreutils_a-sha512.c,6,0,0,6
-lib/libcoreutils_a-sm3.c,1,0,8,9
-src/blake2/b2sum-blake2b-ref.c,12,0,3,15
-src/blake2/cksum-blake2b-ref.c,12,0,3,15
-src/copy.c,7,3,7,17
-src/cp.c,4,10,4,18
-src/env.c,4,3,13,20
-src/head.c,3,6,15,24
-src/libcksum_avx2_a-cksum_avx2.c,1,0,3,4
-src/libwc_avx2_a-wc_avx2.c,1,1,3,5
-src/od.c,1,7,35,43
-src/pr.c,3,12,36,51
-src/printf.c,2,6,8,16
-src/sort.c,5,49,57,111
-src/tr.c,3,3,34,40
+File,for loops,while loops,do-while loops,total loops,total nodes
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-acl-errno-valid.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-se-label.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-randread.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-umaxtostr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc yes.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-filevercmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests timespec-sub.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-arpa_inet.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mini-mpq-gnulib.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-readtokens.c,1,2,2,5,1481
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32islower.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u32-strlen.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-progname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc operand2sig.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xfts.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-freading.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc b2sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc fmt.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-md5-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc lbracket.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_alnum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-canon-host.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests timespec-add.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc selinux.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-filemode.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isgraph.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc find-mount-point.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-crc-x86_64-pclmul.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-pipe2.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests localename-table.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_space.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-readutmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc link.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dirchownmod.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cksum-sum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-nanosleep.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_cntrl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc blake2 cksum-blake2b-ref.c,12,0,3,15,18638
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-wctype-h.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-realloc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sha1-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-file-type.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-se-selinux.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-vsnzprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-dynarray_emplace_enlarge.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-opendirat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chown-chown.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-bitrotate.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sort.c,5,49,57,111,48779
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-hash-triple.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chcon.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_sha512-bench-sha512.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-safe-read.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c-strncasecmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c-file-type.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc blake2 b2sum-blake2b-ref.c,12,0,3,15,18638
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-argv-iter.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_sha256-bench-sha256.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_md5-bench-md5.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc wc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cksum-cksum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-hash.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc libstdbuf_so-libstdbuf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fsusage.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-printf-frexpl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-chmodat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-vfzprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbsrtoc32s.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fpurge.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_upper.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isalpha.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-freadahead.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-i-ring.c,1,0,0,1,423
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-af_alg.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc rm.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests localename-environ.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32ispunct.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_sha224-bench-sha224.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtold.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-posix_memalign.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-exitfail.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-filenamecat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc temp-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests str_startswith.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-cloexec.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fts.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dup-safer-flag.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cut.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc dd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests xconcat-filename.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-posixver.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u32-pcpy.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sha1.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mkdir-p.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sha256sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc stdbuf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-get-permissions.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc copy.c,7,3,7,17,42033
+../samples/decompilations/coreutils/rerolled/rerolledsrc basename.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc true.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_xdigit.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc numfmt.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc split.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests strerror_r.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dtoastr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-freadseek.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib glthread libcoreutils_a-lock.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib glthread libcoreutils_a-threadlib.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-chdir-long.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-read-file.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_crc-bench-crc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xbinary-io.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fseek.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xmalloc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-getndelim2.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc force-link.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-btoc32.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc groups.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-open-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-strintcmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fopen-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-full-write.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests vma-iter.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_graph.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-cl-strtold.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-base32.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xtime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-memcmp2.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u8-uctomb-aux.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-file-has-acl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isspace.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-linebuffer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-freadptr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-isapipe.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fopen.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-heap.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-di-set.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc blake2 b2sum-b2sum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xsize.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32iscntrl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc od.c,1,7,35,43,20161
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dtotimespec.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc factor.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fseeko.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc tsort.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc relpath.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc tac.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-rand-isaac.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sha512sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-strnlen1.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chown-chgrp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc join.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32tolower.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sig-handler.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-file-set.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-math.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-printf-frexp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtod.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc du.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fd-safer-flag.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-setlocale_null.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests ioctl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc tty.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-same.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-ftoastr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xgetgroups.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc timeout.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-time_rz.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests glthread thread.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc libcksum_avx512_a-cksum_avx512.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc printf.c,2,6,8,16,13117
+../samples/decompilations/coreutils/rerolled/rerolledsrc ls.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_lower.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u32-strcat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc tail.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unicase libcoreutils_a-tolower.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isalnum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests localename.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-basename-lgpl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-tmpdir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc seq.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc unexpand.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-set-permissions.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtol-error.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-quotearg.c,5,2,5,12,14391
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests pthread-rwlock.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-nl_langinfo.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-memcoll.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-hard-locale.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc nohup.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sha384sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc pathchk.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fflush.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u32-chr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc uptime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-md5.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc ls-dir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-write-any-file.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-cl-strtod.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-savedir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbrtowc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc who.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-u64.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-canonicalize.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u8-uctomb.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mktime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-priv-set.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-getprogname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc paste.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc dirname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc base32-basenc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-uinttostr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests test-localcharset.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c-strtold.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xdectoumax.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc uniq.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-targetdir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-filenamecat-lgpl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-backup-find.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fadvise.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc nice.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc md5sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib glthread libcoreutils_a-tls.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-tempname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc env.c,4,3,13,20,10174
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_alpha.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-unlinkdir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isupper.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-openat-proc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc mkfifo.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-closeout.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc pwd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_punct.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cp.c,4,10,4,18,14545
+../samples/decompilations/coreutils/rerolled/rerolledsrc stty.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-careadlinkat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-crc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-btowc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc group-list.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-version-etc-fsf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sha1sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc fold.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtoimax.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-areadlinkat-with-size.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xalignalloc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fd-hook.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-dynarray_finalize.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests locale.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-endian.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sockets.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-freopen-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xalloc-die.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-dynarray_resize.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc ls-vdir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbszero.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-buffer-lcm.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc blake2 cksum-b2sum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc id.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests xgetcwd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests unistr u32-set.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fseterr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32width.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xasprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isblank.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-unistd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-human.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbsrtowcs.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-ialloc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc ls-ls.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-malloca.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests c32tob.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc pr.c,3,12,36,51,20975
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-full-read.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-aszprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_print.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-set-acl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc whoami.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sm3.c,1,0,8,9,20603
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mini-gmp-gnulib.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc stat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c-strcasecmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-basename.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbschr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-stripslash.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-setlocale_null-unlocked.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc touch.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbsrtoc32s-state.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cksum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fdutimensat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cksum-crctab.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc uname-uname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-openat-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-settime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fd-reopen.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-printf-args.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-reallocarray.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc date.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mgetgroups.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc test.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc remove.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-pipe-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-vzprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-hash-triple-simple.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc users.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-exclude.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-qset-acl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u8-mbtoucr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xnanosleep.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc tr.c,3,3,34,40,20092
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtoul.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-areadlink.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sha256.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-yesno.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-unicodeio.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc comm.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fprintftime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbswidth.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fclose.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_sha1-bench-sha1.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbrtoc32.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc ln.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-memchr2.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-gettime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-acl-internal.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-skipchars.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32_apply_type_test.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-fd-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isdigit.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-gettime-res.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-close-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc expr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc dircolors.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mkancesdirs.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-cycle-check.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc ptx.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-openat-die.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unistr libcoreutils_a-u32-cpy.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-ldtoastr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbscasecmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sys_socket.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc version.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-scratch_buffer_grow.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc echo.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cp-hash.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc libcksum_avx2_a-cksum_avx2.c,1,0,3,4,992
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-idcache.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dirname-lgpl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-randint.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc expand.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-same-inode.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-version-etc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-printf-parse.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-alignalloc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_crc-randomb.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-binary-io.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-obstack.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc install.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-dynarray_resize_clear.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc make-prime-list.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-stat-time.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c-ctype.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-asnprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc show-date.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc printenv.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc cat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-physmem.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-imaxtostr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-getugroups.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib uniwidth libcoreutils_a-width.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc rmdir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-argmatch.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc mv.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc df.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-save-cwd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sha512.c,6,0,0,6,1127
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mpsort.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtoumax.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests bench_sha384-bench-sha384.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xgetcwd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xreadlink.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sum-sum.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-scratch_buffer_set_array_size.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xgethostname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-parse-datetime.c,1,7,20,28,30004
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xstrtol.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-gethrxtime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc head.c,3,6,15,24,10619
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-savewd.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc prog-fprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc truncate.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-nstrftime.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-nproc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-selinux-at.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc tee.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbrlen.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-float.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-propername-lite.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc hostid.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-readtokens0.c,1,0,1,2,1963
+../samples/decompilations/coreutils/rerolled/rerolledsrc libcksum_pclmul_a-cksum_pclmul.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-vasnprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mountlist.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xdectoimax.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc csplit.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-safe-write.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-backupfile.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-chownat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-long-options.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sm3-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc unlink.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chroot.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-areadlinkat.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc expand-common.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-copy-file-range.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mkstemp-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sleep.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xmemcoll.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-qcopy-acl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sha512-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests c-strcasestr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-closein.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc mkdir.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-allocator.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc libwc_avx2_a-wc_avx2.c,1,1,3,5,1782
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-root-dev-ino.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-se-context.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_blank.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-stdlib.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests localename-unsafe.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-timespec.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sha256-stream.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc set-fields.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-xvasprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-utimens.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chown-core.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-dynarray_at_failure.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc realpath.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-renameatu.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isprint.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib glthread libcoreutils_a-once.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc nproc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-strnumcmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c-strtod.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc getlimits.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32isxdigit.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-sig2str.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chown.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-ino-map.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-modechange.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-error.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc runcon.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc mktemp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib malloc libcoreutils_a-scratch_buffer_grow_preserve.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-inttostr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mcel.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc base64-basenc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-utimecmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-areadlink-with-size.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc uname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc shuf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-c32_get_type_test.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-base64.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-creat-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-time.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests concat-filename.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc mknod.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc logname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-userspec.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc chmod.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-offtostr.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbslen.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib unictype libcoreutils_a-ctype_digit.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-mbsrtowcs-state.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc shred.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-memset_explicit.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sha224sum-digest.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-hash-pjw.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dirname.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledgnulib-tests getlocalename_l-unsafe.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc kill.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc false.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-vaszprintf.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-randperm.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-posixtm.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc sync.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-localcharset.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-str_endswith.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dtimespec-bound.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-memcasecmp.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc pinky.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-dup-safer.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc readlink.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc basenc-basenc.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-copy-acl.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledlib libcoreutils_a-backup-rename.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc iopoll.c,0,0,0,0,1
+../samples/decompilations/coreutils/rerolled/rerolledsrc nl.c,0,0,0,0,1
