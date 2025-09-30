@@ -4,6 +4,7 @@
 *.rep
 *.DS_Store
 /samples/build
+/createloopsscript/loops
 .gradle
 gradlew
 gradlew.bat

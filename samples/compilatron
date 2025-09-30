@@ -41,12 +41,26 @@ class Compiler:
         return []
 
 class GCCLike(Compiler):
+    def __init__(self, suffix, extension) -> None:
+        super().__init__(suffix, extension)
+        self._script = "/usr/bin/gcc"
+
     def options(self) -> typing.List[Option]:
         return [
             Option("O1", "-O1"),
             Option("O3", "-O3"),
             Option("funroll-all", "-O1", "-funroll-all-loops"),
         ]
+
+    def compile_single(self, source:str, options:Option, target:str):
+        subprocess.run([self._script, source] + options + ["-o", target])
+
+class GCChost(GCCLike): pass
+
+class GCC_arm_linux(GCCLike):
+    def __init__(self, suffix, extension) -> None:
+        super().__init__(suffix, extension)
+        self._script = "/usr/bin/arm-linux-gnueabi-gcc"
 
 class Dockcross(GCCLike):
     def __init__(self, suffix, extension, image) -> None:
@@ -78,12 +92,14 @@ class GCCDarwin(GCCLike):
                        f"{self._arch}-apple-darwin24-gcc", source] + options + ["-o", target]) 
 
 compilers = [
-    Dockcross("gcc-x86-linux", "elf", "dockcross/linux-x86"),
-    Dockcross("gcc-x86_64-linux", "elf", "dockcross/linux-x64"),
-    Dockcross("gcc-armv7-linux", "elf", "dockcross/linux-armv7"),
-    Dockcross("gcc-x86_64-windows", "exe", "dockcross/windows-shared-x64"),
-    GCCDarwin("aarch64"),
-    GCCDarwin("x86_64"),
+    #Dockcross("gcc-x86-linux", "elf", "dockcross/linux-x86"),
+    #Dockcross("gcc-x86_64-linux", "elf", "dockcross/linux-x64"),
+    #Dockcross("gcc-armv7-linux", "elf", "dockcross/linux-armv7"),
+    #Dockcross("gcc-x86_64-windows", "exe", "dockcross/windows-shared-x64"),
+    #GCCDarwin("aarch64"),
+    #GCCDarwin("x86_64"),
+    GCChost("gcc-x86_64-linux", "elf"),
+    GCC_arm_linux("gcc-armv7-linux", "elf"),
 ]
 
 parser = argparse.ArgumentParser(
