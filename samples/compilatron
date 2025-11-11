@@ -55,12 +55,34 @@ class GCCLike(Compiler):
     def compile_single(self, source:str, options:Option, target:str):
         subprocess.run([self._script, source] + options + ["-o", target])
 
+class Clang(Compiler):
+    def __init__(self, suffix, extension, architecture = None) -> None:
+        super().__init__(suffix, extension)
+        self._architecture = architecture
+
+    def options(self) -> typing.List[Option]:
+        return [
+            Option("defaults"),
+            Option("O3", "-funroll-loops", "-O3"),
+        ]
+
+    def compile_single(self, source:str, options:Option, target:str):
+        dest_arch = []
+        if self._architecture is not None:
+            dest_arch = f"--target={self._architecture}"
+        subprocess.run(["/usr/bin/clang", source] + dest_arch + options + ["-o", target])
+
 class GCChost(GCCLike): pass
 
 class GCC_arm_linux(GCCLike):
     def __init__(self, suffix, extension) -> None:
         super().__init__(suffix, extension)
         self._script = "/usr/bin/arm-linux-gnueabi-gcc"
+
+class GCC_arm64_linux(GCCLike):
+    def __init__(self, suffix, extension) -> None:
+        super().__init__(suffix, extension)
+        self._script = "/usr/bin/aarch64-linux-gnu-gcc"
 
 class Dockcross(GCCLike):
     def __init__(self, suffix, extension, image) -> None:
@@ -99,7 +121,9 @@ compilers = [
     #GCCDarwin("aarch64"),
     #GCCDarwin("x86_64"),
     GCChost("gcc-x86_64-linux", "elf"),
-    GCC_arm_linux("gcc-armv7-linux", "elf"),
+    #GCC_arm_linux("gcc-armv7-linux", "elf"),
+    GCC_arm64_linux("gcc-aarch64-linux", "elf"),
+    Clang("clang-x86_64-linux", "elf"),
 ]
 
 parser = argparse.ArgumentParser(
