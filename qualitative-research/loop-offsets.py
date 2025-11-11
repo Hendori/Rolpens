@@ -1,9 +1,10 @@
 import argparse
 from typing import List, Union, Optional
 
+import math
 import sys
 sys.path.insert(0, "..")
-from loopunrollingscripts.parsetree import Node, get_parser
+from loopunrollingscripts.parsetree import Node, get_parser, parse_c_number_literal
 from realcode import find_code_files, for_loops_in_tree
 
 def is_not_arithmetic(node: Node) -> bool:
@@ -48,8 +49,8 @@ def expr_shape(node: Node, iterator_name: bytes) -> str:
 parser = get_parser("treesitter-cpp.so", "cpp")
 
 argparser = argparse.ArgumentParser(
-        prog="find-iterator-expressions.py",
-        description="Probeer loops die zijn uitgerold terug te rollen naar een for-constructie")
+        prog="loop-offsets.py",
+        description="Collect statistics about on which offset loops tend to start")
 argparser.add_argument("files", nargs="+")
 argparser.add_argument("--junk-path", type=int, default=0)
 argparser.add_argument("--log-file", type=str, default="loop-offsets.log")
@@ -58,9 +59,15 @@ config = argparser.parse_args()
 
 shape_count = {}
 
+project_tally = {}
+total_tally = {"zero": 0, "nonzero": 0, "other": 0}
+
 with open(config.log_file, "a") as logf:
 
     for project_name, filename in find_code_files(config.files, config.project_name_path_index):
+        if project_name not in project_tally:
+            project_tally[project_name] = {"zero": 0, "nonzero": 0, "other": 0}
+
         source_code = b""
         with open(filename, "rb") as f:
             source_code = f.read()
@@ -106,13 +113,22 @@ with open(config.log_file, "a") as logf:
             if init_value is None:
                 continue
 
-            loop_printed = False
-
             log_callback(for_loop, for_loop.text.split(b"\n")[0].decode())
-            log_callback(for_loop, init_value.type)
 
-            if loop_printed:
-                logf.write("}\n")
+            init_type = "unknown"
+            if init_value.type != "number_literal":
+                init_type = "other"
+            else:
+                if parse_c_number_literal(init_value.text.decode()) == 0:
+                    init_type = "zero"
+                else:
+                    init_type = "nonzero"
+
+            log_callback(for_loop, init_type)
+
+            total_tally[init_type] += 1
+            project_tally[project_name][init_type] += 1
+
         if filename_printed:
             logf.write("\n\n")
 
@@ -122,44 +138,32 @@ with open(config.log_file, "a") as logf:
         "coreutils": "coreutils"
     }
     project_column_order = ["coreutils", "openssl", "godot"]
+    for proj in project_tally.keys():
+        if proj not in project_names:
+            project_names[proj] = proj
+            project_column_order.append(proj)
 
-    uncharacterised = set()
-
-    logf.write("\n\n\n\nFinal tally:\n\n")
-    rows = []
-
-    project_total = {}
-    tally_table = {}
-
-    for (shape, project_name), (ct, og_repr) in shape_count.items():
-        if project_name not in project_names:
-            project_names[project_name] = project_name
-            project_column_order.append(project_name)
-
-        project_total[project_name] = project_total.get(project_name, 0) + ct
-
-        bucket = "uncharacterised"
-        tally_table[(bucket, project_name)] = tally_table.get((bucket, project_name), 0) + ct
-        tally_table[(bucket, "total")] = tally_table.get((bucket, "total"), 0) + ct
-
-    top_shapes = []
-    for (ct, shape, project_name, og_repr) in reversed(sorted(rows, key=lambda x: x[0])):
-        logf.write(f"{ct:5d}   {project_name}   {shape}   {og_repr.replace('\n',' ')}\n")
-        if ct > 1 and len(top_shapes) < 15:
-            top_shapes.append(shape)
-
-    logf.write("\n\nTop uncategorized shapes:\n")
-    for shape in top_shapes:
-        logf.write(f"            \"{shape}\",\n")
+    column_order = ["zero", "nonzero", "other"]
 
 
-    print("\\begin{tabular}{l|"+"c"*len([a for a in project_total.values() if a > 0])+"|c}")
-    print("                             & " + " & ".join([project_names[p] for p in project_column_order if project_total.get(p,0) > 0]) + " & Total \\\\")
+    print("\\begin{tabular}{l|ccc}")
+    print("    \\textbf{Project} & " + " & ".join(["\\textbf{"+x+"}" for x in column_order]) + " \\\\")
     print("    \\hline")
 
-    print("                             & " + " & ".join([str(project_total[p]) for p in project_column_order if project_total.get(p,0) > 0]) + " &")
+    for proj in project_column_order:
+        if proj in project_tally:
+            ptally = project_tally[proj]
+            print("    "+project_names[proj]+"  & " + " & ".join([str(ptally[k]) for k in column_order]) + " \\\\")
 
+    print("    \\hline")
+
+    print("    \\textit{total}  & " + " & ".join([str(total_tally[k]) for k in column_order]) )
 
     print("\\end{tabular}")
+
+
+    if total_tally["nonzero"] > 0:
+        ascom = total_tally["zero"] / total_tally["nonzero"]
+        print(f"\n\nLooking through the source code of our triad of open-source projects, loops starting at zero are about {ascom:.1f} times as common as loops starting at any other value, making it an adequate default choice.\n\n")
 
 

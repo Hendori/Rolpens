@@ -1,10 +1,31 @@
 import os
 import hashlib
+from fractions import Fraction
 from typing import Self, Union, Optional, List, Callable
 from ctypes import cdll, c_void_p
 
 from tree_sitter import Node as TSNode
 from tree_sitter import Language, Parser
+
+
+def parse_c_number_literal(text) -> Fraction:
+    text = text.strip().lower().rstrip("uUlL")
+    if text.startswith("0x") or text.startswith("-0x"):
+        return Fraction(int(text, 16))
+    text = text.strip().lower().rstrip("fFdD")
+    if text.startswith("0b") or text.startswith("-0b"):
+        return Fraction(int(text, 2))
+    if (
+        (text.startswith("0") or (text.startswith("-0")))
+        and text != "0"
+        and not text.startswith("0.")
+        and not text.startswith("-0.")
+    ):
+        return Fraction(int(text, 8))
+    try:
+        return Fraction(text)
+    except ValueError:
+        raise ValueError(f"'{text}' is geen echt getal")
 
 
 def get_parser(sofile="treesitter-decomp-c.so", language_name="decompc"):
