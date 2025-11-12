@@ -6,9 +6,9 @@ from ctypes import cdll, c_void_p
 from os import fspath
 from typing import Iterator, TypeVar, Generic, Optional, List, Tuple, Union, Set
 
-from polynomials import Polynomial
-from parsetree import Node
-from formatter import Formatter
+from rolpens.polynomials import Polynomial
+from rolpens.parsetree import Node
+from rolpens.formatter import Formatter
 import sys
 
 sys.setrecursionlimit(3000)

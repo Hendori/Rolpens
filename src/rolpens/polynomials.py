@@ -1,7 +1,7 @@
 from fractions import Fraction
 import typing
 
-from parsetree import Node
+from rolpens.parsetree import Node
 
 class Polynomial:
     def __init__(self, coefficients: typing.List[typing.Union[int,Fraction]]):
