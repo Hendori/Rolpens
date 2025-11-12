@@ -1,13 +1,10 @@
 import argparse
 from fractions import Fraction
 from pathlib import Path
-from tree_sitter import Language, Parser
-from ctypes import cdll, c_void_p
-from os import fspath
 from typing import Iterator, TypeVar, Generic, Optional, List, Tuple, Union, Set
 
 from rolpens.polynomials import Polynomial
-from rolpens.parsetree import Node
+from rolpens.parsetree import get_parser, Node
 from rolpens.formatter import Formatter
 import sys
 
@@ -15,14 +12,6 @@ sys.setrecursionlimit(3000)
 
 
 T = TypeVar("T")
-
-
-def lang_from_so(path: str, name: str) -> Language:
-    lib = cdll.LoadLibrary(fspath(path))
-    language_function = getattr(lib, f"tree_sitter_{name}")
-    language_function.restype = c_void_p
-    language_ptr = language_function()
-    return Language(language_ptr)
 
 
 def get_compound_statement_node(node):
@@ -391,10 +380,8 @@ argparser = argparse.ArgumentParser(
 argparser.add_argument("files", nargs="+")
 config = argparser.parse_args()
 
-C_LANGUAGE = lang_from_so("./treesitter-cpp.so", "cpp")
+parser = get_parser("treesitter-cpp.so", "cpp")
 
-parser = Parser()
-parser.language = C_LANGUAGE
 reduction_through_loops = 0
 count_loops = 0
 total_line_numbers = 0

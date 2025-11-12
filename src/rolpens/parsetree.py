@@ -1,5 +1,6 @@
 import os
 import hashlib
+import warnings
 from fractions import Fraction
 from typing import Self, Union, Optional, List, Callable
 from ctypes import cdll, c_void_p
@@ -34,7 +35,9 @@ def get_parser(sofile="treesitter-decomp-c.so", language_name="decompc"):
         language_function = getattr(lib, f"tree_sitter_{name}")
         language_function.restype = c_void_p
         language_ptr = language_function()
-        return Language(language_ptr)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return Language(language_ptr)
 
     C_LANGUAGE = lang_from_so(os.path.dirname(__file__) + "/" + sofile, language_name)
 

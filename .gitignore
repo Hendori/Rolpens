@@ -11,4 +11,5 @@ gradlew.bat
 run_ghidra/gradle
 __pycache__
 .cache
+*.egg-info
 *.*out
