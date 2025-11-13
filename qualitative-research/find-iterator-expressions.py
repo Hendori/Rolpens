@@ -1,10 +1,8 @@
 import argparse
-from typing import List, Union, Optional
+from typing import Optional
 
-import sys
-sys.path.insert(0, "..")
-from loopunrollingscripts.parsetree import Node, get_parser
-from realcode import find_code_files
+from rolpens.parsetree import Node, get_parser
+from rolpens.project import find_code_files
 
 def is_not_arithmetic(node: Node) -> bool:
     if node.type in ("identifier"):

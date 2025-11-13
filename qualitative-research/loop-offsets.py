@@ -1,11 +1,9 @@
 import argparse
 from typing import List, Union, Optional
 
-import math
-import sys
-sys.path.insert(0, "..")
-from loopunrollingscripts.parsetree import Node, get_parser, parse_c_number_literal
-from realcode import find_code_files, for_loops_in_tree
+from rolpens.parsetree import Node, get_parser, parse_c_number_literal
+from rolpens.project import find_code_files
+from realcode import for_loops_in_tree
 
 def is_not_arithmetic(node: Node) -> bool:
     if node.type in ("identifier"):
