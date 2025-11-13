@@ -1,6 +1,6 @@
 from fractions import Fraction
 from pathlib import Path
-from typing import Iterator, TypeVar, Generic, Optional, List, Tuple, Union, Set
+from typing import Iterator, TypeVar, Generic, Self, Optional, List, Tuple, Set
 
 from rolpens.polynomials import Polynomial
 from rolpens.parsetree import parse_c_number_literal, Node
@@ -315,15 +315,36 @@ def find_numeric_constants(result: List[Fraction], node: Node):
         find_numeric_constants(result, child)
 
 
-def process_file(filename, parser):
-    # Read the C file
+class RerollResult:
+    def __init__(self):
+        self.loop_found = 0
+        self.reduction_through_loops = 0
+        self.count_loops = 0
+        self.total_line_numbers = 0
 
+    def __iadd__(self, other: Self) -> Self:
+        self.loop_found              += other.loop_found
+        self.reduction_through_loops += other.reduction_through_loops
+        self.count_loops             += other.count_loops
+        self.total_line_numbers      += other.total_line_numbers
+        return self
+
+    def __add__(self, other: Self) -> Self:
+        rv = RerollResult()
+        rv += self
+        rv += other
+        return rv
+
+
+def process_file(filename, parser) -> RerollResult:
+    result = RerollResult()
+
+    # Read the C file
     print("processing file " + str(filename))
 
     with open(filename, "r") as f:
         source_code = f.read().encode()
-        global total_line_numbers
-        total_line_numbers += sum(1 for _ in source_code)
+        result.total_line_numbers += sum(1 for _ in source_code)
 
     file = Path(filename)
     filename = file.name
@@ -347,11 +368,9 @@ def process_file(filename, parser):
 
                 for loop in loops:
                     if loop.is_valid_loop():
-                        global loop_found
-                        loop_found += 1
-                        global reduction_through_loops
+                        result.loop_found += 1
                         loop_reduction_size += loop.reduction_size()
-                        reduction_through_loops += loop_reduction_size
+                        result.reduction_through_loops += loop_reduction_size
                         print("reduction_size is " + str(loop_reduction_size))
 
                         loop.reroll()
@@ -362,14 +381,8 @@ def process_file(filename, parser):
 
                         break
     with open(str(location) + "/rerolled" + filename, "w") as f:
-        if loop_found > 0:
+        if result.loop_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
-            global count_loops
-            count_loops += loop_found
+            result.count_loops += result.loop_found
 
-loop_found = 0
-
-reduction_through_loops = 0
-count_loops = 0
-total_line_numbers = 0
-
+    return result

@@ -17,16 +17,18 @@ config = argparser.parse_args()
 
 parser = get_parser("treesitter-cpp.so", "cpp")
 
+stats = rolpens.RerollResult()
+
 for file in config.files:
     folder = Path(file)
     if folder.is_dir():
         for file in folder.glob("*.c"):
-            rolpens.loop_found = 0
-            rolpens.process_file(file, parser)
+            res = rolpens.process_file(file, parser)
+            stats += res
     else:
-        rolpens.loop_found = 0
-        rolpens.process_file(Path(file), parser)
-print("totaal loops gevonden is " + str(rolpens.count_loops))
-print("totaal reductie regels is  " + str(rolpens.reduction_through_loops))
-print("totaal aantal regels is  " + str(rolpens.total_line_numbers))
-print("gereduceerd is " + str(rolpens.reduction_through_loops / rolpens.total_line_numbers))
+        res = rolpens.process_file(Path(file), parser)
+        stats += res
+print("totaal loops gevonden is " + str(stats.count_loops))
+print("totaal reductie regels is  " + str(stats.reduction_through_loops))
+print("totaal aantal regels is  " + str(stats.total_line_numbers))
+print("gereduceerd is " + str(stats.reduction_through_loops / stats.total_line_numbers))
