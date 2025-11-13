@@ -3,6 +3,10 @@
 *.lock~
 *.rep
 *.DS_Store
+
+*.so
+src/rolpens/tree-sitter-cpp-*
+
 /samples/build
 /createloopsscript/loops
 .gradle
