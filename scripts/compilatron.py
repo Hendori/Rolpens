@@ -6,11 +6,7 @@ import shlex
 import subprocess
 import typing
 
-try:
-    import tqdm
-except ImportError:
-    sys.stderr.write(f"TQDM not found. Try: 'sudo apt-get install python3-tqdm' or 'pip install tqdm'")
-    sys.exit(1)
+import tqdm
 
 class Option:
     def __init__(self, label, *args:str):
@@ -30,7 +26,6 @@ class Compiler:
     def __init__(self, suffix:str, extension:str) -> None:
         self._suffix = suffix
         self._extension = extension
-        pass
     def compile_single(self, source:str, options:Option, target:str):
         pass
     def suffix(self) -> str:
@@ -54,23 +49,6 @@ class GCCLike(Compiler):
 
     def compile_single(self, source:str, options:Option, target:str):
         subprocess.run([self._script, source] + options + ["-o", target])
-
-class Clang(Compiler):
-    def __init__(self, suffix, extension, architecture = None) -> None:
-        super().__init__(suffix, extension)
-        self._architecture = architecture
-
-    def options(self) -> typing.List[Option]:
-        return [
-            Option("defaults"),
-            Option("O3", "-funroll-loops", "-O3"),
-        ]
-
-    def compile_single(self, source:str, options:Option, target:str):
-        dest_arch = []
-        if self._architecture is not None:
-            dest_arch = f"--target={self._architecture}"
-        subprocess.run(["/usr/bin/clang", source] + dest_arch + options + ["-o", target])
 
 class GCChost(GCCLike): pass
 
@@ -113,6 +91,23 @@ class GCCDarwin(GCCLike):
                        "ghcr.io/shepherdjerred/macos-cross-compiler:latest",
                        f"{self._arch}-apple-darwin24-gcc", source] + options + ["-o", target]) 
 
+class Clang(Compiler):
+    def __init__(self, suffix, extension, architecture = None) -> None:
+        super().__init__(suffix, extension)
+        self._architecture = architecture
+
+    def options(self) -> typing.List[Option]:
+        return [
+            Option("defaults"),
+            Option("O3", "-funroll-loops", "-O3"),
+        ]
+
+    def compile_single(self, source:str, options:Option, target:str):
+        dest_arch = []
+        if self._architecture is not None:
+            dest_arch = f"--target={self._architecture}"
+        subprocess.run(["/usr/bin/clang", source] + dest_arch + options + ["-o", target])
+
 compilers = [
     #Dockcross("gcc-x86-linux", "elf", "dockcross/linux-x86"),
     #Dockcross("gcc-x86_64-linux", "elf", "dockcross/linux-x64"),
@@ -127,7 +122,7 @@ compilers = [
 ]
 
 parser = argparse.ArgumentParser(
-        prog="compilatron",
+        prog="compilatron.py",
         description="Compileer broncode naar een boel platformen")
 parser.add_argument("files", nargs="+")
 args = parser.parse_args()

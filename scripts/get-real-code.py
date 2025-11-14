@@ -1,16 +1,12 @@
 #!/usr/bin/python
-import os, sys
+import os
 import multiprocessing
 import random
 import subprocess
 import time
 
 import requests
-try:
-    import tqdm
-except ImportError:
-    sys.stderr.write(f"TQDM not found. Try: 'sudo apt-get install python3-tqdm' or 'pip install tqdm'")
-    sys.exit(1)
+import tqdm
 
 def download_as(project_dir, filename, url):
     file_stat = None
@@ -36,6 +32,10 @@ def download_as(project_dir, filename, url):
         os.makedirs(project_dir)
         subprocess.call(["tar", "-C", project_dir, "-xf", filename])
 
+os.chdir(os.path.dirname(__file__) + "/../samples")
+try:
+    os.mkdir(".cache")
+except FileExistsError: pass
 os.chdir(".cache")
 
 download_as("coreutils", "coreutils-9.7.tar.gz", "https://ftp.gnu.org/gnu/coreutils/coreutils-9.7.tar.gz")
@@ -76,7 +76,7 @@ def decompile(wu):
     if os.path.exists(outfile):
         return
     try:
-        subprocess.call(["python", "./decomp-headless", objfile, "-o", outfile], timeout=60)
+        subprocess.call(["python", "./decomp-headless.py", objfile, "-o", outfile], timeout=60)
     except subprocess.TimeoutExpired:
         time.sleep(5)
         with open(outfile, "a+") as f:

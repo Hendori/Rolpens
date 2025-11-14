@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import argparse
-import os, sys
+import os
 import subprocess
 
 argparser = argparse.ArgumentParser(

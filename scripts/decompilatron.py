@@ -1,29 +1,17 @@
 #!/usr/bin/python3
 
 import argparse
-import base64
 import json
-import os, sys
-import shlex
-import subprocess
+import os
 import time
-import typing
 
-try:
-    import tqdm
-except ImportError:
-    sys.stderr.write(f"TQDM not found. Try: 'sudo apt-get install python3-tqdm' or 'pip install tqdm'")
-    sys.exit(1)
-try:
-    import requests
-    import urllib3
-except ImportError:
-    sys.stderr.write(f"TQDM not found. Try: 'sudo apt-get install python3-requests' or 'pip install requests'")
-    sys.exit(1)
+import tqdm
+import requests
+import urllib3
 
 
 parser = argparse.ArgumentParser(
-        prog="decompilatron",
+        prog="decompilatron.py",
         description="Decompileer binaries met een boel decompilers")
 parser.add_argument("files", nargs="+")
 parser.add_argument("--dce_url", default="https://dce.localhost/", type=str, nargs="?", help="URL van privé-instance Decompiler Explorer (standaard: %(default)s)")
