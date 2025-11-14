@@ -1,0 +1,10 @@
+file,File,Repo,File,for loops,while loops,do-while loops,total,File,File,for loops,while loops,do-while loops,total loops,total nodes,File,for loops,while loops,do-while loops,total loops,total nodes
+src/printf.c,src/printf.c,coreutil,src/printf.c,7,3,1,10,src/printf.c,src/printf.c,1,6,8,15,13249,src/printf.c,2,6,8,16,13117
+src/head.c,src/head.c,coreutil,src/head.c,6,11,1,17,src/head.c,src/head.c,0,6,15,21,10897,src/head.c,3,6,15,24,10619
+src/cp.c,src/cp.c,coreutil,src/cp.c,2,7,1,9,src/cp.c,src/cp.c,3,10,4,17,14599,src/cp.c,4,10,4,18,14545
+src/sort.c,src/sort.c,coreutil,src/sort.c,32,58,8,90,src/sort.c,src/sort.c,2,50,57,109,51190,src/sort.c,5,49,57,111,48779
+src/env.c,src/env.c,coreutil,src/env.c,10,7,0,17,src/env.c,src/env.c,2,3,13,18,10211,src/env.c,4,3,13,20,10174
+src/copy.c,src/copy.c,coreutil,src/copy.c,0,7,0,7,src/copy.c,src/copy.c,4,3,7,14,42276,src/copy.c,7,3,7,17,42033
+src/tr.c,src/tr.c,coreutil,src/tr.c,25,9,1,34,src/tr.c,src/tr.c,2,3,34,39,20180,src/tr.c,3,3,34,40,20092
+src/pr.c,src/pr.c,coreutil,src/pr.c,31,13,0,44,src/pr.c,src/pr.c,3,12,36,51,20975,src/pr.c,3,12,36,51,20975
+src/od.c,src/od.c,coreutil,src/od.c,13,11,4,24,src/od.c,src/od.c,0,7,35,42,20254,src/od.c,1,7,35,43,20161
