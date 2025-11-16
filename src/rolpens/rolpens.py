@@ -1,10 +1,8 @@
 from fractions import Fraction
-from pathlib import Path
 from typing import Iterator, TypeVar, Generic, Self, Optional, List, Tuple, Set
 
 from rolpens.polynomials import Polynomial
-from rolpens.parsetree import parse_c_number_literal, Node
-from rolpens.formatter import Formatter
+from rolpens.parsetree import parse_c_number_literal, Node, Parser
 
 T = TypeVar("T")
 
@@ -374,21 +372,12 @@ class RerollResult:
         return rv
 
 
-def process_file(filename, parser) -> RerollResult:
-    # Read the C file
-    print("processing file " + str(filename))
-
-    with open(filename, "r") as f:
-        source_code = f.read().encode()
-
-    file = Path(filename)
-    filename = file.name
-    location = file.parent
-
-    # Parse the file into an abstract syntax tree
+def process_file(source_code: str, parser: Parser) -> RerollResult:
+    # Parse the source into an abstract syntax tree
     tree = parser.parse(source_code)
     tree_root = Node.from_tree_sitter(tree.root_node)
 
+    # Initialise statistics counters
     result = RerollResult(tree_root)
     result.total_line_numbers += sum(1 for _ in source_code)
 
@@ -409,7 +398,6 @@ def process_file(filename, parser) -> RerollResult:
                         result.loops_found += 1
                         loop_reduction_size += loop.reduction_size()
                         result.statements_removed += loop_reduction_size
-                        print("reduction_size is " + str(loop_reduction_size))
 
                         loop.reroll()
                         changed = True
@@ -420,9 +408,5 @@ def process_file(filename, parser) -> RerollResult:
                         break
 
     result.update_tree(tree_root)
-
-    with open(str(location) + "/rerolled" + filename, "w") as f:
-        if result.loops_found > 0:
-            print(Formatter().format_tree(tree_root), file=f)
 
     return result

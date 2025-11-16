@@ -29,7 +29,7 @@ def parse_c_number_literal(text) -> Fraction:
         raise ValueError(f"'{text}' is geen echt getal")
 
 
-def get_parser(sofile="treesitter-decomp-c.so", language_name="decompc"):
+def get_parser(sofile="treesitter-cpp.so", language_name="cpp") -> Parser:
     def lang_from_so(path: str, name: str) -> Language:
         lib = cdll.LoadLibrary(os.fspath(path))
         language_function = getattr(lib, f"tree_sitter_{name}")

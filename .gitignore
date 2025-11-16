@@ -12,7 +12,7 @@ src/rolpens/tree-sitter-cpp-*
 .gradle
 gradlew
 gradlew.bat
-run_ghidra/gradle
+scripts/run_ghidra/gradle
 __pycache__
 .cache
 *.egg-info
