@@ -346,9 +346,8 @@ class TreeStatistics:
 
 class RerollResult:
     def __init__(self, tree: Optional[Node] = None):
-        self.loop_found = 0
-        self.reduction_through_loops = 0
-        self.count_loops = 0
+        self.loops_found = 0
+        self.statements_removed = 0
         self.total_line_numbers = 0
 
         self.updated_tree = tree
@@ -360,10 +359,9 @@ class RerollResult:
         self.after = TreeStatistics(tree)
 
     def __iadd__(self, other: Self) -> Self:
-        self.loop_found              += other.loop_found
-        self.reduction_through_loops += other.reduction_through_loops
-        self.count_loops             += other.count_loops
-        self.total_line_numbers      += other.total_line_numbers
+        self.loops_found        += other.loops_found
+        self.statements_removed += other.statements_removed
+        self.total_line_numbers += other.total_line_numbers
 
         self.before += other.before
         self.after  += other.after
@@ -408,9 +406,9 @@ def process_file(filename, parser) -> RerollResult:
 
                 for loop in loops:
                     if loop.is_valid_loop():
-                        result.loop_found += 1
+                        result.loops_found += 1
                         loop_reduction_size += loop.reduction_size()
-                        result.reduction_through_loops += loop_reduction_size
+                        result.statements_removed += loop_reduction_size
                         print("reduction_size is " + str(loop_reduction_size))
 
                         loop.reroll()
@@ -421,11 +419,10 @@ def process_file(filename, parser) -> RerollResult:
 
                         break
 
-    result.count_loops += result.loop_found
     result.update_tree(tree_root)
 
     with open(str(location) + "/rerolled" + filename, "w") as f:
-        if result.loop_found > 0:
+        if result.loops_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
 
     return result
