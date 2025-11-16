@@ -17,5 +17,5 @@ if config.o != "-":
     new_env["GHIDRA_C_OUTPUT_FILE"] = config.o
 
 with open("/dev/null", "wb") as discard:
-    subprocess.call(["../run_ghidra/run.sh", config.binary], env=new_env, stdout=discard)
+    subprocess.call([os.path.dirname(__file__)+"/run_ghidra/run.sh", config.binary], env=new_env, stdout=discard)
 
