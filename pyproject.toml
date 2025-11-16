@@ -20,3 +20,8 @@ requires = [
     "tree-sitter==0.24.0",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+exclude = [
+    "scripts/run_ghidra/decompile_simple.py",
+]

@@ -40,7 +40,7 @@ for file_name in args.files:
     
     with open(file_name, "rb") as f:
         files = {"file": (base_name, f, "application/octet-stream")}
-        upload_resp = requests.post(args.dce_url + f"/api/binaries/", verify=(not args.insecure), files=files)
+        upload_resp = requests.post(args.dce_url + "/api/binaries/", verify=(not args.insecure), files=files)
         if upload_resp.status_code not in [200, 201]:
             print(upload_resp, upload_resp.text)
             t.update(len(decompilers)+2)

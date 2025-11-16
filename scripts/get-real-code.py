@@ -20,14 +20,15 @@ def download_as(project_dir, filename, url):
         with open(filename, "wb+") as f:
             f.write(r.content)
         file_stat = os.stat(filename)
-        print("done.");
+        print("done.")
 
     try:
         dir_stat = os.stat(project_dir)
         if dir_stat.st_mtime < file_stat.st_mtime:
             subprocess.call(["rm", "-rf", project_dir])
             dir_stat = None
-    except FileNotFoundError: pass
+    except FileNotFoundError:
+        pass
     if dir_stat is None:
         os.makedirs(project_dir)
         subprocess.call(["tar", "-C", project_dir, "-xf", filename])
@@ -35,7 +36,8 @@ def download_as(project_dir, filename, url):
 os.chdir(os.path.dirname(__file__) + "/../samples")
 try:
     os.mkdir(".cache")
-except FileExistsError: pass
+except FileExistsError:
+    pass
 os.chdir(".cache")
 
 download_as("coreutils", "coreutils-9.7.tar.gz", "https://ftp.gnu.org/gnu/coreutils/coreutils-9.7.tar.gz")

@@ -83,11 +83,11 @@ with open(config.log_file, "a") as logf:
 
             line = 1
             (offset,_) = node.byte_range
-            for l in line_lengths:
-                if l > offset:
+            for length in line_lengths:
+                if length > offset:
                     break
                 line += 1
-                offset -= l + 1
+                offset -= length + 1
             logf.write(f"{filename_d}:{line}\n")
 
         # Parse the file into an abstract syntax tree

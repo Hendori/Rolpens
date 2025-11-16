@@ -14,7 +14,7 @@ from ghidra.util.task import ConsoleTaskMonitor
 decompinterface = DecompInterface()
 
 # Open Current Program
-decompinterface.openProgram(currentProgram);
+decompinterface.openProgram(currentProgram)
 
 
 # Get Binary Functions

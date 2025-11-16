@@ -584,7 +584,7 @@ class Formatter:
         test_f = self.format_node(node.child_by_field_name("condition"))
         update_f = self.format_node(node.child_by_field_name("update"))
         body_f = self.format_node(node.child_by_field_name("body"))
-        if node.child_by_field_name("initializer") != None:
+        if node.child_by_field_name("initializer") is not None:
             init_f = self.format_node(node.child_by_field_name("initializer"))
             return f"for ({init_f}; {test_f}; {update_f}) {body_f}"
         return f"for (; {test_f}; {update_f}) {body_f}"
@@ -596,16 +596,16 @@ class Formatter:
 
     def _format_function_definition(self, node) -> str:
         decl_f = self.format_node(node.child_by_field_name("declarator"))
-        if node.child_by_field_name("type") != None and node.child_by_field_name(
+        if node.child_by_field_name("type") is not None and node.child_by_field_name(
             "body"
         ):
             type_f = self.format_node(node.child_by_field_name("type"))
             body_f = self.format_node(node.child_by_field_name("body"))
             return type_f + " " + decl_f + " " + body_f
-        if node.child_by_field_name("body") != None:
+        if node.child_by_field_name("body") is not None:
             body_f = self.format_node(node.child_by_field_name("body"))
             return decl_f + " " + body_f
-        if node.child_by_field_name("type") != None:
+        if node.child_by_field_name("type") is not None:
             type_f = self.format_node(node.child_by_field_name("type"))
             return type_f + " " + decl_f
         return decl_f

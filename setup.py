@@ -1,8 +1,7 @@
-from contextlib import suppress
-from pathlib import Path
 from setuptools import Command, setup
 from setuptools.command.build import build
-import os, subprocess
+import os
+import subprocess
 
 import requests
 
@@ -25,7 +24,8 @@ class CustomCommand(Command):
         def exists(filepath):
             try:
                 return os.stat(filepath).st_size > 0
-            except FileNotFoundError: return False
+            except FileNotFoundError:
+                return False
 
         current_dir = os.getcwd()
         os.chdir("src/rolpens")

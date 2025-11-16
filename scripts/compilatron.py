@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
-import os, sys
+import os
 import shlex
 import subprocess
 import typing
@@ -50,7 +50,8 @@ class GCCLike(Compiler):
     def compile_single(self, source:str, options:Option, target:str):
         subprocess.run([self._script, source] + options + ["-o", target])
 
-class GCChost(GCCLike): pass
+class GCChost(GCCLike):
+    pass
 
 class GCC_arm_linux(GCCLike):
     def __init__(self, suffix, extension) -> None:

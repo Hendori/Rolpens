@@ -43,7 +43,7 @@ class Polynomial:
         for i,a in enumerate(self.coefficients):
             n, _ = a.as_integer_ratio()
             if n != 0:
-                if x == None:
+                if x is None:
                     node = Node("number_literal", str(a).encode())
                 else:
                     if n == 1 or (n == -1 and i == 1):
@@ -55,7 +55,7 @@ class Polynomial:
                         ax.append_child(x.clone(), "right")
                         ax.tight = True
 
-                    if node == None:
+                    if node is None:
                         node = ax
                     elif n == -1 and i == 1:
                         bx = Node("binary_expression")
@@ -70,7 +70,7 @@ class Polynomial:
                         bx.append_child(node, "right")
                         node = bx
 
-            if x == None:
+            if x is None:
                 x = Node("identifier", variable_name.encode())
             else:
                 xx = Node("binary_expression")
@@ -80,7 +80,7 @@ class Polynomial:
                 xx.tight = True
                 x = xx
 
-        if node != None and node.type == "identifier":
+        if node is not None and node.type == "identifier":
             return node
 
         rv = Node("parenthesized_expression")
@@ -130,7 +130,7 @@ class Polynomial:
             else:
                 if a.numerator == a.denominator:
                     if i == 1:
-                        comps.append(f"x")
+                        comps.append("x")
                     else:
                         comps.append(f"x^{i}")
                 else:

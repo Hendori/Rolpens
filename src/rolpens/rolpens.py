@@ -267,20 +267,20 @@ def find_duplicates(compound_node):
     cache = compound_node.candidate_cache
 
     children_list = list(compound_node.children)
-    for l in range(1, len(children_list) // 2):
+    for body_size in range(1, len(children_list) // 2):
         for i, startnode in enumerate(children_list):
-            if (startnode, l) in cache:
-                # yield cache[(startnode, l)]
+            if (startnode, body_size) in cache:
+                # yield cache[(startnode, body_size)]
                 compound_node.cache_hits += 1
                 continue
 
             instances = []
-            instances.append(children_list[i : i + l])
-            imax = i + l
+            instances.append(children_list[i : i + body_size])
+            imax = i + body_size
 
-            for j in range(i + l, len(children_list) - l, l):
+            for j in range(i + body_size, len(children_list) - body_size, body_size):
                 same = True
-                for k in range(l):
+                for k in range(body_size):
                     if not is_comment(children_list[i + k]):
                         all_comments = False
                     if not compare_node_content(
@@ -289,8 +289,8 @@ def find_duplicates(compound_node):
                         same = False
                         break
                 if same and not all_comments:
-                    instances.append(children_list[j : j + l])
-                    imax = j + l
+                    instances.append(children_list[j : j + body_size])
+                    imax = j + body_size
                 else:
                     break
             if len(instances) > 2:
@@ -300,7 +300,7 @@ def find_duplicates(compound_node):
                 # Pre-cache deze en alle kortere loops met een later startpunt ook alvast
                 imin = i
                 for j, inst in enumerate(instances):
-                    cache[(inst[0], l)] = CandidateLoop(
+                    cache[(inst[0], body_size)] = CandidateLoop(
                         loop_body, instances[j:], (imin, imax)
                     )
                     imin += len(inst)

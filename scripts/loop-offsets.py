@@ -1,5 +1,5 @@
 import argparse
-from typing import List, Union, Optional
+from typing import Optional
 
 from rolpens.parsetree import Node, get_parser, parse_c_number_literal
 from rolpens.project import find_code_files
@@ -91,11 +91,11 @@ with open(config.log_file, "a") as logf:
 
                 line = 1
                 (offset,_) = node.byte_range
-                for l in line_lengths:
-                    if l > offset:
+                for length in line_lengths:
+                    if length > offset:
                         break
                     line += 1
-                    offset -= l + 1
+                    offset -= length + 1
                 logf.write(f"{filename_d}:{line}\n")
 
             if len(log_message) > 0:

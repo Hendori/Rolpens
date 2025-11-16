@@ -1,13 +1,11 @@
 import argparse
 import csv
-from typing import List, Union, Optional
 
 import sys
 
 sys.path.insert(0, "..")
 from rolpens.parsetree import Node, get_parser
 from rolpens.project import find_code_files
-from realcode import for_loops_in_tree
 
 sys.setrecursionlimit(3000)
 parser = get_parser("treesitter-cpp.so", "cpp")

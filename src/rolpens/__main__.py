@@ -1,10 +1,11 @@
 import argparse
+import os
+import sys
 
 import rolpens.rolpens as rolpens
 from rolpens.formatter import Formatter
 from rolpens.parsetree import get_parser
 from rolpens.project import find_code_files
-import os, sys
 
 sys.setrecursionlimit(3000)
 

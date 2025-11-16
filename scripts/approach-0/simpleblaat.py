@@ -28,7 +28,7 @@ def reroll_loops(code):
     lines = code.split("\n")
     new_code = []
     i = 0
-    extracted_values = [][]
+    extracted_values = []
 
     while i < len(lines):
         line = lines[i].strip()

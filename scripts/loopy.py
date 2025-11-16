@@ -1,6 +1,3 @@
-import argparse
-
-
 def generate_c_code(num_lines: int, loop_size) -> str:
     code = []
     code.append("#include <stdio.h>")
