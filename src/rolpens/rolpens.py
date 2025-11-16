@@ -315,18 +315,58 @@ def find_numeric_constants(result: List[Fraction], node: Node):
         find_numeric_constants(result, child)
 
 
+class TreeStatistics:
+    def __init__(self, tree: Optional[Node] = None):
+        self.for_loops = 0
+        self.while_loops = 0
+        self.do_loops = 0
+        self.nodes = 0
+
+        if tree is not None:
+            def walk(node):
+                self.nodes += 1
+                if node.type == "for_statement":
+                    self.for_loops += 1
+                elif node.type == "while_statement":
+                    self.while_loops += 1
+                elif node.type == "do_statement":
+                    self.do_loops += 1
+                for child in node.children:
+                    walk(child)
+
+            walk(tree)
+
+    def __iadd__(self, other: Self) -> Self:
+        self.for_loops   += other.for_loops
+        self.while_loops += other.while_loops
+        self.do_loops    += other.do_loops
+        self.nodes       += other.nodes
+        return self
+
+
 class RerollResult:
-    def __init__(self):
+    def __init__(self, tree: Optional[Node] = None):
         self.loop_found = 0
         self.reduction_through_loops = 0
         self.count_loops = 0
         self.total_line_numbers = 0
+
+        self.updated_tree = tree
+        self.before = TreeStatistics(tree)
+        self.after = TreeStatistics()
+
+    def update_tree(self, tree: Node):
+        self.updated_tree = tree
+        self.after = TreeStatistics(tree)
 
     def __iadd__(self, other: Self) -> Self:
         self.loop_found              += other.loop_found
         self.reduction_through_loops += other.reduction_through_loops
         self.count_loops             += other.count_loops
         self.total_line_numbers      += other.total_line_numbers
+
+        self.before += other.before
+        self.after  += other.after
         return self
 
     def __add__(self, other: Self) -> Self:
@@ -337,14 +377,11 @@ class RerollResult:
 
 
 def process_file(filename, parser) -> RerollResult:
-    result = RerollResult()
-
     # Read the C file
     print("processing file " + str(filename))
 
     with open(filename, "r") as f:
         source_code = f.read().encode()
-        result.total_line_numbers += sum(1 for _ in source_code)
 
     file = Path(filename)
     filename = file.name
@@ -353,6 +390,9 @@ def process_file(filename, parser) -> RerollResult:
     # Parse the file into an abstract syntax tree
     tree = parser.parse(source_code)
     tree_root = Node.from_tree_sitter(tree.root_node)
+
+    result = RerollResult(tree_root)
+    result.total_line_numbers += sum(1 for _ in source_code)
 
     for child_node in get_compound_statement_node(tree_root):
         changed = True
@@ -380,9 +420,12 @@ def process_file(filename, parser) -> RerollResult:
                         child_node.candidate_cache = None
 
                         break
+
+    result.count_loops += result.loop_found
+    result.update_tree(tree_root)
+
     with open(str(location) + "/rerolled" + filename, "w") as f:
         if result.loop_found > 0:
             print(Formatter().format_tree(tree_root), file=f)
-            result.count_loops += result.loop_found
 
     return result

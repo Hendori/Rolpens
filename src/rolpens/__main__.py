@@ -31,7 +31,10 @@ for project, stats in project_stats.items():
     if len(project_stats) > 1:
         print(f"In {project}:")
 
-    print("totaal loops gevonden is " + str(stats.count_loops))
-    print("totaal reductie regels is  " + str(stats.reduction_through_loops))
-    print("totaal aantal regels is  " + str(stats.total_line_numbers))
-    print("gereduceerd is " + str(stats.reduction_through_loops / stats.total_line_numbers))
+    print(f"Loops found:        {stats.count_loops:-5d}")
+    print(f"Statements removed: {stats.reduction_through_loops:-5d}")
+    print(f"           {"for":>6s} {"while":>6s} {"do":>6s} {"nodes":>8s}")
+    print(f"   before:  {stats.before.for_loops:-6d} {stats.before.while_loops:-6d} {stats.before.do_loops:-6d} {stats.before.nodes:-8d}")
+    print(f"   after:   {stats.after.for_loops:-6d} {stats.after.while_loops:-6d} {stats.after.do_loops:-6d} {stats.after.nodes:-8d}")
+    if stats.before.nodes > 0:
+        print(f"   Δ        {"":>6s} {"":>6s} {"":>6s} {(stats.before.nodes - stats.after.nodes)/(0.01*stats.before.nodes):-8.1f}%")
