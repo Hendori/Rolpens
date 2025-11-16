@@ -5,44 +5,6 @@ from rolpens.parsetree import Node, get_parser, parse_c_number_literal
 from rolpens.project import find_code_files
 from realcode import for_loops_in_tree
 
-def is_not_arithmetic(node: Node) -> bool:
-    if node.type in ("identifier"):
-        return False
-    if node.type not in ("unary_expression", "binary_expression"):
-        return True
-    operator = node.child_by_field_name("operator")
-    return operator.type not in ["+", "-", "*", "/", "%", "<<", ">>", "&", "|", "~", "^"]
-
-def expr_shape(node: Node, iterator_name: bytes) -> str:
-    if node.type == "identifier":
-        if node.text == iterator_name:
-            return "𝑥"
-        elif node.text.decode().isupper():
-            return "const"
-        else:
-            return "ident"
-    elif node.type == "sizeof_expression":
-        return "const"
-    elif node.type == "number_literal":
-        return "num"
-    elif node.type == "char_literal":
-        return "char"
-    elif node.type == "call_expression":
-        return "call()"
-    elif node.type == "parenthesized_expression":
-        return " ".join([expr_shape(x, iterator_name) for x in node.children])
-
-    if len(node.type) < 4 and len(node.children) == 0:
-        return node.type
-
-    rv, sep = f"({node.type}", " "
-    if node.type in ("binary_expression", "unary_expression"):
-        rv, sep = "(", ""
-
-    for ch in node.children:
-        rv += sep + expr_shape(ch, iterator_name)
-        sep = " "
-    return rv + ")"
 
 parser = get_parser("treesitter-cpp.so", "cpp")
 
