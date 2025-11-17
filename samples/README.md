@@ -168,6 +168,33 @@ void red_herring() {
 }
 ```
 
+### `row_column()`
+This is an example of instantiating a matrix of values from a linear list in row-major order.
+
+This can be re-rolled to either
+
+```c
+void row_column(int *list) {
+	int matrix[5][5];
+    for ( int i = 0; i < 5; i++ ) {
+        for ( int j = 0; j < 5; j++ ) {
+            matrix[i][j] = list[5*i + j];
+        }
+    }
+}
+```
+
+or
+
+```c
+void row_column(int *list) {
+	int matrix[5][5];
+    for ( int i = 0; i < 25; i++ ) {
+        matrix[i/5][i%5] = list[i];
+    }
+}
+```
+
 Level 2
 -------
 Level 2 loops have some sort of `if` condition in the loop body.

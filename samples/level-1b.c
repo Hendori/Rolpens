@@ -36,6 +36,35 @@ void red_herring() {
 	printf(" *  %d\n", 32);
 }
 
+void row_column(int *list) {
+	int matrix[5][5];
+	matrix[0][0] = list[0];
+	matrix[0][1] = list[1];
+	matrix[0][2] = list[2];
+	matrix[0][3] = list[3];
+	matrix[0][4] = list[4];
+	matrix[1][0] = list[5];
+	matrix[1][1] = list[6];
+	matrix[1][2] = list[7];
+	matrix[1][3] = list[8];
+	matrix[1][4] = list[9];
+	matrix[2][0] = list[10];
+	matrix[2][1] = list[11];
+	matrix[2][2] = list[12];
+	matrix[2][3] = list[13];
+	matrix[2][4] = list[14];
+	matrix[3][0] = list[15];
+	matrix[3][1] = list[16];
+	matrix[3][2] = list[17];
+	matrix[3][3] = list[18];
+	matrix[3][4] = list[19];
+	matrix[4][0] = list[20];
+	matrix[4][1] = list[21];
+	matrix[4][2] = list[22];
+	matrix[4][3] = list[23];
+	matrix[4][4] = list[24];
+}
+
 int main(int argc, char **argv) {
 	all_badges();
 	polynome_table();
