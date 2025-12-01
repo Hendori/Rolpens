@@ -4,7 +4,12 @@ Rolpens is an implementation of an algorithm that re-rolls loops that were unrol
 
 Getting started
 ---------------
-[Install `uv`](https://docs.astral.sh/uv/getting-started/installation/). Then run
+[Install `uv`](https://docs.astral.sh/uv/getting-started/installation/). To compile a grammar for tree-sitter for your platform, a C++ compiler, npm, and tree-sitter should all be available. Install those with
+
+    sudo apt-get install  build-essential  npm  tree-sitter-cli
+
+or the equivalent for your system.
+Then run
 
     uv run python -m rolpens  FILE.c
 
