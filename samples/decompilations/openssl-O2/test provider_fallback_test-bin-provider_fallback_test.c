@@ -1,0 +1,89 @@
+
+uint test_provider(undefined8 param_1)
+
+{
+  int iVar1;
+  uint uVar2;
+  undefined8 uVar3;
+  undefined8 uVar4;
+  
+  iVar1 = OSSL_PROVIDER_available(param_1,"default");
+  uVar3 = 0;
+  uVar2 = test_true("test/provider_fallback_test.c",0x15,"OSSL_PROVIDER_available(ctx, \"default\")"
+                    ,iVar1 != 0);
+  if (uVar2 != 0) {
+    uVar3 = EVP_KEYMGMT_fetch(param_1,&_LC3,0);
+    iVar1 = test_ptr("test/provider_fallback_test.c",0x16,
+                     "rsameth = EVP_KEYMGMT_fetch(ctx, \"RSA\", NULL)",uVar3);
+    if (iVar1 != 0) {
+      uVar4 = EVP_KEYMGMT_get0_provider(uVar3);
+      iVar1 = test_ptr("test/provider_fallback_test.c",0x17,
+                       "prov = EVP_KEYMGMT_get0_provider(rsameth)",uVar4);
+      if (iVar1 != 0) {
+        uVar4 = OSSL_PROVIDER_get0_name(uVar4);
+        iVar1 = test_str_eq("test/provider_fallback_test.c",0x18,"OSSL_PROVIDER_get0_name(prov)",
+                            "\"default\"",uVar4,"default");
+        uVar2 = (uint)(iVar1 != 0);
+        goto LAB_00100045;
+      }
+    }
+    uVar2 = 0;
+  }
+LAB_00100045:
+  EVP_KEYMGMT_free(uVar3);
+  return uVar2;
+}
+
+
+
+undefined4 test_explicit_provider(void)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  undefined8 uVar3;
+  undefined8 uVar4;
+  
+  uVar3 = OSSL_LIB_CTX_new();
+  iVar1 = test_ptr("test/provider_fallback_test.c",0x29,"ctx = OSSL_LIB_CTX_new()",uVar3);
+  if (iVar1 != 0) {
+    uVar4 = OSSL_PROVIDER_load(uVar3,"default");
+    iVar1 = test_ptr("test/provider_fallback_test.c",0x2a,
+                     "prov = OSSL_PROVIDER_load(ctx, \"default\")",uVar4);
+    if (iVar1 != 0) {
+      iVar1 = test_provider(uVar3);
+      if (iVar1 != 0) {
+        iVar1 = OSSL_PROVIDER_unload(uVar4);
+        uVar2 = test_true("test/provider_fallback_test.c",0x2f,"OSSL_PROVIDER_unload(prov)",
+                          iVar1 != 0);
+        goto LAB_00100134;
+      }
+      OSSL_PROVIDER_unload(uVar4);
+    }
+  }
+  uVar2 = 0;
+LAB_00100134:
+  OSSL_LIB_CTX_free(uVar3);
+  return uVar2;
+}
+
+
+
+void test_fallback_provider(void)
+
+{
+  test_provider(0);
+  return;
+}
+
+
+
+undefined8 setup_tests(void)
+
+{
+  add_test("test_fallback_provider",test_fallback_provider);
+  add_test("test_explicit_provider",test_explicit_provider);
+  return 1;
+}
+
+

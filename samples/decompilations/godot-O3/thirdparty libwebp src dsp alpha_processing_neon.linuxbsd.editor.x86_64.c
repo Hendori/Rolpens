@@ -1,0 +1,8 @@
+
+void WebPInitAlphaProcessingNEON(void)
+
+{
+  return;
+}
+
+

@@ -1,0 +1,5809 @@
+
+/* ConcavePolygonShape3D::is_backface_collision_enabled() const */
+
+ConcavePolygonShape3D __thiscall
+ConcavePolygonShape3D::is_backface_collision_enabled(ConcavePolygonShape3D *this)
+
+{
+  return this[0x288];
+}
+
+
+
+/* ConcavePolygonShape3D::set_backface_collision_enabled(bool) */
+
+void __thiscall
+ConcavePolygonShape3D::set_backface_collision_enabled(ConcavePolygonShape3D *this,bool param_1)
+
+{
+  this[0x288] = (ConcavePolygonShape3D)param_1;
+  if (*(long *)(this + 0x280) != 0) {
+    (**(code **)(*(long *)this + 0x1c8))();
+    Resource::emit_changed();
+    return;
+  }
+  return;
+}
+
+
+
+/* CowData<Color>::_copy_on_write() [clone .isra.0] */
+
+void __thiscall CowData<Color>::_copy_on_write(CowData<Color> *this)
+
+{
+  long *plVar1;
+  long lVar2;
+  code *pcVar3;
+  undefined8 *puVar4;
+  ulong uVar5;
+  size_t __n;
+  
+  if ((*(long *)this == 0) || (*(ulong *)(*(long *)this + -0x10) < 2)) {
+    return;
+  }
+  if (*(long *)this == 0) {
+                    /* WARNING: Does not return */
+    pcVar3 = (code *)invalidInstructionException();
+    (*pcVar3)();
+  }
+  lVar2 = *(long *)(*(long *)this + -8);
+  uVar5 = 0x10;
+  __n = lVar2 * 0x10;
+  if (__n != 0) {
+    uVar5 = __n - 1 | __n - 1 >> 1;
+    uVar5 = uVar5 | uVar5 >> 2;
+    uVar5 = uVar5 | uVar5 >> 4;
+    uVar5 = uVar5 | uVar5 >> 8;
+    uVar5 = uVar5 | uVar5 >> 0x10;
+    uVar5 = (uVar5 | uVar5 >> 0x20) + 0x11;
+  }
+  puVar4 = (undefined8 *)Memory::alloc_static(uVar5,false);
+  if (puVar4 != (undefined8 *)0x0) {
+    *puVar4 = 1;
+    puVar4[1] = lVar2;
+    memcpy(puVar4 + 2,*(void **)this,__n);
+    if (*(long *)this != 0) {
+      LOCK();
+      plVar1 = (long *)(*(long *)this + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        lVar2 = *(long *)this;
+        *(undefined8 *)this = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    *(undefined8 **)this = puVar4 + 2;
+    return;
+  }
+  _err_print_error("_copy_on_write","./core/templates/cowdata.h",0x13a,
+                   "Parameter \"mem_new\" is null.",0,0);
+  return;
+}
+
+
+
+/* CowData<Vector3>::_ref(CowData<Vector3> const&) [clone .part.0] */
+
+void __thiscall CowData<Vector3>::_ref(CowData<Vector3> *this,CowData *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  bool bVar4;
+  
+  if (*(long *)this != 0) {
+    LOCK();
+    plVar1 = (long *)(*(long *)this + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      lVar2 = *(long *)this;
+      *(undefined8 *)this = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+    else {
+      *(undefined8 *)this = 0;
+    }
+  }
+  plVar1 = (long *)(*(long *)param_1 + -0x10);
+  if (*(long *)param_1 != 0) {
+    do {
+      lVar2 = *plVar1;
+      if (lVar2 == 0) {
+        return;
+      }
+      LOCK();
+      lVar3 = *plVar1;
+      bVar4 = lVar2 == lVar3;
+      if (bVar4) {
+        *plVar1 = lVar2 + 1;
+        lVar3 = lVar2;
+      }
+      UNLOCK();
+    } while (!bVar4);
+    if (lVar3 != -1) {
+      *(undefined8 *)this = *(undefined8 *)param_1;
+    }
+  }
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::set_faces(Vector<Vector3> const&) */
+
+void __thiscall ConcavePolygonShape3D::set_faces(ConcavePolygonShape3D *this,Vector *param_1)
+
+{
+  if (*(long *)(this + 0x280) != *(long *)(param_1 + 8)) {
+    CowData<Vector3>::_ref((CowData<Vector3> *)(this + 0x280),(CowData *)(param_1 + 8));
+  }
+  (**(code **)(*(long *)this + 0x1c8))(this);
+  Resource::emit_changed();
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::get_faces() const */
+
+void ConcavePolygonShape3D::get_faces(void)
+
+{
+  long in_RSI;
+  long in_RDI;
+  
+  *(undefined8 *)(in_RDI + 8) = 0;
+  if (*(long *)(in_RSI + 0x280) != 0) {
+    CowData<Vector3>::_ref((CowData<Vector3> *)(in_RDI + 8),(CowData *)(in_RSI + 0x280));
+  }
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::get_enclosing_radius() const */
+
+ulong __thiscall ConcavePolygonShape3D::get_enclosing_radius(ConcavePolygonShape3D *this)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  float *pfVar4;
+  float *pfVar5;
+  float *pfVar6;
+  bool bVar7;
+  undefined1 auVar9 [16];
+  undefined1 auVar10 [16];
+  undefined1 extraout_var [12];
+  float __x;
+  ulong uVar8;
+  
+  if (*(long *)(this + 0x280) == 0) {
+    return 0;
+  }
+  plVar1 = (long *)(*(long *)(this + 0x280) + -0x10);
+  do {
+    lVar2 = *plVar1;
+    if (lVar2 == 0) {
+      return 0;
+    }
+    LOCK();
+    lVar3 = *plVar1;
+    bVar7 = lVar2 == lVar3;
+    if (bVar7) {
+      *plVar1 = lVar2 + 1;
+      lVar3 = lVar2;
+    }
+    UNLOCK();
+  } while (!bVar7);
+  if ((lVar3 == -1) || (pfVar6 = *(float **)(this + 0x280), pfVar6 == (float *)0x0)) {
+    return 0;
+  }
+  if (*(long *)(pfVar6 + -2) < 1) {
+    auVar9 = (undefined1  [16])0x0;
+  }
+  else {
+    auVar9 = (undefined1  [16])0x0;
+    pfVar4 = pfVar6;
+    do {
+      pfVar5 = pfVar4 + 3;
+      __x = pfVar4[1] * pfVar4[1] + *pfVar4 * *pfVar4 + pfVar4[2] * pfVar4[2];
+      if (__x <= auVar9._0_4_) {
+        __x = auVar9._0_4_;
+      }
+      auVar9 = ZEXT416((uint)__x);
+      pfVar4 = pfVar5;
+    } while (pfVar6 + *(long *)(pfVar6 + -2) * 3 != pfVar5);
+    if (__x < 0.0) {
+      auVar9._0_4_ = sqrtf(__x);
+      auVar9._4_12_ = extraout_var;
+      uVar8 = auVar9._0_8_;
+      goto LAB_0010030f;
+    }
+  }
+  auVar10._4_12_ = auVar9._4_12_;
+  auVar10._0_4_ = SQRT(auVar9._0_4_);
+  uVar8 = auVar10._0_8_;
+LAB_0010030f:
+  pfVar6 = pfVar6 + -4;
+  LOCK();
+  *(long *)pfVar6 = *(long *)pfVar6 + -1;
+  UNLOCK();
+  if (*(long *)pfVar6 != 0) {
+    return uVar8;
+  }
+  Memory::free_static(pfVar6,false);
+  return uVar8 & 0xffffffff;
+}
+
+
+
+/* CowData<char32_t>::_ref(CowData<char32_t> const&) [clone .part.0] */
+
+void __thiscall CowData<char32_t>::_ref(CowData<char32_t> *this,CowData *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  bool bVar4;
+  
+  if (*(long *)this != 0) {
+    LOCK();
+    plVar1 = (long *)(*(long *)this + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      lVar2 = *(long *)this;
+      *(undefined8 *)this = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+    else {
+      *(undefined8 *)this = 0;
+    }
+  }
+  plVar1 = (long *)(*(long *)param_1 + -0x10);
+  if (*(long *)param_1 != 0) {
+    do {
+      lVar2 = *plVar1;
+      if (lVar2 == 0) {
+        return;
+      }
+      LOCK();
+      lVar3 = *plVar1;
+      bVar4 = lVar2 == lVar3;
+      if (bVar4) {
+        *plVar1 = lVar2 + 1;
+        lVar3 = lVar2;
+      }
+      UNLOCK();
+    } while (!bVar4);
+    if (lVar3 != -1) {
+      *(undefined8 *)this = *(undefined8 *)param_1;
+    }
+  }
+  return;
+}
+
+
+
+/* CowData<Vector3>::_copy_on_write() [clone .isra.0] */
+
+void __thiscall CowData<Vector3>::_copy_on_write(CowData<Vector3> *this)
+
+{
+  long *plVar1;
+  long lVar2;
+  code *pcVar3;
+  undefined8 *puVar4;
+  size_t __n;
+  ulong uVar5;
+  
+  if ((*(long *)this == 0) || (*(ulong *)(*(long *)this + -0x10) < 2)) {
+    return;
+  }
+  if (*(long *)this == 0) {
+                    /* WARNING: Does not return */
+    pcVar3 = (code *)invalidInstructionException();
+    (*pcVar3)();
+  }
+  lVar2 = *(long *)(*(long *)this + -8);
+  uVar5 = 0x10;
+  __n = lVar2 * 0xc;
+  if (__n != 0) {
+    uVar5 = __n - 1 | __n - 1 >> 1;
+    uVar5 = uVar5 | uVar5 >> 2;
+    uVar5 = uVar5 | uVar5 >> 4;
+    uVar5 = uVar5 | uVar5 >> 8;
+    uVar5 = uVar5 | uVar5 >> 0x10;
+    uVar5 = (uVar5 | uVar5 >> 0x20) + 0x11;
+  }
+  puVar4 = (undefined8 *)Memory::alloc_static(uVar5,false);
+  if (puVar4 != (undefined8 *)0x0) {
+    *puVar4 = 1;
+    puVar4[1] = lVar2;
+    memcpy(puVar4 + 2,*(void **)this,__n);
+    if (*(long *)this != 0) {
+      LOCK();
+      plVar1 = (long *)(*(long *)this + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        lVar2 = *(long *)this;
+        *(undefined8 *)this = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    *(undefined8 **)this = puVar4 + 2;
+    return;
+  }
+  _err_print_error("_copy_on_write","./core/templates/cowdata.h",0x13a,
+                   "Parameter \"mem_new\" is null.",0,0);
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::ConcavePolygonShape3D() */
+
+void __thiscall ConcavePolygonShape3D::ConcavePolygonShape3D(ConcavePolygonShape3D *this)
+
+{
+  undefined8 uVar1;
+  
+  uVar1 = PhysicsServer3D::get_singleton();
+  uVar1 = PhysicsServer3D::shape_create(uVar1,7);
+  Shape3D::Shape3D((Shape3D *)this,uVar1);
+  *(undefined8 *)(this + 0x280) = 0;
+  *(undefined ***)this = &PTR__initialize_classv_00108390;
+  this[0x288] = (ConcavePolygonShape3D)0x0;
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::_bind_methods() */
+
+void ConcavePolygonShape3D::_bind_methods(void)
+
+{
+  long *plVar1;
+  long lVar2;
+  code *pcVar3;
+  MethodBind *pMVar4;
+  long lVar5;
+  long *plVar6;
+  long in_FS_OFFSET;
+  long local_d8;
+  long local_d0;
+  long local_c8;
+  long local_c0;
+  long local_b8;
+  long local_b0;
+  char *local_a8;
+  undefined8 local_a0;
+  char *local_98;
+  long local_90;
+  long *local_88;
+  int local_80;
+  long local_78;
+  undefined4 local_70;
+  char *local_68;
+  undefined8 local_60;
+  char **local_58;
+  undefined1 local_50 [16];
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  local_60 = 0;
+  local_68 = "faces";
+  local_58 = &local_68;
+  D_METHODP((char *)&local_98,(char ***)"set_faces",(uint)&local_58);
+  local_50 = (undefined1  [16])0x0;
+  local_58 = (char **)0x0;
+  pMVar4 = create_method_bind<ConcavePolygonShape3D,Vector<Vector3>const&>(set_faces);
+  ClassDB::bind_methodfi(1,pMVar4,false,(MethodDefinition *)&local_98,(Variant **)0x0,0);
+  if (Variant::needs_deinit[(int)local_58] != '\0') {
+    Variant::_clear_internal();
+  }
+  plVar1 = local_88;
+  if (local_88 != (long *)0x0) {
+    LOCK();
+    plVar6 = local_88 + -2;
+    *plVar6 = *plVar6 + -1;
+    UNLOCK();
+    if (*plVar6 == 0) {
+      if (local_88 == (long *)0x0) {
+                    /* WARNING: Does not return */
+        pcVar3 = (code *)invalidInstructionException();
+        (*pcVar3)();
+      }
+      lVar2 = local_88[-1];
+      lVar5 = 0;
+      local_88 = (long *)0x0;
+      plVar6 = plVar1;
+      if (lVar2 != 0) {
+        do {
+          if ((StringName::configured != '\0') && (*plVar6 != 0)) {
+            StringName::unref();
+          }
+          lVar5 = lVar5 + 1;
+          plVar6 = plVar6 + 1;
+        } while (lVar2 != lVar5);
+      }
+      Memory::free_static(plVar1 + -2,false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_98 != (char *)0x0)) {
+    StringName::unref();
+  }
+  D_METHODP((char *)&local_98,(char ***)"get_faces",0);
+  local_50 = (undefined1  [16])0x0;
+  local_58 = (char **)0x0;
+  pMVar4 = create_method_bind<ConcavePolygonShape3D,Vector<Vector3>>(get_faces);
+  ClassDB::bind_methodfi(1,pMVar4,false,(MethodDefinition *)&local_98,(Variant **)0x0,0);
+  if (Variant::needs_deinit[(int)local_58] != '\0') {
+    Variant::_clear_internal();
+  }
+  plVar1 = local_88;
+  if (local_88 != (long *)0x0) {
+    LOCK();
+    plVar6 = local_88 + -2;
+    *plVar6 = *plVar6 + -1;
+    UNLOCK();
+    if (*plVar6 == 0) {
+      if (local_88 == (long *)0x0) {
+                    /* WARNING: Does not return */
+        pcVar3 = (code *)invalidInstructionException();
+        (*pcVar3)();
+      }
+      lVar2 = local_88[-1];
+      lVar5 = 0;
+      local_88 = (long *)0x0;
+      plVar6 = plVar1;
+      if (lVar2 != 0) {
+        do {
+          if ((StringName::configured != '\0') && (*plVar6 != 0)) {
+            StringName::unref();
+          }
+          lVar5 = lVar5 + 1;
+          plVar6 = plVar6 + 1;
+        } while (lVar2 != lVar5);
+      }
+      Memory::free_static(plVar1 + -2,false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_98 != (char *)0x0)) {
+    StringName::unref();
+  }
+  local_68 = "enabled";
+  local_60 = 0;
+  local_58 = &local_68;
+  D_METHODP((char *)&local_98,(char ***)"set_backface_collision_enabled",(uint)&local_58);
+  local_50 = (undefined1  [16])0x0;
+  local_58 = (char **)0x0;
+  pMVar4 = create_method_bind<ConcavePolygonShape3D,bool>(set_backface_collision_enabled);
+  ClassDB::bind_methodfi(1,pMVar4,false,(MethodDefinition *)&local_98,(Variant **)0x0,0);
+  if (Variant::needs_deinit[(int)local_58] != '\0') {
+    Variant::_clear_internal();
+  }
+  plVar1 = local_88;
+  if (local_88 != (long *)0x0) {
+    LOCK();
+    plVar6 = local_88 + -2;
+    *plVar6 = *plVar6 + -1;
+    UNLOCK();
+    if (*plVar6 == 0) {
+      if (local_88 == (long *)0x0) {
+                    /* WARNING: Does not return */
+        pcVar3 = (code *)invalidInstructionException();
+        (*pcVar3)();
+      }
+      lVar2 = local_88[-1];
+      lVar5 = 0;
+      local_88 = (long *)0x0;
+      plVar6 = plVar1;
+      if (lVar2 != 0) {
+        do {
+          if ((StringName::configured != '\0') && (*plVar6 != 0)) {
+            StringName::unref();
+          }
+          lVar5 = lVar5 + 1;
+          plVar6 = plVar6 + 1;
+        } while (lVar2 != lVar5);
+      }
+      Memory::free_static(plVar1 + -2,false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_98 != (char *)0x0)) {
+    StringName::unref();
+  }
+  D_METHODP((char *)&local_98,(char ***)"is_backface_collision_enabled",0);
+  local_50 = (undefined1  [16])0x0;
+  local_58 = (char **)0x0;
+  pMVar4 = create_method_bind<ConcavePolygonShape3D,bool>(is_backface_collision_enabled);
+  ClassDB::bind_methodfi(1,pMVar4,false,(MethodDefinition *)&local_98,(Variant **)0x0,0);
+  if (Variant::needs_deinit[(int)local_58] != '\0') {
+    Variant::_clear_internal();
+  }
+  plVar1 = local_88;
+  if (local_88 != (long *)0x0) {
+    LOCK();
+    plVar6 = local_88 + -2;
+    *plVar6 = *plVar6 + -1;
+    UNLOCK();
+    if (*plVar6 == 0) {
+      if (local_88 == (long *)0x0) {
+                    /* WARNING: Does not return */
+        pcVar3 = (code *)invalidInstructionException();
+        (*pcVar3)();
+      }
+      lVar2 = local_88[-1];
+      lVar5 = 0;
+      local_88 = (long *)0x0;
+      plVar6 = plVar1;
+      if (lVar2 != 0) {
+        do {
+          if ((StringName::configured != '\0') && (*plVar6 != 0)) {
+            StringName::unref();
+          }
+          lVar5 = lVar5 + 1;
+          plVar6 = plVar6 + 1;
+        } while (lVar2 != lVar5);
+      }
+      Memory::free_static(plVar1 + -2,false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_98 != (char *)0x0)) {
+    StringName::unref();
+  }
+  _scs_create((char *)&local_b0,true);
+  _scs_create((char *)&local_b8,true);
+  local_c0 = 0;
+  local_98 = "";
+  local_c8 = 0;
+  local_90 = 0;
+  String::parse_latin1((StrRange *)&local_c8);
+  local_d0 = 0;
+  local_98 = "data";
+  local_90 = 4;
+  String::parse_latin1((StrRange *)&local_d0);
+  local_98 = (char *)CONCAT44(local_98._4_4_,0x24);
+  local_90 = 0;
+  if (local_d0 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_90,(CowData *)&local_d0);
+  }
+  local_88 = (long *)0x0;
+  local_80 = 0;
+  local_78 = 0;
+  if (local_c8 == 0) {
+LAB_00100b10:
+    local_70 = 10;
+    StringName::operator=((StringName *)&local_88,(StringName *)&local_c0);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_78,(CowData *)&local_c8);
+    local_70 = 10;
+    if (local_80 != 0x11) goto LAB_00100b10;
+    StringName::StringName((StringName *)&local_a8,(String *)&local_78,false);
+    if (local_88 == (long *)local_a8) {
+      if ((StringName::configured != '\0') && (local_a8 != (char *)0x0)) {
+        StringName::unref();
+      }
+    }
+    else {
+      StringName::unref();
+      local_88 = (long *)local_a8;
+    }
+  }
+  local_d8 = 0;
+  local_a8 = "ConcavePolygonShape3D";
+  local_a0 = 0x15;
+  String::parse_latin1((StrRange *)&local_d8);
+  StringName::StringName((StringName *)&local_a8,(String *)&local_d8,false);
+  ClassDB::add_property
+            ((StringName *)&local_a8,(PropertyInfo *)&local_98,(StringName *)&local_b8,
+             (StringName *)&local_b0,-1);
+  if ((StringName::configured != '\0') && (local_a8 != (char *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_d8;
+  if (local_d8 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_d8 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_d8 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_78;
+  if (local_78 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_78 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_78 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_88 != (long *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_90;
+  if (local_90 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_90 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_90 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_d0;
+  if (local_d0 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_d0 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_d0 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_c8;
+  if (local_c8 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_c8 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_c8 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((((StringName::configured != '\0') &&
+       ((local_c0 == 0 || (StringName::unref(), StringName::configured != '\0')))) &&
+      ((local_b8 == 0 || (StringName::unref(), StringName::configured != '\0')))) && (local_b0 != 0)
+     ) {
+    StringName::unref();
+  }
+  _scs_create((char *)&local_b0,true);
+  _scs_create((char *)&local_b8,true);
+  local_98 = "";
+  local_c0 = 0;
+  local_c8 = 0;
+  local_90 = 0;
+  String::parse_latin1((StrRange *)&local_c8);
+  local_d0 = 0;
+  local_98 = "backface_collision";
+  local_90 = 0x12;
+  String::parse_latin1((StrRange *)&local_d0);
+  local_98 = (char *)CONCAT44(local_98._4_4_,1);
+  local_90 = 0;
+  if (local_d0 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_90,(CowData *)&local_d0);
+  }
+  local_88 = (long *)0x0;
+  local_80 = 0;
+  local_78 = 0;
+  if (local_c8 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_78,(CowData *)&local_c8);
+    local_70 = 6;
+    if (local_80 == 0x11) {
+      StringName::StringName((StringName *)&local_a8,(String *)&local_78,false);
+      if (local_88 == (long *)local_a8) {
+        if ((StringName::configured != '\0') && (local_a8 != (char *)0x0)) {
+          StringName::unref();
+        }
+      }
+      else {
+        StringName::unref();
+        local_88 = (long *)local_a8;
+      }
+      goto LAB_00100d97;
+    }
+  }
+  local_70 = 6;
+  StringName::operator=((StringName *)&local_88,(StringName *)&local_c0);
+LAB_00100d97:
+  local_d8 = 0;
+  local_a8 = "ConcavePolygonShape3D";
+  local_a0 = 0x15;
+  String::parse_latin1((StrRange *)&local_d8);
+  StringName::StringName((StringName *)&local_a8,(String *)&local_d8,false);
+  ClassDB::add_property
+            ((StringName *)&local_a8,(PropertyInfo *)&local_98,(StringName *)&local_b8,
+             (StringName *)&local_b0,-1);
+  if ((StringName::configured != '\0') && (local_a8 != (char *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_d8;
+  if (local_d8 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_d8 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_d8 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_78;
+  if (local_78 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_78 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_78 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_88 != (long *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_90;
+  if (local_90 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_90 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_90 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_d0;
+  if (local_d0 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_d0 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_d0 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_c8;
+  if (local_c8 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_c8 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_c8 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if (((StringName::configured != '\0') &&
+      ((local_c0 == 0 || (StringName::unref(), StringName::configured != '\0')))) &&
+     (((local_b8 == 0 || (StringName::unref(), StringName::configured != '\0')) && (local_b0 != 0)))
+     ) {
+    StringName::unref();
+  }
+  if (local_40 != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::get_debug_mesh_lines() const */
+
+long ConcavePolygonShape3D::get_debug_mesh_lines(void)
+
+{
+  undefined8 *puVar1;
+  float fVar2;
+  undefined8 uVar3;
+  undefined8 uVar4;
+  code *pcVar5;
+  bool bVar6;
+  ulong uVar7;
+  undefined8 *puVar8;
+  long lVar9;
+  int iVar10;
+  int iVar11;
+  long lVar12;
+  void *pvVar13;
+  size_t __n;
+  long in_RSI;
+  long in_RDI;
+  long lVar14;
+  long lVar15;
+  uint uVar16;
+  undefined8 *puVar17;
+  undefined8 *puVar18;
+  void *pvVar19;
+  long in_FS_OFFSET;
+  DrawEdge local_a8 [8];
+  undefined8 *local_a0;
+  undefined1 local_98 [16];
+  undefined1 local_88 [16];
+  undefined8 local_78;
+  undefined8 local_64;
+  float local_5c;
+  undefined8 local_58;
+  float local_50;
+  undefined8 local_4c;
+  float local_44;
+  long local_40;
+  
+  puVar8 = *(undefined8 **)(in_RSI + 0x280);
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  local_98 = (undefined1  [16])0x0;
+  local_78 = 2;
+  local_88 = (undefined1  [16])0x0;
+  if (puVar8 == (undefined8 *)0x0) {
+LAB_001015b6:
+    local_98._0_8_ = (void *)0x0;
+    puVar8 = (undefined8 *)0x0;
+  }
+  else {
+    iVar10 = (int)puVar8[-1];
+    if ((iVar10 / 3) * 3 != iVar10) {
+      _err_print_error("get_debug_mesh_lines","scene/resources/3d/concave_polygon_shape_3d.cpp",0x28
+                       ,"Condition \"(index_count % 3) != 0\" is true. Returning: Vector<Vector3>()"
+                       ,0,0);
+      *(undefined8 *)(in_RDI + 8) = 0;
+      goto LAB_00101491;
+    }
+    if (iVar10 < 1) goto LAB_001015b6;
+    iVar11 = 0;
+    puVar18 = puVar8;
+    do {
+      uVar16 = 0;
+      puVar17 = puVar18;
+      do {
+        uVar3 = *puVar17;
+        uVar16 = uVar16 + 1;
+        fVar2 = *(float *)(puVar17 + 1);
+        local_58._0_4_ = (float)uVar3;
+        puVar1 = (undefined8 *)((long)puVar8 + (long)(int)(uVar16 % 3 + iVar11) * 0xc);
+        uVar4 = *puVar1;
+        local_44 = *(float *)(puVar1 + 1);
+        local_4c._0_4_ = (float)uVar4;
+        local_58 = uVar3;
+        local_50 = fVar2;
+        local_4c = uVar4;
+        if ((float)local_58 == (float)local_4c) {
+          local_58._4_4_ = (float)((ulong)uVar3 >> 0x20);
+          local_4c._4_4_ = (float)((ulong)uVar4 >> 0x20);
+          local_4c._0_4_ = local_4c._4_4_;
+          local_58._0_4_ = local_58._4_4_;
+          if (local_58._4_4_ != local_4c._4_4_) goto LAB_00101390;
+          if (fVar2 < local_44) goto LAB_0010123a;
+        }
+        else {
+LAB_00101390:
+          bVar6 = (float)local_58 < (float)local_4c;
+          if (bVar6) {
+LAB_0010123a:
+            local_64 = uVar3;
+            local_5c = fVar2;
+            local_58 = uVar4;
+            local_50 = local_44;
+            local_4c = uVar3;
+            local_44 = fVar2;
+          }
+        }
+        puVar17 = (undefined8 *)((long)puVar17 + 0xc);
+        HashSet<ConcavePolygonShape3D::DrawEdge,ConcavePolygonShape3D::DrawEdge,HashMapComparatorDefault<ConcavePolygonShape3D::DrawEdge>>
+        ::insert(local_a8);
+      } while (uVar16 != 3);
+      iVar11 = iVar11 + 3;
+      puVar18 = (undefined8 *)((long)puVar18 + 0x24);
+    } while (iVar11 < iVar10);
+    local_a0 = (undefined8 *)0x0;
+    iVar10 = local_78._4_4_;
+    uVar16 = local_78._4_4_ * 2;
+    if (uVar16 == 0) {
+      puVar8 = (undefined8 *)0x0;
+      if (local_78._4_4_ != 0) {
+        lVar9 = 0;
+        goto LAB_001014d8;
+      }
+    }
+    else {
+      CowData<Vector3>::_copy_on_write((CowData<Vector3> *)&local_a0);
+      __n = (ulong)uVar16 * 0xc;
+      uVar7 = __n - 1;
+      uVar7 = uVar7 | uVar7 >> 1;
+      uVar7 = uVar7 | uVar7 >> 2;
+      uVar7 = uVar7 | uVar7 >> 4;
+      uVar7 = uVar7 | uVar7 >> 8;
+      uVar7 = uVar7 | uVar7 >> 0x10;
+      puVar18 = (undefined8 *)Memory::alloc_static((uVar7 | uVar7 >> 0x20) + 0x11,false);
+      if (puVar18 == (undefined8 *)0x0) {
+        _err_print_error("resize","./core/templates/cowdata.h",0x171,
+                         "Parameter \"mem_new\" is null.",0,0);
+        puVar8 = local_a0;
+      }
+      else {
+        local_a0 = puVar18 + 2;
+        *puVar18 = 1;
+        puVar8 = (undefined8 *)memset(local_a0,0,__n);
+        puVar18[1] = (ulong)uVar16;
+        iVar10 = local_78._4_4_;
+      }
+      pvVar19 = (void *)local_98._0_8_;
+      if (iVar10 != 0) {
+        lVar15 = 0;
+        lVar12 = 0xc;
+        lVar9 = 0;
+        while (puVar8 != (undefined8 *)0x0) {
+          lVar14 = puVar8[-1];
+          if (lVar14 <= lVar9) goto LAB_001014f9;
+          CowData<Vector3>::_copy_on_write((CowData<Vector3> *)&local_a0);
+          lVar9 = lVar9 + 1;
+          *(undefined8 *)((long)local_a0 + lVar12 + -0xc) =
+               *(undefined8 *)((long)pvVar19 + lVar12 + -0xc);
+          *(undefined4 *)((long)local_a0 + lVar12 + -4) =
+               *(undefined4 *)((long)pvVar19 + lVar12 + -4);
+          if (local_a0 == (undefined8 *)0x0) {
+            lVar14 = 0;
+            goto LAB_001014f9;
+          }
+          lVar14 = local_a0[-1];
+          if (lVar14 <= lVar9) goto LAB_001014f9;
+          CowData<Vector3>::_copy_on_write((CowData<Vector3> *)&local_a0);
+          *(undefined8 *)((long)local_a0 + lVar12) = *(undefined8 *)((long)pvVar19 + lVar12);
+          *(undefined4 *)((long)local_a0 + lVar12 + 8) = *(undefined4 *)((long)pvVar19 + lVar12 + 8)
+          ;
+          if (iVar10 <= (int)lVar15 + 1) {
+            pvVar13 = (void *)local_88._8_8_;
+            *(undefined8 **)(in_RDI + 8) = local_a0;
+            if (*(uint *)(hash_table_size_primes + (local_78 & 0xffffffff) * 4) != 0) {
+              memset((void *)local_88._8_8_,0,
+                     (ulong)*(uint *)(hash_table_size_primes + (local_78 & 0xffffffff) * 4) * 4);
+            }
+            goto LAB_00101465;
+          }
+          lVar15 = lVar15 + 1;
+          lVar12 = lVar12 + 0x18;
+          lVar9 = lVar15 * 2;
+          puVar8 = local_a0;
+        }
+LAB_001014d8:
+        lVar14 = 0;
+LAB_001014f9:
+        _err_print_index_error
+                  ("operator[]","./core/templates/vector.h",0x38,lVar9,lVar14,"p_index",
+                   "((Vector<T> *)(this))->_cowdata.size()","",false,true);
+        _err_flush_stdout();
+                    /* WARNING: Does not return */
+        pcVar5 = (code *)invalidInstructionException();
+        (*pcVar5)();
+      }
+    }
+  }
+  *(undefined8 **)(in_RDI + 8) = puVar8;
+  if ((void *)local_98._0_8_ != (void *)0x0) {
+    pvVar13 = (void *)local_88._8_8_;
+    pvVar19 = (void *)local_98._0_8_;
+LAB_00101465:
+    Memory::free_static(pvVar19,false);
+    Memory::free_static((void *)local_88._0_8_,false);
+    Memory::free_static((void *)local_98._8_8_,false);
+    Memory::free_static(pvVar13,false);
+  }
+LAB_00101491:
+  if (local_40 != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return in_RDI;
+}
+
+
+
+/* ConcavePolygonShape3D::get_debug_arraymesh_faces(Color const&) const */
+
+Color * ConcavePolygonShape3D::get_debug_arraymesh_faces(Color *param_1)
+
+{
+  long *plVar1;
+  undefined8 uVar2;
+  undefined8 uVar3;
+  char cVar4;
+  int iVar5;
+  ArrayMesh *this;
+  Variant *pVVar6;
+  undefined8 *in_RDX;
+  long lVar7;
+  undefined8 *puVar8;
+  long lVar9;
+  long in_RSI;
+  long lVar10;
+  long in_FS_OFFSET;
+  Array local_88 [8];
+  Array local_80 [8];
+  Dictionary local_78 [8];
+  long local_70;
+  Vector local_68 [8];
+  long local_60;
+  undefined8 local_58;
+  undefined1 local_50 [16];
+  long local_40;
+  
+  lVar9 = 0;
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  lVar10 = *(long *)(in_RSI + 0x280);
+  local_60 = 0;
+  do {
+    while( true ) {
+      if ((lVar10 == 0) || (*(long *)(lVar10 + -8) <= lVar9)) {
+        this = (ArrayMesh *)operator_new(0x430,"");
+        ArrayMesh::ArrayMesh(this);
+        postinitialize_handler((Object *)this);
+        *(ArrayMesh **)param_1 = this;
+        cVar4 = RefCounted::init_ref();
+        if (cVar4 == '\0') {
+          *(undefined8 *)param_1 = 0;
+        }
+        Array::Array(local_88);
+        iVar5 = (int)local_88;
+        Array::resize(iVar5);
+        Variant::Variant((Variant *)&local_58,(Vector *)(in_RSI + 0x278));
+        pVVar6 = (Variant *)Array::operator[](iVar5);
+        if (pVVar6 == (Variant *)&local_58) {
+          if (Variant::needs_deinit[(int)local_58] != '\0') {
+            Variant::_clear_internal();
+          }
+        }
+        else {
+          if (Variant::needs_deinit[*(int *)pVVar6] != '\0') {
+            Variant::_clear_internal();
+          }
+          *(undefined4 *)pVVar6 = 0;
+          *(int *)pVVar6 = (int)local_58;
+          *(undefined8 *)(pVVar6 + 8) = local_50._0_8_;
+          *(undefined8 *)(pVVar6 + 0x10) = local_50._8_8_;
+        }
+        Variant::Variant((Variant *)&local_58,local_68);
+        pVVar6 = (Variant *)Array::operator[](iVar5);
+        if (pVVar6 == (Variant *)&local_58) {
+          if (Variant::needs_deinit[(int)local_58] != '\0') {
+            Variant::_clear_internal();
+          }
+        }
+        else {
+          if (Variant::needs_deinit[*(int *)pVVar6] != '\0') {
+            Variant::_clear_internal();
+          }
+          *(undefined4 *)pVVar6 = 0;
+          *(int *)pVVar6 = (int)local_58;
+          *(undefined8 *)(pVVar6 + 8) = local_50._0_8_;
+          *(undefined8 *)(pVVar6 + 0x10) = local_50._8_8_;
+        }
+        uVar2 = *(undefined8 *)param_1;
+        Dictionary::Dictionary(local_78);
+        Array::Array(local_80);
+        local_58 = 0;
+        local_70 = 0;
+        local_50 = (undefined1  [16])0x0;
+        Array::set_typed((uint)local_80,(StringName *)0x1c,(Variant *)&local_70);
+        if ((StringName::configured != '\0') && (local_70 != 0)) {
+          StringName::unref();
+        }
+        if (Variant::needs_deinit[(int)local_58] != '\0') {
+          Variant::_clear_internal();
+        }
+        ArrayMesh::add_surface_from_arrays(uVar2,3,local_88,local_80,local_78,0);
+        Array::~Array(local_80);
+        Dictionary::~Dictionary(local_78);
+        Array::~Array(local_88);
+        lVar10 = local_60;
+        if (local_60 != 0) {
+          LOCK();
+          plVar1 = (long *)(local_60 + -0x10);
+          *plVar1 = *plVar1 + -1;
+          UNLOCK();
+          if (*plVar1 == 0) {
+            local_60 = 0;
+            Memory::free_static((void *)(lVar10 + -0x10),false);
+          }
+        }
+        if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+          return param_1;
+        }
+                    /* WARNING: Subroutine does not return */
+        __stack_chk_fail();
+      }
+      uVar2 = *in_RDX;
+      uVar3 = in_RDX[1];
+      if (local_60 == 0) {
+        lVar10 = 1;
+      }
+      else {
+        lVar10 = *(long *)(local_60 + -8) + 1;
+      }
+      iVar5 = CowData<Color>::resize<false>((CowData<Color> *)&local_60,lVar10);
+      if (iVar5 == 0) break;
+      lVar9 = lVar9 + 1;
+      _err_print_error("push_back","./core/templates/vector.h",0x142,
+                       "Condition \"err\" is true. Returning: true",0,0);
+      lVar10 = *(long *)(in_RSI + 0x280);
+    }
+    if (local_60 == 0) {
+      lVar7 = -1;
+      lVar10 = 0;
+LAB_001018d2:
+      _err_print_index_error
+                ("set","./core/templates/cowdata.h",0xcf,lVar7,lVar10,"p_index","size()","",false,
+                 false);
+    }
+    else {
+      lVar10 = *(long *)(local_60 + -8);
+      lVar7 = lVar10 + -1;
+      if (lVar7 < 0) goto LAB_001018d2;
+      CowData<Color>::_copy_on_write((CowData<Color> *)&local_60);
+      puVar8 = (undefined8 *)(lVar7 * 0x10 + local_60);
+      *puVar8 = uVar2;
+      puVar8[1] = uVar3;
+    }
+    lVar10 = *(long *)(in_RSI + 0x280);
+    lVar9 = lVar9 + 1;
+  } while( true );
+}
+
+
+
+/* ConcavePolygonShape3D::_update_shape() */
+
+void __thiscall ConcavePolygonShape3D::_update_shape(ConcavePolygonShape3D *this)
+
+{
+  char cVar1;
+  code *pcVar2;
+  Variant *pVVar3;
+  long *plVar4;
+  long in_FS_OFFSET;
+  Dictionary local_80 [8];
+  int local_78 [8];
+  int local_58 [2];
+  undefined8 local_50;
+  undefined8 uStack_48;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  Dictionary::Dictionary(local_80);
+  Variant::Variant((Variant *)local_58,(Vector *)(this + 0x278));
+  Variant::Variant((Variant *)local_78,"faces");
+  pVVar3 = (Variant *)Dictionary::operator[]((Variant *)local_80);
+  if (pVVar3 != (Variant *)local_58) {
+    if (Variant::needs_deinit[*(int *)pVVar3] != '\0') {
+      Variant::_clear_internal();
+    }
+    *(undefined4 *)pVVar3 = 0;
+    *(int *)pVVar3 = local_58[0];
+    *(undefined8 *)(pVVar3 + 8) = local_50;
+    *(undefined8 *)(pVVar3 + 0x10) = uStack_48;
+    local_58[0] = 0;
+  }
+  if (Variant::needs_deinit[local_78[0]] == '\0') {
+    cVar1 = Variant::needs_deinit[local_58[0]];
+  }
+  else {
+    Variant::_clear_internal();
+    cVar1 = Variant::needs_deinit[local_58[0]];
+  }
+  if (cVar1 != '\0') {
+    Variant::_clear_internal();
+  }
+  Variant::Variant((Variant *)local_58,(bool)this[0x288]);
+  Variant::Variant((Variant *)local_78,"backface_collision");
+  pVVar3 = (Variant *)Dictionary::operator[]((Variant *)local_80);
+  if (pVVar3 != (Variant *)local_58) {
+    if (Variant::needs_deinit[*(int *)pVVar3] != '\0') {
+      Variant::_clear_internal();
+    }
+    *(undefined4 *)pVVar3 = 0;
+    *(int *)pVVar3 = local_58[0];
+    *(undefined8 *)(pVVar3 + 8) = local_50;
+    *(undefined8 *)(pVVar3 + 0x10) = uStack_48;
+    local_58[0] = 0;
+  }
+  if (Variant::needs_deinit[local_78[0]] == '\0') {
+    cVar1 = Variant::needs_deinit[local_58[0]];
+  }
+  else {
+    Variant::_clear_internal();
+    cVar1 = Variant::needs_deinit[local_58[0]];
+  }
+  if (cVar1 != '\0') {
+    Variant::_clear_internal();
+  }
+  plVar4 = (long *)PhysicsServer3D::get_singleton();
+  pcVar2 = *(code **)(*plVar4 + 0x1a8);
+  Variant::Variant((Variant *)local_58,local_80);
+  (*pcVar2)(plVar4,*(undefined8 *)(this + 0x240),(Variant *)local_58);
+  if (Variant::needs_deinit[local_58[0]] != '\0') {
+    Variant::_clear_internal();
+  }
+  Shape3D::_update_shape();
+  Dictionary::~Dictionary(local_80);
+  if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* DefaultAllocator::alloc(unsigned long) */
+
+void DefaultAllocator::alloc(ulong param_1)
+
+{
+  Memory::alloc_static(param_1,false);
+  return;
+}
+
+
+
+/* StringName::~StringName() */
+
+void __thiscall StringName::~StringName(StringName *this)
+
+{
+  if ((configured != '\0') && (*(long *)this != 0)) {
+    StringName::unref();
+    return;
+  }
+  return;
+}
+
+
+
+/* MethodBind::is_valid() const */
+
+undefined8 MethodBind::is_valid(void)
+
+{
+  return 1;
+}
+
+
+
+/* MethodBind::is_vararg() const */
+
+undefined8 MethodBind::is_vararg(void)
+
+{
+  return 0;
+}
+
+
+
+/* Resource::set_last_modified_time(unsigned long) */
+
+void __thiscall Resource::set_last_modified_time(Resource *this,ulong param_1)
+
+{
+  *(ulong *)(this + 0x198) = param_1;
+  return;
+}
+
+
+
+/* Resource::set_import_last_modified_time(unsigned long) */
+
+void __thiscall Resource::set_import_last_modified_time(Resource *this,ulong param_1)
+
+{
+  *(ulong *)(this + 0x1a0) = param_1;
+  return;
+}
+
+
+
+/* Shape3D::get_rid() const */
+
+undefined8 __thiscall Shape3D::get_rid(Shape3D *this)
+
+{
+  return *(undefined8 *)(this + 0x240);
+}
+
+
+
+/* ConcavePolygonShape3D::is_class_ptr(void*) const */
+
+uint __thiscall ConcavePolygonShape3D::is_class_ptr(ConcavePolygonShape3D *this,void *param_1)
+
+{
+  return (uint)CONCAT71(0x1087,(undefined4 *)param_1 == &Shape3D::get_class_ptr_static()::ptr) |
+         (uint)CONCAT71(0x1086,(undefined4 *)param_1 == &get_class_ptr_static()::ptr) |
+         (uint)CONCAT71(0x1087,(undefined4 *)param_1 == &Resource::get_class_ptr_static()::ptr) |
+         (uint)CONCAT71(0x1087,(undefined4 *)param_1 == &RefCounted::get_class_ptr_static()::ptr) |
+         (uint)CONCAT71(0x1087,(undefined4 *)param_1 == &Object::get_class_ptr_static()::ptr);
+}
+
+
+
+/* ConcavePolygonShape3D::_getv(StringName const&, Variant&) const */
+
+undefined8 ConcavePolygonShape3D::_getv(StringName *param_1,Variant *param_2)
+
+{
+  return 0;
+}
+
+
+
+/* ConcavePolygonShape3D::_setv(StringName const&, Variant const&) */
+
+undefined8 ConcavePolygonShape3D::_setv(StringName *param_1,Variant *param_2)
+
+{
+  return 0;
+}
+
+
+
+/* ConcavePolygonShape3D::_validate_propertyv(PropertyInfo&) const */
+
+void ConcavePolygonShape3D::_validate_propertyv(PropertyInfo *param_1)
+
+{
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::_property_can_revertv(StringName const&) const */
+
+undefined8 ConcavePolygonShape3D::_property_can_revertv(StringName *param_1)
+
+{
+  return 0;
+}
+
+
+
+/* ConcavePolygonShape3D::_property_get_revertv(StringName const&, Variant&) const */
+
+undefined8 ConcavePolygonShape3D::_property_get_revertv(StringName *param_1,Variant *param_2)
+
+{
+  return 0;
+}
+
+
+
+/* ConcavePolygonShape3D::_notificationv(int, bool) */
+
+void ConcavePolygonShape3D::_notificationv(int param_1,bool param_2)
+
+{
+  return;
+}
+
+
+
+/* MethodBindTRC<bool>::_gen_argument_type(int) const */
+
+undefined8 MethodBindTRC<bool>::_gen_argument_type(int param_1)
+
+{
+  return 1;
+}
+
+
+
+/* MethodBindTRC<bool>::get_argument_meta(int) const */
+
+undefined8 MethodBindTRC<bool>::get_argument_meta(int param_1)
+
+{
+  return 0;
+}
+
+
+
+/* MethodBindT<bool>::_gen_argument_type(int) const */
+
+bool __thiscall MethodBindT<bool>::_gen_argument_type(MethodBindT<bool> *this,int param_1)
+
+{
+  return param_1 == 0;
+}
+
+
+
+/* MethodBindT<bool>::get_argument_meta(int) const */
+
+undefined8 MethodBindT<bool>::get_argument_meta(int param_1)
+
+{
+  return 0;
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::_gen_argument_type(int) const */
+
+undefined8 MethodBindTRC<Vector<Vector3>>::_gen_argument_type(int param_1)
+
+{
+  return 0x24;
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::get_argument_meta(int) const */
+
+undefined8 MethodBindTRC<Vector<Vector3>>::get_argument_meta(int param_1)
+
+{
+  return 0;
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::_gen_argument_type(int) const */
+
+byte __thiscall
+MethodBindT<Vector<Vector3>const&>::_gen_argument_type
+          (MethodBindT<Vector<Vector3>const&> *this,int param_1)
+
+{
+  return -(param_1 == 0) & 0x24;
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::get_argument_meta(int) const */
+
+undefined8 MethodBindT<Vector<Vector3>const&>::get_argument_meta(int param_1)
+
+{
+  return 0;
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::~MethodBindT() */
+
+void __thiscall
+MethodBindT<Vector<Vector3>const&>::~MethodBindT(MethodBindT<Vector<Vector3>const&> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_00108588;
+  MethodBind::~MethodBind((MethodBind *)this);
+  return;
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::~MethodBindT() */
+
+void __thiscall
+MethodBindT<Vector<Vector3>const&>::~MethodBindT(MethodBindT<Vector<Vector3>const&> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_00108588;
+  MethodBind::~MethodBind((MethodBind *)this);
+  operator_delete(this,0x68);
+  return;
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::~MethodBindTRC() */
+
+void __thiscall MethodBindTRC<Vector<Vector3>>::~MethodBindTRC(MethodBindTRC<Vector<Vector3>> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_001085e8;
+  MethodBind::~MethodBind((MethodBind *)this);
+  return;
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::~MethodBindTRC() */
+
+void __thiscall MethodBindTRC<Vector<Vector3>>::~MethodBindTRC(MethodBindTRC<Vector<Vector3>> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_001085e8;
+  MethodBind::~MethodBind((MethodBind *)this);
+  operator_delete(this,0x68);
+  return;
+}
+
+
+
+/* MethodBindT<bool>::~MethodBindT() */
+
+void __thiscall MethodBindT<bool>::~MethodBindT(MethodBindT<bool> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_00108648;
+  MethodBind::~MethodBind((MethodBind *)this);
+  return;
+}
+
+
+
+/* MethodBindT<bool>::~MethodBindT() */
+
+void __thiscall MethodBindT<bool>::~MethodBindT(MethodBindT<bool> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_00108648;
+  MethodBind::~MethodBind((MethodBind *)this);
+  operator_delete(this,0x68);
+  return;
+}
+
+
+
+/* MethodBindTRC<bool>::~MethodBindTRC() */
+
+void __thiscall MethodBindTRC<bool>::~MethodBindTRC(MethodBindTRC<bool> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_001086a8;
+  MethodBind::~MethodBind((MethodBind *)this);
+  return;
+}
+
+
+
+/* MethodBindTRC<bool>::~MethodBindTRC() */
+
+void __thiscall MethodBindTRC<bool>::~MethodBindTRC(MethodBindTRC<bool> *this)
+
+{
+  *(undefined ***)this = &PTR__gen_argument_type_001086a8;
+  MethodBind::~MethodBind((MethodBind *)this);
+  operator_delete(this,0x68);
+  return;
+}
+
+
+
+/* CowData<Color>::_copy_on_write() [clone .isra.0] [clone .cold] */
+
+void CowData<Color>::_copy_on_write(void)
+
+{
+  code *pcVar1;
+  
+                    /* WARNING: Does not return */
+  pcVar1 = (code *)invalidInstructionException();
+  (*pcVar1)();
+}
+
+
+
+/* CowData<Vector3>::_copy_on_write() [clone .isra.0] [clone .cold] */
+
+void CowData<Vector3>::_copy_on_write(void)
+
+{
+  code *pcVar1;
+  
+                    /* WARNING: Does not return */
+  pcVar1 = (code *)invalidInstructionException();
+  (*pcVar1)();
+}
+
+
+
+/* ConcavePolygonShape3D::_bind_methods() [clone .cold] */
+
+void ConcavePolygonShape3D::_bind_methods(void)
+
+{
+  code *pcVar1;
+  
+                    /* WARNING: Does not return */
+  pcVar1 = (code *)invalidInstructionException();
+  (*pcVar1)();
+}
+
+
+
+/* Shape3D::get_save_class() const */
+
+Shape3D * __thiscall Shape3D::get_save_class(Shape3D *this)
+
+{
+  long lVar1;
+  long in_FS_OFFSET;
+  
+  lVar1 = *(long *)(in_FS_OFFSET + 0x28);
+  *(undefined8 *)this = 0;
+  String::parse_latin1((StrRange *)this);
+  if (lVar1 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return this;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* Shape3D::get_base_extension() const */
+
+Shape3D * __thiscall Shape3D::get_base_extension(Shape3D *this)
+
+{
+  long lVar1;
+  long in_FS_OFFSET;
+  
+  lVar1 = *(long *)(in_FS_OFFSET + 0x28);
+  *(undefined8 *)this = 0;
+  String::parse_latin1((StrRange *)this);
+  if (lVar1 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return this;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* ConcavePolygonShape3D::~ConcavePolygonShape3D() */
+
+void __thiscall ConcavePolygonShape3D::~ConcavePolygonShape3D(ConcavePolygonShape3D *this)
+
+{
+  long *plVar1;
+  long lVar2;
+  
+  *(undefined ***)this = &PTR__initialize_classv_00108390;
+  if (*(long *)(this + 0x280) != 0) {
+    LOCK();
+    plVar1 = (long *)(*(long *)(this + 0x280) + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      lVar2 = *(long *)(this + 0x280);
+      *(undefined8 *)(this + 0x280) = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+      Shape3D::~Shape3D((Shape3D *)this);
+      return;
+    }
+  }
+  Shape3D::~Shape3D((Shape3D *)this);
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::~ConcavePolygonShape3D() */
+
+void __thiscall ConcavePolygonShape3D::~ConcavePolygonShape3D(ConcavePolygonShape3D *this)
+
+{
+  long *plVar1;
+  long lVar2;
+  
+  *(undefined ***)this = &PTR__initialize_classv_00108390;
+  if (*(long *)(this + 0x280) != 0) {
+    LOCK();
+    plVar1 = (long *)(*(long *)(this + 0x280) + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      lVar2 = *(long *)(this + 0x280);
+      *(undefined8 *)(this + 0x280) = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  Shape3D::~Shape3D((Shape3D *)this);
+  operator_delete(this,0x290);
+  return;
+}
+
+
+
+/* ConcavePolygonShape3D::_get_class_namev() const */
+
+undefined8 * ConcavePolygonShape3D::_get_class_namev(void)
+
+{
+  int iVar1;
+  
+  if ((_get_class_namev()::_class_name_static == '\0') &&
+     (iVar1 = __cxa_guard_acquire(&_get_class_namev()::_class_name_static), iVar1 != 0)) {
+    _get_class_namev()::_class_name_static = 0;
+    __cxa_atexit(StringName::~StringName,&_get_class_namev()::_class_name_static,&__dso_handle);
+    __cxa_guard_release(&_get_class_namev()::_class_name_static);
+  }
+  if (_get_class_namev()::_class_name_static != 0) {
+    if (*(long *)(_get_class_namev()::_class_name_static + 8) != 0) {
+LAB_00102233:
+      return &_get_class_namev()::_class_name_static;
+    }
+    if (*(long *)(_get_class_namev()::_class_name_static + 0x10) != 0) {
+      if (1 < *(uint *)(*(long *)(_get_class_namev()::_class_name_static + 0x10) + -8))
+      goto LAB_00102233;
+      StringName::assign_static_unique_class_name
+                ((StringName *)&_get_class_namev()::_class_name_static,"ConcavePolygonShape3D");
+      goto LAB_0010229e;
+    }
+  }
+  StringName::assign_static_unique_class_name
+            ((StringName *)&_get_class_namev()::_class_name_static,"ConcavePolygonShape3D");
+LAB_0010229e:
+  return &_get_class_namev()::_class_name_static;
+}
+
+
+
+/* ConcavePolygonShape3D::get_class() const */
+
+void ConcavePolygonShape3D::get_class(void)
+
+{
+  long lVar1;
+  long lVar2;
+  char *__s;
+  long in_RSI;
+  StrRange *in_RDI;
+  long in_FS_OFFSET;
+  
+  lVar1 = *(long *)(in_FS_OFFSET + 0x28);
+  if (*(long *)(in_RSI + 8) == 0) {
+    *(undefined8 *)in_RDI = 0;
+    String::parse_latin1(in_RDI);
+  }
+  else {
+    lVar2 = *(long *)(*(long *)(in_RSI + 8) + 0x20);
+    if (lVar2 == 0) {
+      *(undefined8 *)in_RDI = 0;
+    }
+    else {
+      __s = *(char **)(lVar2 + 8);
+      *(undefined8 *)in_RDI = 0;
+      if (__s == (char *)0x0) {
+        if (*(long *)(lVar2 + 0x10) != 0) {
+          CowData<char32_t>::_ref((CowData<char32_t> *)in_RDI,(CowData *)(lVar2 + 0x10));
+        }
+      }
+      else {
+        strlen(__s);
+        String::parse_latin1(in_RDI);
+      }
+    }
+  }
+  if (lVar1 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<bool>::_gen_argument_type_info(int) const */
+
+undefined4 * MethodBindTRC<bool>::_gen_argument_type_info(int param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  undefined4 in_register_0000003c;
+  undefined4 *puVar3;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  undefined *local_48;
+  undefined8 local_40;
+  long local_30;
+  
+  puVar3 = (undefined4 *)CONCAT44(in_register_0000003c,param_1);
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  local_50 = 0;
+  local_58 = 0;
+  local_48 = &_LC8;
+  local_40 = 0;
+  String::parse_latin1((StrRange *)&local_58);
+  *puVar3 = 1;
+  puVar3[6] = 0;
+  *(undefined8 *)(puVar3 + 8) = 0;
+  *(undefined1 (*) [16])(puVar3 + 2) = (undefined1  [16])0x0;
+  if (local_58 == 0) {
+    puVar3[10] = 6;
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar3 + 8),(CowData *)&local_58);
+    puVar3[10] = 6;
+    if (puVar3[6] == 0x11) {
+      StringName::StringName((StringName *)&local_48,(String *)(puVar3 + 8),false);
+      if (*(undefined **)(puVar3 + 4) == local_48) {
+        lVar2 = local_58;
+        if ((StringName::configured != '\0') && (local_48 != (undefined *)0x0)) {
+          StringName::unref();
+          lVar2 = local_58;
+        }
+      }
+      else {
+        StringName::unref();
+        *(undefined **)(puVar3 + 4) = local_48;
+        lVar2 = local_58;
+      }
+      goto joined_r0x001024ec;
+    }
+  }
+  StringName::operator=((StringName *)(puVar3 + 4),(StringName *)&local_50);
+  lVar2 = local_58;
+joined_r0x001024ec:
+  local_58 = lVar2;
+  if (lVar2 != 0) {
+    LOCK();
+    plVar1 = (long *)(lVar2 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_58 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_50 != 0)) {
+    StringName::unref();
+  }
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return puVar3;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::_gen_argument_type_info(int) const */
+
+undefined4 * MethodBindTRC<Vector<Vector3>>::_gen_argument_type_info(int param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  undefined4 in_register_0000003c;
+  undefined4 *puVar3;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  undefined *local_48;
+  undefined8 local_40;
+  long local_30;
+  
+  puVar3 = (undefined4 *)CONCAT44(in_register_0000003c,param_1);
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  local_50 = 0;
+  local_58 = 0;
+  local_48 = &_LC8;
+  local_40 = 0;
+  String::parse_latin1((StrRange *)&local_58);
+  *puVar3 = 0x24;
+  puVar3[6] = 0;
+  *(undefined8 *)(puVar3 + 8) = 0;
+  *(undefined1 (*) [16])(puVar3 + 2) = (undefined1  [16])0x0;
+  if (local_58 == 0) {
+    puVar3[10] = 6;
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar3 + 8),(CowData *)&local_58);
+    puVar3[10] = 6;
+    if (puVar3[6] == 0x11) {
+      StringName::StringName((StringName *)&local_48,(String *)(puVar3 + 8),false);
+      if (*(undefined **)(puVar3 + 4) == local_48) {
+        lVar2 = local_58;
+        if ((StringName::configured != '\0') && (local_48 != (undefined *)0x0)) {
+          StringName::unref();
+          lVar2 = local_58;
+        }
+      }
+      else {
+        StringName::unref();
+        *(undefined **)(puVar3 + 4) = local_48;
+        lVar2 = local_58;
+      }
+      goto joined_r0x0010266c;
+    }
+  }
+  StringName::operator=((StringName *)(puVar3 + 4),(StringName *)&local_50);
+  lVar2 = local_58;
+joined_r0x0010266c:
+  local_58 = lVar2;
+  if (lVar2 != 0) {
+    LOCK();
+    plVar1 = (long *)(lVar2 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_58 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_50 != 0)) {
+    StringName::unref();
+  }
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return puVar3;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindT<bool>::_gen_argument_type_info(int) const */
+
+undefined4 * MethodBindT<bool>::_gen_argument_type_info(int param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  undefined1 auVar3 [16];
+  undefined1 auVar4 [16];
+  undefined1 auVar5 [16];
+  undefined8 uVar6;
+  long lVar7;
+  int in_EDX;
+  undefined4 in_register_0000003c;
+  undefined4 *puVar8;
+  long in_FS_OFFSET;
+  long local_70;
+  long local_68;
+  long local_60;
+  undefined *local_58;
+  undefined1 local_50 [16];
+  int local_40;
+  long local_38;
+  undefined4 local_30;
+  long local_20;
+  
+  puVar8 = (undefined4 *)CONCAT44(in_register_0000003c,param_1);
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  *puVar8 = 0;
+  puVar8[6] = 0;
+  *(undefined8 *)(puVar8 + 8) = 0;
+  puVar8[10] = 6;
+  *(undefined1 (*) [16])(puVar8 + 2) = (undefined1  [16])0x0;
+  if (in_EDX != 0) goto LAB_001026f7;
+  local_68 = 0;
+  local_58 = &_LC8;
+  local_70 = 0;
+  auVar3._8_8_ = 0;
+  auVar3._0_8_ = local_50._8_8_;
+  local_50 = auVar3 << 0x40;
+  String::parse_latin1((StrRange *)&local_70);
+  local_58 = (undefined *)CONCAT44(local_58._4_4_,1);
+  local_40 = 0;
+  local_38 = 0;
+  local_50 = (undefined1  [16])0x0;
+  if (local_70 == 0) {
+LAB_001027e8:
+    local_30 = 6;
+    StringName::operator=((StringName *)(local_50 + 8),(StringName *)&local_68);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_38,(CowData *)&local_70);
+    local_30 = 6;
+    if (local_40 != 0x11) goto LAB_001027e8;
+    StringName::StringName((StringName *)&local_60,(String *)&local_38,false);
+    if (local_50._8_8_ == local_60) {
+      if ((StringName::configured != '\0') && (local_60 != 0)) {
+        StringName::unref();
+      }
+    }
+    else {
+      StringName::unref();
+      local_50._8_8_ = local_60;
+    }
+  }
+  lVar2 = local_70;
+  if (local_70 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_70 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_70 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_68 != 0)) {
+    StringName::unref();
+  }
+  *puVar8 = local_58._0_4_;
+  lVar2 = *(long *)(puVar8 + 2);
+  if (lVar2 != local_50._0_8_) {
+    if (lVar2 != 0) {
+      LOCK();
+      plVar1 = (long *)(lVar2 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        lVar2 = *(long *)(puVar8 + 2);
+        *(undefined8 *)(puVar8 + 2) = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    *(undefined8 *)(puVar8 + 2) = local_50._0_8_;
+    auVar5._8_8_ = 0;
+    auVar5._0_8_ = local_50._8_8_;
+    local_50 = auVar5 << 0x40;
+  }
+  if (*(long *)(puVar8 + 4) != local_50._8_8_) {
+    StringName::unref();
+    uVar6 = local_50._8_8_;
+    local_50._8_8_ = 0;
+    *(undefined8 *)(puVar8 + 4) = uVar6;
+  }
+  lVar7 = local_38;
+  puVar8[6] = local_40;
+  lVar2 = *(long *)(puVar8 + 8);
+  if (lVar2 == local_38) {
+    puVar8[10] = local_30;
+    if (lVar2 != 0) {
+      LOCK();
+      plVar1 = (long *)(lVar2 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        local_38 = 0;
+        Memory::free_static((void *)(lVar7 + -0x10),false);
+      }
+    }
+  }
+  else {
+    if (lVar2 != 0) {
+      LOCK();
+      plVar1 = (long *)(lVar2 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        lVar2 = *(long *)(puVar8 + 8);
+        *(undefined8 *)(puVar8 + 8) = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    *(long *)(puVar8 + 8) = local_38;
+    puVar8[10] = local_30;
+  }
+  if ((StringName::configured != '\0') && (local_50._8_8_ != 0)) {
+    StringName::unref();
+  }
+  uVar6 = local_50._0_8_;
+  if (local_50._0_8_ != 0) {
+    LOCK();
+    plVar1 = (long *)(local_50._0_8_ + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      auVar4._8_8_ = 0;
+      auVar4._0_8_ = local_50._8_8_;
+      local_50 = auVar4 << 0x40;
+      Memory::free_static((void *)(uVar6 + -0x10),false);
+    }
+  }
+LAB_001026f7:
+  if (local_20 != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return puVar8;
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::_gen_argument_type_info(int) const */
+
+undefined4 * MethodBindT<Vector<Vector3>const&>::_gen_argument_type_info(int param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  undefined1 auVar3 [16];
+  undefined1 auVar4 [16];
+  undefined1 auVar5 [16];
+  undefined8 uVar6;
+  long lVar7;
+  int in_EDX;
+  undefined4 in_register_0000003c;
+  undefined4 *puVar8;
+  long in_FS_OFFSET;
+  long local_70;
+  long local_68;
+  long local_60;
+  undefined *local_58;
+  undefined1 local_50 [16];
+  int local_40;
+  long local_38;
+  undefined4 local_30;
+  long local_20;
+  
+  puVar8 = (undefined4 *)CONCAT44(in_register_0000003c,param_1);
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  *puVar8 = 0;
+  puVar8[6] = 0;
+  *(undefined8 *)(puVar8 + 8) = 0;
+  puVar8[10] = 6;
+  *(undefined1 (*) [16])(puVar8 + 2) = (undefined1  [16])0x0;
+  if (in_EDX != 0) goto LAB_00102a17;
+  local_68 = 0;
+  local_58 = &_LC8;
+  local_70 = 0;
+  auVar3._8_8_ = 0;
+  auVar3._0_8_ = local_50._8_8_;
+  local_50 = auVar3 << 0x40;
+  String::parse_latin1((StrRange *)&local_70);
+  local_58 = (undefined *)CONCAT44(local_58._4_4_,0x24);
+  local_40 = 0;
+  local_38 = 0;
+  local_50 = (undefined1  [16])0x0;
+  if (local_70 == 0) {
+LAB_00102b08:
+    local_30 = 6;
+    StringName::operator=((StringName *)(local_50 + 8),(StringName *)&local_68);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_38,(CowData *)&local_70);
+    local_30 = 6;
+    if (local_40 != 0x11) goto LAB_00102b08;
+    StringName::StringName((StringName *)&local_60,(String *)&local_38,false);
+    if (local_50._8_8_ == local_60) {
+      if ((StringName::configured != '\0') && (local_60 != 0)) {
+        StringName::unref();
+      }
+    }
+    else {
+      StringName::unref();
+      local_50._8_8_ = local_60;
+    }
+  }
+  lVar2 = local_70;
+  if (local_70 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_70 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_70 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_68 != 0)) {
+    StringName::unref();
+  }
+  *puVar8 = local_58._0_4_;
+  lVar2 = *(long *)(puVar8 + 2);
+  if (lVar2 != local_50._0_8_) {
+    if (lVar2 != 0) {
+      LOCK();
+      plVar1 = (long *)(lVar2 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        lVar2 = *(long *)(puVar8 + 2);
+        *(undefined8 *)(puVar8 + 2) = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    *(undefined8 *)(puVar8 + 2) = local_50._0_8_;
+    auVar5._8_8_ = 0;
+    auVar5._0_8_ = local_50._8_8_;
+    local_50 = auVar5 << 0x40;
+  }
+  if (*(long *)(puVar8 + 4) != local_50._8_8_) {
+    StringName::unref();
+    uVar6 = local_50._8_8_;
+    local_50._8_8_ = 0;
+    *(undefined8 *)(puVar8 + 4) = uVar6;
+  }
+  lVar7 = local_38;
+  puVar8[6] = local_40;
+  lVar2 = *(long *)(puVar8 + 8);
+  if (lVar2 == local_38) {
+    puVar8[10] = local_30;
+    if (lVar2 != 0) {
+      LOCK();
+      plVar1 = (long *)(lVar2 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        local_38 = 0;
+        Memory::free_static((void *)(lVar7 + -0x10),false);
+      }
+    }
+  }
+  else {
+    if (lVar2 != 0) {
+      LOCK();
+      plVar1 = (long *)(lVar2 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        lVar2 = *(long *)(puVar8 + 8);
+        *(undefined8 *)(puVar8 + 8) = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    *(long *)(puVar8 + 8) = local_38;
+    puVar8[10] = local_30;
+  }
+  if ((StringName::configured != '\0') && (local_50._8_8_ != 0)) {
+    StringName::unref();
+  }
+  uVar6 = local_50._0_8_;
+  if (local_50._0_8_ != 0) {
+    LOCK();
+    plVar1 = (long *)(local_50._0_8_ + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      auVar4._8_8_ = 0;
+      auVar4._0_8_ = local_50._8_8_;
+      local_50 = auVar4 << 0x40;
+      Memory::free_static((void *)(uVar6 + -0x10),false);
+    }
+  }
+LAB_00102a17:
+  if (local_20 != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return puVar8;
+}
+
+
+
+/* RefCounted::_get_property_listv(List<PropertyInfo, DefaultAllocator>*, bool) const */
+
+void RefCounted::_get_property_listv(List *param_1,bool param_2)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  undefined1 (*pauVar4) [16];
+  undefined4 *puVar5;
+  undefined7 in_register_00000031;
+  List *pLVar6;
+  long in_FS_OFFSET;
+  long local_98;
+  long local_90;
+  long local_88;
+  long local_80;
+  char *local_78;
+  long local_70;
+  long local_68;
+  int local_60;
+  long local_58;
+  undefined4 local_50;
+  long local_40;
+  
+  pLVar6 = (List *)CONCAT71(in_register_00000031,param_2);
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  local_88 = 0;
+  local_90 = 0;
+  local_78 = "RefCounted";
+  local_70 = 10;
+  String::parse_latin1((StrRange *)&local_90);
+  local_78 = "RefCounted";
+  local_98 = 0;
+  local_70 = 10;
+  String::parse_latin1((StrRange *)&local_98);
+  local_78 = (char *)((ulong)local_78 & 0xffffffff00000000);
+  local_70 = 0;
+  if (local_98 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_70,(CowData *)&local_98);
+  }
+  local_68 = 0;
+  local_60 = 0;
+  local_58 = 0;
+  if (local_90 == 0) {
+LAB_00102e68:
+    local_50 = 0x80;
+    StringName::operator=((StringName *)&local_68,(StringName *)&local_88);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_58,(CowData *)&local_90);
+    local_50 = 0x80;
+    if (local_60 != 0x11) goto LAB_00102e68;
+    StringName::StringName((StringName *)&local_80,(String *)&local_58,false);
+    if (local_68 != local_80) {
+      StringName::unref();
+      lVar2 = *(long *)pLVar6;
+      local_68 = local_80;
+      goto joined_r0x00102e86;
+    }
+    if ((StringName::configured != '\0') && (local_80 != 0)) {
+      StringName::unref();
+    }
+  }
+  lVar2 = *(long *)pLVar6;
+joined_r0x00102e86:
+  if (lVar2 == 0) {
+    pauVar4 = (undefined1 (*) [16])operator_new(0x18,DefaultAllocator::alloc);
+    *(undefined1 (**) [16])pLVar6 = pauVar4;
+    *(undefined4 *)pauVar4[1] = 0;
+    *pauVar4 = (undefined1  [16])0x0;
+  }
+  puVar5 = (undefined4 *)operator_new(0x48,DefaultAllocator::alloc);
+  *(undefined8 *)(puVar5 + 8) = 0;
+  *(undefined1 (*) [16])(puVar5 + 2) = (undefined1  [16])0x0;
+  *puVar5 = 0;
+  puVar5[6] = 0;
+  puVar5[10] = 6;
+  *(undefined8 *)(puVar5 + 0x10) = 0;
+  *(undefined1 (*) [16])(puVar5 + 0xc) = (undefined1  [16])0x0;
+  *puVar5 = local_78._0_4_;
+  if (local_70 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 2),(CowData *)&local_70);
+  }
+  StringName::operator=((StringName *)(puVar5 + 4),(StringName *)&local_68);
+  puVar5[6] = local_60;
+  if (*(long *)(puVar5 + 8) != local_58) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 8),(CowData *)&local_58);
+  }
+  lVar3 = local_58;
+  puVar5[10] = local_50;
+  plVar1 = *(long **)pLVar6;
+  lVar2 = plVar1[1];
+  *(undefined8 *)(puVar5 + 0xc) = 0;
+  *(long **)(puVar5 + 0x10) = plVar1;
+  *(long *)(puVar5 + 0xe) = lVar2;
+  if (lVar2 != 0) {
+    *(undefined4 **)(lVar2 + 0x30) = puVar5;
+  }
+  plVar1[1] = (long)puVar5;
+  if (*plVar1 == 0) {
+    *plVar1 = (long)puVar5;
+  }
+  *(int *)(plVar1 + 2) = (int)plVar1[2] + 1;
+  if (local_58 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_58 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_58 = 0;
+      Memory::free_static((void *)(lVar3 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_68 != 0)) {
+    StringName::unref();
+  }
+  lVar2 = local_70;
+  if (local_70 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_70 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_70 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_98;
+  if (local_98 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_98 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_98 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_90;
+  if (local_90 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_90 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_90 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_88 != 0)) {
+    StringName::unref();
+  }
+  StringName::StringName((StringName *)&local_78,"RefCounted",false);
+  ClassDB::get_property_list((StringName *)&local_78,pLVar6,true,(Object *)param_1);
+  if ((StringName::configured != '\0') && (local_78 != (char *)0x0)) {
+    StringName::unref();
+  }
+  if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* Resource::is_class(String const&) const */
+
+undefined8 __thiscall Resource::is_class(Resource *this,String *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  char *pcVar3;
+  long lVar4;
+  long lVar5;
+  char cVar6;
+  undefined8 uVar7;
+  long lVar8;
+  long in_FS_OFFSET;
+  bool bVar9;
+  long local_60;
+  char *local_58;
+  size_t local_50;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  for (lVar2 = *(long *)(this + 8); lVar2 != 0; lVar2 = *(long *)(lVar2 + 8)) {
+    lVar4 = *(long *)(lVar2 + 0x20);
+    if (lVar4 == 0) {
+      local_60 = 0;
+    }
+    else {
+      pcVar3 = *(char **)(lVar4 + 8);
+      local_60 = 0;
+      if (pcVar3 == (char *)0x0) {
+        plVar1 = (long *)(*(long *)(lVar4 + 0x10) + -0x10);
+        if (*(long *)(lVar4 + 0x10) != 0) {
+          do {
+            lVar5 = *plVar1;
+            if (lVar5 == 0) goto LAB_0010316f;
+            LOCK();
+            lVar8 = *plVar1;
+            bVar9 = lVar5 == lVar8;
+            if (bVar9) {
+              *plVar1 = lVar5 + 1;
+              lVar8 = lVar5;
+            }
+            UNLOCK();
+          } while (!bVar9);
+          if (lVar8 != -1) {
+            local_60 = *(long *)(lVar4 + 0x10);
+          }
+        }
+      }
+      else {
+        local_50 = strlen(pcVar3);
+        local_58 = pcVar3;
+        String::parse_latin1((StrRange *)&local_60);
+      }
+    }
+LAB_0010316f:
+    cVar6 = String::operator==(param_1,(String *)&local_60);
+    lVar4 = local_60;
+    if (local_60 != 0) {
+      LOCK();
+      plVar1 = (long *)(local_60 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        local_60 = 0;
+        Memory::free_static((void *)(lVar4 + -0x10),false);
+      }
+    }
+    if (cVar6 != '\0') goto LAB_00103223;
+  }
+  cVar6 = String::operator==(param_1,"Resource");
+  if (cVar6 == '\0') {
+    for (lVar2 = *(long *)(this + 8); lVar2 != 0; lVar2 = *(long *)(lVar2 + 8)) {
+      lVar4 = *(long *)(lVar2 + 0x20);
+      if (lVar4 == 0) {
+        local_60 = 0;
+      }
+      else {
+        pcVar3 = *(char **)(lVar4 + 8);
+        local_60 = 0;
+        if (pcVar3 == (char *)0x0) {
+          plVar1 = (long *)(*(long *)(lVar4 + 0x10) + -0x10);
+          if (*(long *)(lVar4 + 0x10) != 0) {
+            do {
+              lVar5 = *plVar1;
+              if (lVar5 == 0) goto LAB_001032fb;
+              LOCK();
+              lVar8 = *plVar1;
+              bVar9 = lVar5 == lVar8;
+              if (bVar9) {
+                *plVar1 = lVar5 + 1;
+                lVar8 = lVar5;
+              }
+              UNLOCK();
+            } while (!bVar9);
+            if (lVar8 != -1) {
+              local_60 = *(long *)(lVar4 + 0x10);
+            }
+          }
+        }
+        else {
+          local_50 = strlen(pcVar3);
+          local_58 = pcVar3;
+          String::parse_latin1((StrRange *)&local_60);
+        }
+      }
+LAB_001032fb:
+      cVar6 = String::operator==(param_1,(String *)&local_60);
+      lVar4 = local_60;
+      if (local_60 != 0) {
+        LOCK();
+        plVar1 = (long *)(local_60 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_60 = 0;
+          Memory::free_static((void *)(lVar4 + -0x10),false);
+        }
+      }
+      if (cVar6 != '\0') goto LAB_00103223;
+    }
+    cVar6 = String::operator==(param_1,"RefCounted");
+    if (cVar6 == '\0') {
+      for (lVar2 = *(long *)(this + 8); lVar2 != 0; lVar2 = *(long *)(lVar2 + 8)) {
+        lVar4 = *(long *)(lVar2 + 0x20);
+        if (lVar4 == 0) {
+          local_60 = 0;
+        }
+        else {
+          pcVar3 = *(char **)(lVar4 + 8);
+          local_60 = 0;
+          if (pcVar3 == (char *)0x0) {
+            plVar1 = (long *)(*(long *)(lVar4 + 0x10) + -0x10);
+            if (*(long *)(lVar4 + 0x10) != 0) {
+              do {
+                lVar5 = *plVar1;
+                if (lVar5 == 0) goto LAB_001033db;
+                LOCK();
+                lVar8 = *plVar1;
+                bVar9 = lVar5 == lVar8;
+                if (bVar9) {
+                  *plVar1 = lVar5 + 1;
+                  lVar8 = lVar5;
+                }
+                UNLOCK();
+              } while (!bVar9);
+              if (lVar8 != -1) {
+                local_60 = *(long *)(lVar4 + 0x10);
+              }
+            }
+          }
+          else {
+            local_50 = strlen(pcVar3);
+            local_58 = pcVar3;
+            String::parse_latin1((StrRange *)&local_60);
+          }
+        }
+LAB_001033db:
+        cVar6 = String::operator==(param_1,(String *)&local_60);
+        lVar4 = local_60;
+        if (local_60 != 0) {
+          LOCK();
+          plVar1 = (long *)(local_60 + -0x10);
+          *plVar1 = *plVar1 + -1;
+          UNLOCK();
+          if (*plVar1 == 0) {
+            local_60 = 0;
+            Memory::free_static((void *)(lVar4 + -0x10),false);
+          }
+        }
+        if (cVar6 != '\0') goto LAB_00103223;
+      }
+      if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+        uVar7 = String::operator==(param_1,"Object");
+        return uVar7;
+      }
+      goto LAB_00103484;
+    }
+  }
+LAB_00103223:
+  if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return 1;
+  }
+LAB_00103484:
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* ConcavePolygonShape3D::is_class(String const&) const */
+
+undefined8 __thiscall ConcavePolygonShape3D::is_class(ConcavePolygonShape3D *this,String *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  char *pcVar3;
+  long lVar4;
+  long lVar5;
+  char cVar6;
+  undefined8 uVar7;
+  long lVar8;
+  long in_FS_OFFSET;
+  bool bVar9;
+  long local_60;
+  char *local_58;
+  size_t local_50;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  for (lVar2 = *(long *)(this + 8); lVar2 != 0; lVar2 = *(long *)(lVar2 + 8)) {
+    lVar4 = *(long *)(lVar2 + 0x20);
+    if (lVar4 == 0) {
+      local_60 = 0;
+    }
+    else {
+      pcVar3 = *(char **)(lVar4 + 8);
+      local_60 = 0;
+      if (pcVar3 == (char *)0x0) {
+        plVar1 = (long *)(*(long *)(lVar4 + 0x10) + -0x10);
+        if (*(long *)(lVar4 + 0x10) != 0) {
+          do {
+            lVar5 = *plVar1;
+            if (lVar5 == 0) goto LAB_001034ff;
+            LOCK();
+            lVar8 = *plVar1;
+            bVar9 = lVar5 == lVar8;
+            if (bVar9) {
+              *plVar1 = lVar5 + 1;
+              lVar8 = lVar5;
+            }
+            UNLOCK();
+          } while (!bVar9);
+          if (lVar8 != -1) {
+            local_60 = *(long *)(lVar4 + 0x10);
+          }
+        }
+      }
+      else {
+        local_50 = strlen(pcVar3);
+        local_58 = pcVar3;
+        String::parse_latin1((StrRange *)&local_60);
+      }
+    }
+LAB_001034ff:
+    cVar6 = String::operator==(param_1,(String *)&local_60);
+    lVar4 = local_60;
+    if (local_60 != 0) {
+      LOCK();
+      plVar1 = (long *)(local_60 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        local_60 = 0;
+        Memory::free_static((void *)(lVar4 + -0x10),false);
+      }
+    }
+    if (cVar6 != '\0') goto LAB_001035b3;
+  }
+  cVar6 = String::operator==(param_1,"ConcavePolygonShape3D");
+  if (cVar6 == '\0') {
+    for (lVar2 = *(long *)(this + 8); lVar2 != 0; lVar2 = *(long *)(lVar2 + 8)) {
+      lVar4 = *(long *)(lVar2 + 0x20);
+      if (lVar4 == 0) {
+        local_60 = 0;
+      }
+      else {
+        pcVar3 = *(char **)(lVar4 + 8);
+        local_60 = 0;
+        if (pcVar3 == (char *)0x0) {
+          plVar1 = (long *)(*(long *)(lVar4 + 0x10) + -0x10);
+          if (*(long *)(lVar4 + 0x10) != 0) {
+            do {
+              lVar5 = *plVar1;
+              if (lVar5 == 0) goto LAB_00103673;
+              LOCK();
+              lVar8 = *plVar1;
+              bVar9 = lVar5 == lVar8;
+              if (bVar9) {
+                *plVar1 = lVar5 + 1;
+                lVar8 = lVar5;
+              }
+              UNLOCK();
+            } while (!bVar9);
+            if (lVar8 != -1) {
+              local_60 = *(long *)(lVar4 + 0x10);
+            }
+          }
+        }
+        else {
+          local_50 = strlen(pcVar3);
+          local_58 = pcVar3;
+          String::parse_latin1((StrRange *)&local_60);
+        }
+      }
+LAB_00103673:
+      cVar6 = String::operator==(param_1,(String *)&local_60);
+      lVar4 = local_60;
+      if (local_60 != 0) {
+        LOCK();
+        plVar1 = (long *)(local_60 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_60 = 0;
+          Memory::free_static((void *)(lVar4 + -0x10),false);
+        }
+      }
+      if (cVar6 != '\0') goto LAB_001035b3;
+    }
+    cVar6 = String::operator==(param_1,"Shape3D");
+    if (cVar6 == '\0') {
+      if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+        uVar7 = Resource::is_class((Resource *)this,param_1);
+        return uVar7;
+      }
+      goto LAB_0010371c;
+    }
+  }
+LAB_001035b3:
+  if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return 1;
+  }
+LAB_0010371c:
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* Resource::_get_property_listv(List<PropertyInfo, DefaultAllocator>*, bool) const */
+
+void __thiscall Resource::_get_property_listv(Resource *this,List *param_1,bool param_2)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  undefined1 (*pauVar4) [16];
+  undefined4 *puVar5;
+  long in_FS_OFFSET;
+  long local_98;
+  long local_90;
+  long local_88;
+  long local_80;
+  char *local_78;
+  long local_70;
+  long local_68;
+  int local_60;
+  long local_58;
+  undefined4 local_50;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  if (!param_2) {
+    RefCounted::_get_property_listv((List *)this,SUB81(param_1,0));
+  }
+  local_88 = 0;
+  local_90 = 0;
+  local_78 = "Resource";
+  local_70 = 8;
+  String::parse_latin1((StrRange *)&local_90);
+  local_78 = "Resource";
+  local_98 = 0;
+  local_70 = 8;
+  String::parse_latin1((StrRange *)&local_98);
+  local_78 = (char *)((ulong)local_78 & 0xffffffff00000000);
+  local_70 = 0;
+  if (local_98 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_70,(CowData *)&local_98);
+  }
+  local_68 = 0;
+  local_60 = 0;
+  local_58 = 0;
+  if (local_90 == 0) {
+LAB_001038a8:
+    local_50 = 0x80;
+    StringName::operator=((StringName *)&local_68,(StringName *)&local_88);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_58,(CowData *)&local_90);
+    local_50 = 0x80;
+    if (local_60 != 0x11) goto LAB_001038a8;
+    StringName::StringName((StringName *)&local_80,(String *)&local_58,false);
+    if (local_68 != local_80) {
+      StringName::unref();
+      lVar2 = *(long *)param_1;
+      local_68 = local_80;
+      goto joined_r0x001038c5;
+    }
+    if ((StringName::configured != '\0') && (local_80 != 0)) {
+      StringName::unref();
+    }
+  }
+  lVar2 = *(long *)param_1;
+joined_r0x001038c5:
+  if (lVar2 == 0) {
+    pauVar4 = (undefined1 (*) [16])operator_new(0x18,DefaultAllocator::alloc);
+    *(undefined1 (**) [16])param_1 = pauVar4;
+    *(undefined4 *)pauVar4[1] = 0;
+    *pauVar4 = (undefined1  [16])0x0;
+  }
+  puVar5 = (undefined4 *)operator_new(0x48,DefaultAllocator::alloc);
+  *(undefined8 *)(puVar5 + 8) = 0;
+  *(undefined1 (*) [16])(puVar5 + 2) = (undefined1  [16])0x0;
+  *puVar5 = 0;
+  puVar5[6] = 0;
+  puVar5[10] = 6;
+  *(undefined8 *)(puVar5 + 0x10) = 0;
+  *(undefined1 (*) [16])(puVar5 + 0xc) = (undefined1  [16])0x0;
+  *puVar5 = local_78._0_4_;
+  if (local_70 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 2),(CowData *)&local_70);
+  }
+  StringName::operator=((StringName *)(puVar5 + 4),(StringName *)&local_68);
+  puVar5[6] = local_60;
+  if (*(long *)(puVar5 + 8) != local_58) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 8),(CowData *)&local_58);
+  }
+  lVar3 = local_58;
+  puVar5[10] = local_50;
+  plVar1 = *(long **)param_1;
+  lVar2 = plVar1[1];
+  *(undefined8 *)(puVar5 + 0xc) = 0;
+  *(long **)(puVar5 + 0x10) = plVar1;
+  *(long *)(puVar5 + 0xe) = lVar2;
+  if (lVar2 != 0) {
+    *(undefined4 **)(lVar2 + 0x30) = puVar5;
+  }
+  plVar1[1] = (long)puVar5;
+  if (*plVar1 == 0) {
+    *plVar1 = (long)puVar5;
+  }
+  *(int *)(plVar1 + 2) = (int)plVar1[2] + 1;
+  if (local_58 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_58 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_58 = 0;
+      Memory::free_static((void *)(lVar3 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_68 != 0)) {
+    StringName::unref();
+  }
+  lVar2 = local_70;
+  if (local_70 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_70 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_70 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_98;
+  if (local_98 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_98 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_98 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_90;
+  if (local_90 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_90 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_90 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_88 != 0)) {
+    StringName::unref();
+  }
+  StringName::StringName((StringName *)&local_78,"Resource",false);
+  ClassDB::get_property_list((StringName *)&local_78,param_1,true,(Object *)this);
+  if ((StringName::configured != '\0') && (local_78 != (char *)0x0)) {
+    StringName::unref();
+  }
+  if (param_2) {
+    if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+      RefCounted::_get_property_listv((List *)this,SUB81(param_1,0));
+      return;
+    }
+  }
+  else if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* Shape3D::_get_property_listv(List<PropertyInfo, DefaultAllocator>*, bool) const */
+
+void __thiscall Shape3D::_get_property_listv(Shape3D *this,List *param_1,bool param_2)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  undefined1 (*pauVar4) [16];
+  undefined4 *puVar5;
+  long in_FS_OFFSET;
+  long local_98;
+  long local_90;
+  long local_88;
+  long local_80;
+  char *local_78;
+  long local_70;
+  long local_68;
+  int local_60;
+  long local_58;
+  undefined4 local_50;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  if (!param_2) {
+    Resource::_get_property_listv((Resource *)this,param_1,false);
+  }
+  local_88 = 0;
+  local_90 = 0;
+  local_78 = "Shape3D";
+  local_70 = 7;
+  String::parse_latin1((StrRange *)&local_90);
+  local_78 = "Shape3D";
+  local_98 = 0;
+  local_70 = 7;
+  String::parse_latin1((StrRange *)&local_98);
+  local_78 = (char *)((ulong)local_78 & 0xffffffff00000000);
+  local_70 = 0;
+  if (local_98 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_70,(CowData *)&local_98);
+  }
+  local_68 = 0;
+  local_60 = 0;
+  local_58 = 0;
+  if (local_90 == 0) {
+LAB_00103cf8:
+    local_50 = 0x80;
+    StringName::operator=((StringName *)&local_68,(StringName *)&local_88);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_58,(CowData *)&local_90);
+    local_50 = 0x80;
+    if (local_60 != 0x11) goto LAB_00103cf8;
+    StringName::StringName((StringName *)&local_80,(String *)&local_58,false);
+    if (local_68 != local_80) {
+      StringName::unref();
+      lVar2 = *(long *)param_1;
+      local_68 = local_80;
+      goto joined_r0x00103d15;
+    }
+    if ((StringName::configured != '\0') && (local_80 != 0)) {
+      StringName::unref();
+    }
+  }
+  lVar2 = *(long *)param_1;
+joined_r0x00103d15:
+  if (lVar2 == 0) {
+    pauVar4 = (undefined1 (*) [16])operator_new(0x18,DefaultAllocator::alloc);
+    *(undefined1 (**) [16])param_1 = pauVar4;
+    *(undefined4 *)pauVar4[1] = 0;
+    *pauVar4 = (undefined1  [16])0x0;
+  }
+  puVar5 = (undefined4 *)operator_new(0x48,DefaultAllocator::alloc);
+  *(undefined8 *)(puVar5 + 8) = 0;
+  *(undefined1 (*) [16])(puVar5 + 2) = (undefined1  [16])0x0;
+  *puVar5 = 0;
+  puVar5[6] = 0;
+  puVar5[10] = 6;
+  *(undefined8 *)(puVar5 + 0x10) = 0;
+  *(undefined1 (*) [16])(puVar5 + 0xc) = (undefined1  [16])0x0;
+  *puVar5 = local_78._0_4_;
+  if (local_70 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 2),(CowData *)&local_70);
+  }
+  StringName::operator=((StringName *)(puVar5 + 4),(StringName *)&local_68);
+  puVar5[6] = local_60;
+  if (*(long *)(puVar5 + 8) != local_58) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 8),(CowData *)&local_58);
+  }
+  lVar3 = local_58;
+  puVar5[10] = local_50;
+  plVar1 = *(long **)param_1;
+  lVar2 = plVar1[1];
+  *(undefined8 *)(puVar5 + 0xc) = 0;
+  *(long **)(puVar5 + 0x10) = plVar1;
+  *(long *)(puVar5 + 0xe) = lVar2;
+  if (lVar2 != 0) {
+    *(undefined4 **)(lVar2 + 0x30) = puVar5;
+  }
+  plVar1[1] = (long)puVar5;
+  if (*plVar1 == 0) {
+    *plVar1 = (long)puVar5;
+  }
+  *(int *)(plVar1 + 2) = (int)plVar1[2] + 1;
+  if (local_58 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_58 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_58 = 0;
+      Memory::free_static((void *)(lVar3 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_68 != 0)) {
+    StringName::unref();
+  }
+  lVar2 = local_70;
+  if (local_70 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_70 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_70 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_98;
+  if (local_98 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_98 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_98 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_90;
+  if (local_90 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_90 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_90 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_88 != 0)) {
+    StringName::unref();
+  }
+  StringName::StringName((StringName *)&local_78,"Shape3D",false);
+  ClassDB::get_property_list((StringName *)&local_78,param_1,true,(Object *)this);
+  if ((StringName::configured != '\0') && (local_78 != (char *)0x0)) {
+    StringName::unref();
+  }
+  if (param_2) {
+    if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+      Resource::_get_property_listv((Resource *)this,param_1,true);
+      return;
+    }
+  }
+  else if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* ConcavePolygonShape3D::_get_property_listv(List<PropertyInfo, DefaultAllocator>*, bool) const */
+
+void __thiscall
+ConcavePolygonShape3D::_get_property_listv(ConcavePolygonShape3D *this,List *param_1,bool param_2)
+
+{
+  long *plVar1;
+  long lVar2;
+  long lVar3;
+  undefined1 (*pauVar4) [16];
+  undefined4 *puVar5;
+  long in_FS_OFFSET;
+  long local_98;
+  long local_90;
+  long local_88;
+  long local_80;
+  char *local_78;
+  long local_70;
+  long local_68;
+  int local_60;
+  long local_58;
+  undefined4 local_50;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  if (!param_2) {
+    Shape3D::_get_property_listv((Shape3D *)this,param_1,false);
+  }
+  local_88 = 0;
+  local_90 = 0;
+  local_78 = "ConcavePolygonShape3D";
+  local_70 = 0x15;
+  String::parse_latin1((StrRange *)&local_90);
+  local_78 = "ConcavePolygonShape3D";
+  local_98 = 0;
+  local_70 = 0x15;
+  String::parse_latin1((StrRange *)&local_98);
+  local_78 = (char *)((ulong)local_78 & 0xffffffff00000000);
+  local_70 = 0;
+  if (local_98 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_70,(CowData *)&local_98);
+  }
+  local_68 = 0;
+  local_60 = 0;
+  local_58 = 0;
+  if (local_90 == 0) {
+LAB_00104148:
+    local_50 = 0x80;
+    StringName::operator=((StringName *)&local_68,(StringName *)&local_88);
+  }
+  else {
+    CowData<char32_t>::_ref((CowData<char32_t> *)&local_58,(CowData *)&local_90);
+    local_50 = 0x80;
+    if (local_60 != 0x11) goto LAB_00104148;
+    StringName::StringName((StringName *)&local_80,(String *)&local_58,false);
+    if (local_68 != local_80) {
+      StringName::unref();
+      lVar2 = *(long *)param_1;
+      local_68 = local_80;
+      goto joined_r0x00104165;
+    }
+    if ((StringName::configured != '\0') && (local_80 != 0)) {
+      StringName::unref();
+    }
+  }
+  lVar2 = *(long *)param_1;
+joined_r0x00104165:
+  if (lVar2 == 0) {
+    pauVar4 = (undefined1 (*) [16])operator_new(0x18,DefaultAllocator::alloc);
+    *(undefined1 (**) [16])param_1 = pauVar4;
+    *(undefined4 *)pauVar4[1] = 0;
+    *pauVar4 = (undefined1  [16])0x0;
+  }
+  puVar5 = (undefined4 *)operator_new(0x48,DefaultAllocator::alloc);
+  *(undefined8 *)(puVar5 + 8) = 0;
+  *(undefined1 (*) [16])(puVar5 + 2) = (undefined1  [16])0x0;
+  *puVar5 = 0;
+  puVar5[6] = 0;
+  puVar5[10] = 6;
+  *(undefined8 *)(puVar5 + 0x10) = 0;
+  *(undefined1 (*) [16])(puVar5 + 0xc) = (undefined1  [16])0x0;
+  *puVar5 = local_78._0_4_;
+  if (local_70 != 0) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 2),(CowData *)&local_70);
+  }
+  StringName::operator=((StringName *)(puVar5 + 4),(StringName *)&local_68);
+  puVar5[6] = local_60;
+  if (*(long *)(puVar5 + 8) != local_58) {
+    CowData<char32_t>::_ref((CowData<char32_t> *)(puVar5 + 8),(CowData *)&local_58);
+  }
+  lVar3 = local_58;
+  puVar5[10] = local_50;
+  plVar1 = *(long **)param_1;
+  lVar2 = plVar1[1];
+  *(undefined8 *)(puVar5 + 0xc) = 0;
+  *(long **)(puVar5 + 0x10) = plVar1;
+  *(long *)(puVar5 + 0xe) = lVar2;
+  if (lVar2 != 0) {
+    *(undefined4 **)(lVar2 + 0x30) = puVar5;
+  }
+  plVar1[1] = (long)puVar5;
+  if (*plVar1 == 0) {
+    *plVar1 = (long)puVar5;
+  }
+  *(int *)(plVar1 + 2) = (int)plVar1[2] + 1;
+  if (local_58 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_58 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_58 = 0;
+      Memory::free_static((void *)(lVar3 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_68 != 0)) {
+    StringName::unref();
+  }
+  lVar2 = local_70;
+  if (local_70 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_70 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_70 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_98;
+  if (local_98 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_98 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_98 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  lVar2 = local_90;
+  if (local_90 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_90 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_90 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if ((StringName::configured != '\0') && (local_88 != 0)) {
+    StringName::unref();
+  }
+  StringName::StringName((StringName *)&local_78,"ConcavePolygonShape3D",false);
+  ClassDB::get_property_list((StringName *)&local_78,param_1,true,(Object *)this);
+  if ((StringName::configured != '\0') && (local_78 != (char *)0x0)) {
+    StringName::unref();
+  }
+  if (param_2) {
+    if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+      Shape3D::_get_property_listv((Shape3D *)this,param_1,true);
+      return;
+    }
+  }
+  else if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* ConcavePolygonShape3D::DrawEdge::hash(ConcavePolygonShape3D::DrawEdge const&) */
+
+int ConcavePolygonShape3D::DrawEdge::hash(DrawEdge *param_1)
+
+{
+  float fVar1;
+  uint uVar2;
+  uint uVar3;
+  
+  fVar1 = *(float *)param_1;
+  uVar2 = 0x3413905a;
+  if ((fVar1 != 0.0) && (uVar2 = 0x22afa5cc, !NAN(fVar1))) {
+    uVar2 = ((int)fVar1 * 0x16a88000 | (uint)((int)fVar1 * -0x3361d2af) >> 0x11) * 0x1b873593 ^
+            0x7f07c65;
+    uVar2 = (uVar2 << 0xd | uVar2 >> 0x13) * 5 + 0xe6546b64;
+  }
+  fVar1 = *(float *)(param_1 + 4);
+  if (fVar1 != 0.0) {
+    if (NAN(fVar1)) {
+      uVar2 = uVar2 ^ 0x2db3efa0;
+    }
+    else {
+      uVar2 = uVar2 ^ ((int)fVar1 * 0x16a88000 | (uint)((int)fVar1 * -0x3361d2af) >> 0x11) *
+                      0x1b873593;
+    }
+  }
+  fVar1 = *(float *)(param_1 + 8);
+  uVar2 = (uVar2 << 0xd | uVar2 >> 0x13) * 5 + 0xe6546b64;
+  if (fVar1 != 0.0) {
+    if (NAN(fVar1)) {
+      uVar2 = uVar2 ^ 0x2db3efa0;
+    }
+    else {
+      uVar2 = uVar2 ^ ((int)fVar1 * 0x16a88000 | (uint)((int)fVar1 * -0x3361d2af) >> 0x11) *
+                      0x1b873593;
+    }
+  }
+  fVar1 = *(float *)(param_1 + 0xc);
+  uVar2 = (uVar2 << 0xd | uVar2 >> 0x13) * 5 + 0xe6546b64;
+  uVar2 = (uVar2 >> 0x10 ^ uVar2) * -0x7a143595;
+  uVar2 = (uVar2 ^ uVar2 >> 0xd) * -0x3d4d51cb;
+  uVar2 = uVar2 ^ uVar2 >> 0x10;
+  uVar3 = (uVar2 * 0x16a88000 | uVar2 * -0x3361d2af >> 0x11) * 0x1b873593 ^ 0x7f07c65;
+  uVar2 = 0x3413905a;
+  if ((fVar1 != 0.0) && (uVar2 = 0x22afa5cc, !NAN(fVar1))) {
+    uVar2 = ((int)fVar1 * 0x16a88000 | (uint)((int)fVar1 * -0x3361d2af) >> 0x11) * 0x1b873593 ^
+            0x7f07c65;
+    uVar2 = (uVar2 << 0xd | uVar2 >> 0x13) * 5 + 0xe6546b64;
+  }
+  fVar1 = *(float *)(param_1 + 0x10);
+  if (fVar1 != 0.0) {
+    if (NAN(fVar1)) {
+      uVar2 = uVar2 ^ 0x2db3efa0;
+    }
+    else {
+      uVar2 = uVar2 ^ ((int)fVar1 * 0x16a88000 | (uint)((int)fVar1 * -0x3361d2af) >> 0x11) *
+                      0x1b873593;
+    }
+  }
+  fVar1 = *(float *)(param_1 + 0x14);
+  uVar2 = (uVar2 << 0xd | uVar2 >> 0x13) * 5 + 0xe6546b64;
+  if (fVar1 != 0.0) {
+    if (NAN(fVar1)) {
+      uVar2 = uVar2 ^ 0x2db3efa0;
+    }
+    else {
+      uVar2 = uVar2 ^ ((int)fVar1 * 0x16a88000 | (uint)((int)fVar1 * -0x3361d2af) >> 0x11) *
+                      0x1b873593;
+    }
+  }
+  uVar2 = (uVar2 << 0xd | uVar2 >> 0x13) * 5 + 0xe6546b64;
+  uVar2 = (uVar2 >> 0x10 ^ uVar2) * -0x7a143595;
+  uVar2 = (uVar2 ^ uVar2 >> 0xd) * -0x3d4d51cb;
+  uVar2 = uVar2 ^ uVar2 >> 0x10;
+  uVar2 = (uVar2 * 0x16a88000 | uVar2 * -0x3361d2af >> 0x11) * 0x1b873593 ^
+          (uVar3 << 0xd | uVar3 >> 0x13) * 5 + 0xe6546b64;
+  return (uVar2 << 0xd | uVar2 >> 0x13) * 5 + -0x19ab949c;
+}
+
+
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* HashSet<ConcavePolygonShape3D::DrawEdge, ConcavePolygonShape3D::DrawEdge,
+   HashMapComparatorDefault<ConcavePolygonShape3D::DrawEdge>
+   >::insert(ConcavePolygonShape3D::DrawEdge const&) */
+
+undefined1  [16]
+HashSet<ConcavePolygonShape3D::DrawEdge,ConcavePolygonShape3D::DrawEdge,HashMapComparatorDefault<ConcavePolygonShape3D::DrawEdge>>
+::insert(DrawEdge *param_1)
+
+{
+  undefined8 *puVar1;
+  float fVar2;
+  uint uVar3;
+  long lVar4;
+  void *pvVar5;
+  void *pvVar6;
+  long lVar7;
+  undefined1 auVar8 [16];
+  undefined1 auVar9 [16];
+  undefined1 auVar10 [16];
+  undefined1 auVar11 [16];
+  undefined1 auVar12 [16];
+  undefined1 auVar13 [16];
+  undefined1 auVar14 [16];
+  undefined1 auVar15 [16];
+  undefined1 auVar16 [16];
+  undefined1 auVar17 [16];
+  undefined1 auVar18 [16];
+  undefined1 auVar19 [16];
+  undefined1 auVar20 [16];
+  undefined1 auVar21 [16];
+  undefined1 auVar22 [16];
+  undefined1 auVar23 [16];
+  undefined1 auVar24 [16];
+  undefined1 auVar25 [16];
+  undefined1 auVar26 [16];
+  undefined1 auVar27 [16];
+  undefined1 auVar28 [16];
+  undefined1 auVar29 [16];
+  undefined1 auVar30 [16];
+  undefined1 auVar31 [16];
+  uint uVar32;
+  uint uVar33;
+  uint uVar34;
+  float fVar35;
+  ulong uVar36;
+  undefined8 uVar37;
+  long lVar38;
+  long lVar39;
+  long lVar40;
+  uint *puVar41;
+  uint uVar42;
+  int iVar43;
+  DrawEdge *in_RDX;
+  long lVar44;
+  ulong uVar45;
+  float *in_RSI;
+  ulong uVar46;
+  ulong uVar47;
+  undefined4 uVar48;
+  uint *puVar49;
+  float fVar50;
+  undefined1 auVar51 [16];
+  float *pfStack_98;
+  
+  fVar2 = in_RSI[8];
+  lVar38 = *(long *)in_RSI;
+  uVar33 = *(uint *)(hash_table_size_primes + (ulong)(uint)fVar2 * 4);
+  if (lVar38 == 0) {
+    uVar36 = (ulong)uVar33 * 4;
+    uVar37 = Memory::alloc_static(uVar36,false);
+    *(undefined8 *)(in_RSI + 6) = uVar37;
+    uVar37 = Memory::alloc_static((ulong)uVar33 * 0x18,false);
+    *(undefined8 *)in_RSI = uVar37;
+    uVar37 = Memory::alloc_static(uVar36,false);
+    *(undefined8 *)(in_RSI + 4) = uVar37;
+    uVar37 = Memory::alloc_static(uVar36,false);
+    *(undefined8 *)(in_RSI + 2) = uVar37;
+    if (uVar33 != 0) {
+      memset(*(void **)(in_RSI + 6),0,uVar36);
+    }
+    fVar50 = in_RSI[9];
+    lVar38 = *(long *)in_RSI;
+    fVar2 = in_RSI[8];
+    if (lVar38 != 0) goto LAB_001047a2;
+  }
+  else {
+    fVar50 = in_RSI[9];
+LAB_001047a2:
+    if (fVar50 != 0.0) {
+      uVar34 = *(uint *)(hash_table_size_primes + (ulong)(uint)fVar2 * 4);
+      uVar36 = CONCAT44(0,uVar34);
+      lVar4 = *(long *)(hash_table_size_primes_inv + (ulong)(uint)fVar2 * 8);
+      uVar32 = ConcavePolygonShape3D::DrawEdge::hash(in_RDX);
+      uVar42 = 1;
+      if (uVar32 != 0) {
+        uVar42 = uVar32;
+      }
+      auVar8._8_8_ = 0;
+      auVar8._0_8_ = (ulong)uVar42 * lVar4;
+      auVar20._8_8_ = 0;
+      auVar20._0_8_ = uVar36;
+      lVar44 = SUB168(auVar8 * auVar20,8);
+      iVar43 = SUB164(auVar8 * auVar20,8);
+      uVar32 = *(uint *)(*(long *)(in_RSI + 6) + lVar44 * 4);
+      uVar45 = (ulong)uVar32;
+      if (uVar32 != 0) {
+        uVar32 = 0;
+        do {
+          if (uVar42 == (uint)uVar45) {
+            fVar35 = *(float *)(*(long *)(in_RSI + 2) + lVar44 * 4);
+            pfStack_98 = (float *)(lVar38 + (ulong)(uint)fVar35 * 0x18);
+            if (((((*pfStack_98 == *(float *)in_RDX) && (pfStack_98[1] == *(float *)(in_RDX + 4)))
+                 && (pfStack_98[2] == *(float *)(in_RDX + 8))) &&
+                ((pfStack_98[3] == *(float *)(in_RDX + 0xc) &&
+                 (pfStack_98[4] == *(float *)(in_RDX + 0x10))))) &&
+               (pfStack_98[5] == *(float *)(in_RDX + 0x14))) goto LAB_00104c8b;
+          }
+          uVar32 = uVar32 + 1;
+          auVar9._8_8_ = 0;
+          auVar9._0_8_ = (ulong)(iVar43 + 1) * lVar4;
+          auVar21._8_8_ = 0;
+          auVar21._0_8_ = uVar36;
+          lVar44 = SUB168(auVar9 * auVar21,8);
+          uVar3 = *(uint *)(*(long *)(in_RSI + 6) + lVar44 * 4);
+          uVar45 = (ulong)uVar3;
+          iVar43 = SUB164(auVar9 * auVar21,8);
+        } while ((uVar3 != 0) &&
+                (auVar10._8_8_ = 0, auVar10._0_8_ = uVar45 * lVar4, auVar22._8_8_ = 0,
+                auVar22._0_8_ = uVar36, auVar11._8_8_ = 0,
+                auVar11._0_8_ = (ulong)((uVar34 + iVar43) - SUB164(auVar10 * auVar22,8)) * lVar4,
+                auVar23._8_8_ = 0, auVar23._0_8_ = uVar36, uVar32 <= SUB164(auVar11 * auVar23,8)));
+      }
+    }
+  }
+  if ((float)uVar33 * __LC13 < (float)((int)fVar50 + 1)) {
+    if (fVar2 == 3.92364e-44) {
+      pfStack_98 = (float *)0x0;
+      _err_print_error("_insert","./core/templates/hash_set.h",0xbf,
+                       "Condition \"capacity_index + 1 == HASH_TABLE_SIZE_MAX\" is true. Returning: -1"
+                       ,"Hash table maximum capacity reached, aborting insertion.",0);
+      fVar50 = in_RSI[9];
+      lVar38 = *(long *)in_RSI;
+      fVar35 = -NAN;
+      goto LAB_00104c8b;
+    }
+    uVar36 = (ulong)((int)fVar2 + 1U);
+    if ((int)fVar2 + 1U < 2) {
+      uVar36 = 2;
+    }
+    uVar33 = *(uint *)(hash_table_size_primes + uVar36 * 4);
+    in_RSI[8] = (float)uVar36;
+    pvVar5 = *(void **)(in_RSI + 6);
+    uVar36 = (ulong)uVar33 * 4;
+    pvVar6 = *(void **)(in_RSI + 4);
+    uVar37 = Memory::alloc_static(uVar36,false);
+    *(undefined8 *)(in_RSI + 6) = uVar37;
+    uVar37 = Memory::realloc_static(*(void **)in_RSI,(ulong)uVar33 * 0x18,false);
+    *(undefined8 *)in_RSI = uVar37;
+    uVar37 = Memory::alloc_static(uVar36,false);
+    *(undefined8 *)(in_RSI + 4) = uVar37;
+    lVar38 = Memory::realloc_static(*(void **)(in_RSI + 2),uVar36,false);
+    *(long *)(in_RSI + 2) = lVar38;
+    if (uVar33 != 0) {
+      memset(*(void **)(in_RSI + 6),0,uVar36);
+    }
+    if (in_RSI[9] != 0.0) {
+      uVar36 = 0;
+      lVar4 = *(long *)(in_RSI + 6);
+      lVar44 = *(long *)(in_RSI + 4);
+      do {
+        uVar47 = uVar36 & 0xffffffff;
+        uVar48 = (undefined4)uVar36;
+        uVar32 = 0;
+        uVar33 = *(uint *)((long)pvVar5 + (ulong)*(uint *)((long)pvVar6 + uVar36 * 4) * 4);
+        uVar45 = (ulong)uVar33;
+        lVar39 = *(long *)(hash_table_size_primes_inv + (ulong)(uint)in_RSI[8] * 8);
+        uVar34 = *(uint *)(hash_table_size_primes + (ulong)(uint)in_RSI[8] * 4);
+        uVar46 = CONCAT44(0,uVar34);
+        auVar12._8_8_ = 0;
+        auVar12._0_8_ = uVar45 * lVar39;
+        auVar24._8_8_ = 0;
+        auVar24._0_8_ = uVar46;
+        lVar40 = SUB168(auVar12 * auVar24,8) * 4;
+        iVar43 = SUB164(auVar12 * auVar24,8);
+        puVar49 = (uint *)(lVar4 + lVar40);
+        uVar42 = *puVar49;
+        if (uVar42 == 0) {
+          lVar39 = uVar36 * 4;
+        }
+        else {
+          do {
+            auVar13._8_8_ = 0;
+            auVar13._0_8_ = (ulong)uVar42 * lVar39;
+            auVar25._8_8_ = 0;
+            auVar25._0_8_ = uVar46;
+            auVar14._8_8_ = 0;
+            auVar14._0_8_ = (ulong)((uVar34 + iVar43) - SUB164(auVar13 * auVar25,8)) * lVar39;
+            auVar26._8_8_ = 0;
+            auVar26._0_8_ = uVar46;
+            uVar33 = SUB164(auVar14 * auVar26,8);
+            if (uVar33 < uVar32) {
+              *(int *)(lVar44 + uVar47 * 4) = iVar43;
+              uVar42 = *puVar49;
+              *puVar49 = (uint)uVar45;
+              uVar32 = *(uint *)(lVar40 + lVar38);
+              uVar45 = (ulong)uVar42;
+              *(uint *)(lVar40 + lVar38) = (uint)uVar47;
+              uVar47 = (ulong)uVar32;
+              uVar32 = uVar33;
+            }
+            uVar48 = (undefined4)uVar47;
+            uVar33 = (uint)uVar45;
+            uVar32 = uVar32 + 1;
+            auVar15._8_8_ = 0;
+            auVar15._0_8_ = (ulong)(iVar43 + 1) * lVar39;
+            auVar27._8_8_ = 0;
+            auVar27._0_8_ = uVar46;
+            lVar40 = SUB168(auVar15 * auVar27,8) * 4;
+            iVar43 = SUB164(auVar15 * auVar27,8);
+            puVar49 = (uint *)(lVar4 + lVar40);
+            uVar42 = *puVar49;
+          } while (uVar42 != 0);
+          lVar39 = uVar47 << 2;
+        }
+        *puVar49 = uVar33;
+        uVar36 = uVar36 + 1;
+        *(int *)(lVar44 + lVar39) = iVar43;
+        *(undefined4 *)(lVar38 + lVar40) = uVar48;
+      } while ((uint)(float)uVar36 < (uint)in_RSI[9]);
+    }
+    Memory::free_static(pvVar5,false);
+    Memory::free_static(pvVar6,false);
+    fVar2 = in_RSI[8];
+    fVar50 = in_RSI[9];
+    lVar38 = *(long *)in_RSI;
+  }
+  uVar36 = (ulong)(uint)fVar50;
+  uVar34 = ConcavePolygonShape3D::DrawEdge::hash(in_RDX);
+  uVar37 = *(undefined8 *)(in_RDX + 8);
+  uVar33 = 1;
+  if (uVar34 != 0) {
+    uVar33 = uVar34;
+  }
+  uVar32 = 0;
+  puVar1 = (undefined8 *)(lVar38 + uVar36 * 0x18);
+  uVar45 = (ulong)uVar33;
+  *puVar1 = *(undefined8 *)in_RDX;
+  puVar1[1] = uVar37;
+  puVar1[2] = *(undefined8 *)(in_RDX + 0x10);
+  lVar44 = *(long *)(in_RSI + 6);
+  uVar34 = *(uint *)(hash_table_size_primes + (ulong)(uint)fVar2 * 4);
+  uVar47 = CONCAT44(0,uVar34);
+  lVar40 = *(long *)(hash_table_size_primes_inv + (ulong)(uint)fVar2 * 8);
+  auVar16._8_8_ = 0;
+  auVar16._0_8_ = uVar45 * lVar40;
+  auVar28._8_8_ = 0;
+  auVar28._0_8_ = uVar47;
+  lVar4 = SUB168(auVar16 * auVar28,8) * 4;
+  iVar43 = SUB164(auVar16 * auVar28,8);
+  lVar39 = *(long *)(in_RSI + 4);
+  puVar49 = (uint *)(lVar44 + lVar4);
+  lVar7 = *(long *)(in_RSI + 2);
+  uVar42 = *puVar49;
+  uVar46 = uVar36;
+  pfStack_98 = in_RSI;
+  while (uVar42 != 0) {
+    auVar17._8_8_ = 0;
+    auVar17._0_8_ = (ulong)uVar42 * lVar40;
+    auVar29._8_8_ = 0;
+    auVar29._0_8_ = uVar47;
+    auVar18._8_8_ = 0;
+    auVar18._0_8_ = (ulong)((uVar34 + iVar43) - SUB164(auVar17 * auVar29,8)) * lVar40;
+    auVar30._8_8_ = 0;
+    auVar30._0_8_ = uVar47;
+    uVar33 = SUB164(auVar18 * auVar30,8);
+    if (uVar33 < uVar32) {
+      puVar41 = (uint *)(lVar4 + lVar7);
+      *(int *)(lVar39 + uVar36 * 4) = iVar43;
+      uVar42 = *puVar49;
+      *puVar49 = (uint)uVar45;
+      uVar32 = *puVar41;
+      uVar45 = (ulong)uVar42;
+      *puVar41 = (uint)uVar46;
+      uVar36 = (ulong)uVar32;
+      uVar46 = uVar36;
+      uVar32 = uVar33;
+    }
+    fVar50 = (float)uVar46;
+    uVar33 = (uint)uVar45;
+    uVar32 = uVar32 + 1;
+    auVar19._8_8_ = 0;
+    auVar19._0_8_ = (ulong)(iVar43 + 1) * lVar40;
+    auVar31._8_8_ = 0;
+    auVar31._0_8_ = uVar47;
+    pfStack_98 = SUB168(auVar19 * auVar31,8);
+    lVar4 = (long)pfStack_98 * 4;
+    iVar43 = SUB164(auVar19 * auVar31,8);
+    puVar49 = (uint *)(lVar44 + lVar4);
+    uVar42 = *puVar49;
+  }
+  *puVar49 = uVar33;
+  *(int *)(lVar39 + uVar36 * 4) = iVar43;
+  *(float *)(lVar7 + lVar4) = fVar50;
+  fVar35 = in_RSI[9];
+  fVar50 = (float)((int)fVar35 + 1);
+  in_RSI[9] = fVar50;
+LAB_00104c8b:
+  *(float *)(param_1 + 0xc) = fVar35;
+  *(long *)param_1 = lVar38;
+  *(float *)(param_1 + 8) = fVar50;
+  auVar51._8_8_ = pfStack_98;
+  auVar51._0_8_ = param_1;
+  return auVar51;
+}
+
+
+
+/* MethodBind* create_method_bind<ConcavePolygonShape3D, Vector<Vector3> const&>(void
+   (ConcavePolygonShape3D::*)(Vector<Vector3> const&)) */
+
+MethodBind *
+create_method_bind<ConcavePolygonShape3D,Vector<Vector3>const&>(_func_void_Vector_ptr *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  MethodBind *this;
+  undefined8 in_RSI;
+  long in_FS_OFFSET;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  this = (MethodBind *)operator_new(0x68,"");
+  MethodBind::MethodBind(this);
+  *(_func_void_Vector_ptr **)(this + 0x58) = param_1;
+  *(undefined ***)this = &PTR__gen_argument_type_00108588;
+  *(undefined8 *)(this + 0x60) = in_RSI;
+  MethodBind::_generate_argument_types((int)this);
+  *(undefined4 *)(this + 0x34) = 1;
+  local_40 = 0;
+  local_38 = "ConcavePolygonShape3D";
+  local_30 = 0x15;
+  String::parse_latin1((StrRange *)&local_40);
+  StringName::StringName((StringName *)&local_38,(String *)&local_40,false);
+  StringName::operator=((StringName *)(this + 0x18),(StringName *)&local_38);
+  if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_40;
+  if (local_40 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_40 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_40 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return this;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBind* create_method_bind<ConcavePolygonShape3D, Vector<Vector3>>(Vector<Vector3>
+   (ConcavePolygonShape3D::*)() const) */
+
+MethodBind * create_method_bind<ConcavePolygonShape3D,Vector<Vector3>>(_func_Vector *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  MethodBind *this;
+  undefined8 in_RSI;
+  long in_FS_OFFSET;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  this = (MethodBind *)operator_new(0x68,"");
+  MethodBind::MethodBind(this);
+  *(_func_Vector **)(this + 0x58) = param_1;
+  *(undefined ***)this = &PTR__gen_argument_type_001085e8;
+  *(undefined8 *)(this + 0x60) = in_RSI;
+  MethodBind::_set_returns(SUB81(this,0));
+  MethodBind::_set_const(SUB81(this,0));
+  MethodBind::_generate_argument_types((int)this);
+  *(undefined4 *)(this + 0x34) = 0;
+  local_40 = 0;
+  local_38 = "ConcavePolygonShape3D";
+  local_30 = 0x15;
+  String::parse_latin1((StrRange *)&local_40);
+  StringName::StringName((StringName *)&local_38,(String *)&local_40,false);
+  StringName::operator=((StringName *)(this + 0x18),(StringName *)&local_38);
+  if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_40;
+  if (local_40 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_40 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_40 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return this;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBind* create_method_bind<ConcavePolygonShape3D, bool>(void
+   (ConcavePolygonShape3D::*)(bool)) */
+
+MethodBind * create_method_bind<ConcavePolygonShape3D,bool>(_func_void_bool *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  MethodBind *this;
+  undefined8 in_RSI;
+  long in_FS_OFFSET;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  this = (MethodBind *)operator_new(0x68,"");
+  MethodBind::MethodBind(this);
+  *(_func_void_bool **)(this + 0x58) = param_1;
+  *(undefined ***)this = &PTR__gen_argument_type_00108648;
+  *(undefined8 *)(this + 0x60) = in_RSI;
+  MethodBind::_generate_argument_types((int)this);
+  *(undefined4 *)(this + 0x34) = 1;
+  local_40 = 0;
+  local_38 = "ConcavePolygonShape3D";
+  local_30 = 0x15;
+  String::parse_latin1((StrRange *)&local_40);
+  StringName::StringName((StringName *)&local_38,(String *)&local_40,false);
+  StringName::operator=((StringName *)(this + 0x18),(StringName *)&local_38);
+  if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_40;
+  if (local_40 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_40 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_40 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return this;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBind* create_method_bind<ConcavePolygonShape3D, bool>(bool (ConcavePolygonShape3D::*)()
+   const) */
+
+MethodBind * create_method_bind<ConcavePolygonShape3D,bool>(_func_bool *param_1)
+
+{
+  long *plVar1;
+  long lVar2;
+  MethodBind *this;
+  undefined8 in_RSI;
+  long in_FS_OFFSET;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  this = (MethodBind *)operator_new(0x68,"");
+  MethodBind::MethodBind(this);
+  *(_func_bool **)(this + 0x58) = param_1;
+  *(undefined ***)this = &PTR__gen_argument_type_001086a8;
+  *(undefined8 *)(this + 0x60) = in_RSI;
+  MethodBind::_set_returns(SUB81(this,0));
+  MethodBind::_set_const(SUB81(this,0));
+  MethodBind::_generate_argument_types((int)this);
+  *(undefined4 *)(this + 0x34) = 0;
+  local_40 = 0;
+  local_38 = "ConcavePolygonShape3D";
+  local_30 = 0x15;
+  String::parse_latin1((StrRange *)&local_40);
+  StringName::StringName((StringName *)&local_38,(String *)&local_40,false);
+  StringName::operator=((StringName *)(this + 0x18),(StringName *)&local_38);
+  if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+    StringName::unref();
+  }
+  lVar2 = local_40;
+  if (local_40 != 0) {
+    LOCK();
+    plVar1 = (long *)(local_40 + -0x10);
+    *plVar1 = *plVar1 + -1;
+    UNLOCK();
+    if (*plVar1 == 0) {
+      local_40 = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return this;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* ConcavePolygonShape3D::_initialize_classv() */
+
+void ConcavePolygonShape3D::_initialize_classv(void)
+
+{
+  long *plVar1;
+  long lVar2;
+  long in_FS_OFFSET;
+  long local_70;
+  long local_68;
+  long local_60;
+  char *local_58;
+  undefined8 local_50;
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  if (initialize_class()::initialized == '\0') {
+    if (Shape3D::initialize_class()::initialized == '\0') {
+      if (Resource::initialize_class()::initialized == '\0') {
+        if (RefCounted::initialize_class()::initialized == '\0') {
+          Object::initialize_class();
+          local_68 = 0;
+          local_50 = 6;
+          local_58 = "Object";
+          String::parse_latin1((StrRange *)&local_68);
+          StringName::StringName((StringName *)&local_60,(String *)&local_68,false);
+          local_58 = "RefCounted";
+          local_70 = 0;
+          local_50 = 10;
+          String::parse_latin1((StrRange *)&local_70);
+          StringName::StringName((StringName *)&local_58,(String *)&local_70,false);
+          ClassDB::_add_class2((StringName *)&local_58,(StringName *)&local_60);
+          if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+            StringName::unref();
+          }
+          lVar2 = local_70;
+          if (local_70 != 0) {
+            LOCK();
+            plVar1 = (long *)(local_70 + -0x10);
+            *plVar1 = *plVar1 + -1;
+            UNLOCK();
+            if (*plVar1 == 0) {
+              local_70 = 0;
+              Memory::free_static((void *)(lVar2 + -0x10),false);
+            }
+          }
+          if ((StringName::configured != '\0') && (local_60 != 0)) {
+            StringName::unref();
+          }
+          lVar2 = local_68;
+          if (local_68 != 0) {
+            LOCK();
+            plVar1 = (long *)(local_68 + -0x10);
+            *plVar1 = *plVar1 + -1;
+            UNLOCK();
+            if (*plVar1 == 0) {
+              local_68 = 0;
+              Memory::free_static((void *)(lVar2 + -0x10),false);
+            }
+          }
+          if ((code *)PTR__bind_methods_0010b008 != RefCounted::_bind_methods) {
+            RefCounted::_bind_methods();
+          }
+          RefCounted::initialize_class()::initialized = '\x01';
+        }
+        local_68 = 0;
+        local_58 = "RefCounted";
+        local_50 = 10;
+        String::parse_latin1((StrRange *)&local_68);
+        StringName::StringName((StringName *)&local_60,(String *)&local_68,false);
+        local_58 = "Resource";
+        local_70 = 0;
+        local_50 = 8;
+        String::parse_latin1((StrRange *)&local_70);
+        StringName::StringName((StringName *)&local_58,(String *)&local_70,false);
+        ClassDB::_add_class2((StringName *)&local_58,(StringName *)&local_60);
+        if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+          StringName::unref();
+        }
+        lVar2 = local_70;
+        if (local_70 != 0) {
+          LOCK();
+          plVar1 = (long *)(local_70 + -0x10);
+          *plVar1 = *plVar1 + -1;
+          UNLOCK();
+          if (*plVar1 == 0) {
+            local_70 = 0;
+            Memory::free_static((void *)(lVar2 + -0x10),false);
+          }
+        }
+        if ((StringName::configured != '\0') && (local_60 != 0)) {
+          StringName::unref();
+        }
+        lVar2 = local_68;
+        if (local_68 != 0) {
+          LOCK();
+          plVar1 = (long *)(local_68 + -0x10);
+          *plVar1 = *plVar1 + -1;
+          UNLOCK();
+          if (*plVar1 == 0) {
+            local_68 = 0;
+            Memory::free_static((void *)(lVar2 + -0x10),false);
+          }
+        }
+        Resource::_bind_methods();
+        Resource::initialize_class()::initialized = '\x01';
+      }
+      local_58 = "Resource";
+      local_68 = 0;
+      local_50 = 8;
+      String::parse_latin1((StrRange *)&local_68);
+      StringName::StringName((StringName *)&local_60,(String *)&local_68,false);
+      local_58 = "Shape3D";
+      local_70 = 0;
+      local_50 = 7;
+      String::parse_latin1((StrRange *)&local_70);
+      StringName::StringName((StringName *)&local_58,(String *)&local_70,false);
+      ClassDB::_add_class2((StringName *)&local_58,(StringName *)&local_60);
+      if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+        StringName::unref();
+      }
+      lVar2 = local_70;
+      if (local_70 != 0) {
+        LOCK();
+        plVar1 = (long *)(local_70 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_70 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_60 != 0)) {
+        StringName::unref();
+      }
+      lVar2 = local_68;
+      if (local_68 != 0) {
+        LOCK();
+        plVar1 = (long *)(local_68 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_68 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((code *)_GLOBAL_OFFSET_TABLE_ != Resource::_bind_methods) {
+        Shape3D::_bind_methods();
+      }
+      Shape3D::initialize_class()::initialized = '\x01';
+    }
+    local_58 = "Shape3D";
+    local_68 = 0;
+    local_50 = 7;
+    String::parse_latin1((StrRange *)&local_68);
+    StringName::StringName((StringName *)&local_60,(String *)&local_68,false);
+    local_58 = "ConcavePolygonShape3D";
+    local_70 = 0;
+    local_50 = 0x15;
+    String::parse_latin1((StrRange *)&local_70);
+    StringName::StringName((StringName *)&local_58,(String *)&local_70,false);
+    ClassDB::_add_class2((StringName *)&local_58,(StringName *)&local_60);
+    if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+      StringName::unref();
+    }
+    lVar2 = local_70;
+    if (local_70 != 0) {
+      LOCK();
+      plVar1 = (long *)(local_70 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        local_70 = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    if ((StringName::configured != '\0') && (local_60 != 0)) {
+      StringName::unref();
+    }
+    lVar2 = local_68;
+    if (local_68 != 0) {
+      LOCK();
+      plVar1 = (long *)(local_68 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 == 0) {
+        local_68 = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+    _bind_methods();
+    initialize_class()::initialized = '\x01';
+  }
+  if (local_40 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* CowData<Vector3>::_realloc(long) */
+
+undefined8 __thiscall CowData<Vector3>::_realloc(CowData<Vector3> *this,long param_1)
+
+{
+  undefined8 *puVar1;
+  
+  puVar1 = (undefined8 *)
+           Memory::realloc_static((void *)(*(long *)this + -0x10),param_1 + 0x10,false);
+  if (puVar1 != (undefined8 *)0x0) {
+    *puVar1 = 1;
+    *(undefined8 **)this = puVar1 + 2;
+    return 0;
+  }
+  _err_print_error("_realloc","./core/templates/cowdata.h",0x1a9,"Parameter \"mem_new\" is null.",0,
+                   0);
+  return 6;
+}
+
+
+
+/* CowData<Color>::_realloc(long) */
+
+undefined8 __thiscall CowData<Color>::_realloc(CowData<Color> *this,long param_1)
+
+{
+  undefined8 *puVar1;
+  
+  puVar1 = (undefined8 *)
+           Memory::realloc_static((void *)(*(long *)this + -0x10),param_1 + 0x10,false);
+  if (puVar1 != (undefined8 *)0x0) {
+    *puVar1 = 1;
+    *(undefined8 **)this = puVar1 + 2;
+    return 0;
+  }
+  _err_print_error("_realloc","./core/templates/cowdata.h",0x1a9,"Parameter \"mem_new\" is null.",0,
+                   0);
+  return 6;
+}
+
+
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* Error CowData<Color>::resize<false>(long) */
+
+undefined8 __thiscall CowData<Color>::resize<false>(CowData<Color> *this,long param_1)
+
+{
+  long *plVar1;
+  code *pcVar2;
+  undefined8 uVar3;
+  long lVar4;
+  ulong uVar5;
+  undefined8 *puVar6;
+  undefined8 *puVar7;
+  undefined8 *puVar8;
+  undefined8 uVar9;
+  undefined8 *puVar10;
+  long lVar11;
+  long lVar12;
+  
+  if (param_1 < 0) {
+    _err_print_error("resize","./core/templates/cowdata.h",0x157,
+                     "Condition \"p_size < 0\" is true. Returning: ERR_INVALID_PARAMETER",0,0);
+    return 0x1f;
+  }
+  lVar4 = *(long *)this;
+  if (lVar4 == 0) {
+    if (param_1 == 0) {
+      return 0;
+    }
+    _copy_on_write(this);
+    lVar12 = 0;
+    lVar4 = 0;
+  }
+  else {
+    lVar12 = *(long *)(lVar4 + -8);
+    if (param_1 == lVar12) {
+      return 0;
+    }
+    if (param_1 == 0) {
+      LOCK();
+      plVar1 = (long *)(lVar4 + -0x10);
+      *plVar1 = *plVar1 + -1;
+      UNLOCK();
+      if (*plVar1 != 0) {
+        *(undefined8 *)this = 0;
+        return 0;
+      }
+      lVar4 = *(long *)this;
+      *(undefined8 *)this = 0;
+      Memory::free_static((void *)(lVar4 + -0x10),false);
+      return 0;
+    }
+    _copy_on_write(this);
+    lVar4 = lVar12 * 0x10;
+    if (lVar4 != 0) {
+      uVar5 = lVar4 - 1U | lVar4 - 1U >> 1;
+      uVar5 = uVar5 | uVar5 >> 2;
+      uVar5 = uVar5 | uVar5 >> 4;
+      uVar5 = uVar5 | uVar5 >> 8;
+      uVar5 = uVar5 | uVar5 >> 0x10;
+      lVar4 = (uVar5 | uVar5 >> 0x20) + 1;
+    }
+  }
+  if (param_1 * 0x10 == 0) {
+LAB_00105cc0:
+    _err_print_error("resize","./core/templates/cowdata.h",0x16a,
+                     "Condition \"!_get_alloc_size_checked(p_size, &alloc_size)\" is true. Returning: ERR_OUT_OF_MEMORY"
+                     ,0,0);
+    return 6;
+  }
+  uVar5 = param_1 * 0x10 - 1;
+  uVar5 = uVar5 >> 1 | uVar5;
+  uVar5 = uVar5 | uVar5 >> 2;
+  uVar5 = uVar5 | uVar5 >> 4;
+  uVar5 = uVar5 | uVar5 >> 8;
+  uVar5 = uVar5 | uVar5 >> 0x10;
+  uVar5 = uVar5 | uVar5 >> 0x20;
+  lVar11 = uVar5 + 1;
+  if (lVar11 == 0) goto LAB_00105cc0;
+  if (param_1 <= lVar12) {
+    if ((lVar11 != lVar4) && (uVar9 = _realloc(this,lVar11), (int)uVar9 != 0)) {
+      return uVar9;
+    }
+    if (*(long *)this != 0) {
+      *(long *)(*(long *)this + -8) = param_1;
+      return 0;
+    }
+    _DAT_00000000 = 0;
+                    /* WARNING: Does not return */
+    pcVar2 = (code *)invalidInstructionException();
+    (*pcVar2)();
+  }
+  if (lVar11 == lVar4) {
+LAB_00105c2c:
+    puVar10 = *(undefined8 **)this;
+    if (puVar10 == (undefined8 *)0x0) {
+                    /* WARNING: Does not return */
+      pcVar2 = (code *)invalidInstructionException();
+      (*pcVar2)();
+    }
+    lVar4 = puVar10[-1];
+    if (param_1 <= lVar4) goto LAB_00105bc0;
+  }
+  else {
+    if (lVar12 != 0) {
+      uVar9 = _realloc(this,lVar11);
+      if ((int)uVar9 != 0) {
+        return uVar9;
+      }
+      goto LAB_00105c2c;
+    }
+    puVar6 = (undefined8 *)Memory::alloc_static(uVar5 + 0x11,false);
+    if (puVar6 == (undefined8 *)0x0) {
+      _err_print_error("resize","./core/templates/cowdata.h",0x171,"Parameter \"mem_new\" is null.",
+                       0,0);
+      return 6;
+    }
+    puVar10 = puVar6 + 2;
+    *puVar6 = 1;
+    puVar6[1] = 0;
+    *(undefined8 **)this = puVar10;
+    lVar4 = 0;
+  }
+  uVar3 = _UNK_00108908;
+  uVar9 = __LC40;
+  puVar7 = puVar10 + lVar4 * 2;
+  puVar6 = puVar7;
+  if (((param_1 - lVar4) * 0x10 & 0x10U) != 0) {
+    *puVar7 = __LC40;
+    puVar7[1] = uVar3;
+    puVar6 = puVar7 + 2;
+    if (puVar7 + (param_1 - lVar4) * 2 == puVar7 + 2) goto LAB_00105bc0;
+  }
+  do {
+    *puVar6 = uVar9;
+    puVar6[1] = uVar3;
+    puVar8 = puVar6 + 4;
+    puVar6[2] = uVar9;
+    puVar6[3] = uVar3;
+    puVar6 = puVar8;
+  } while (puVar7 + (param_1 - lVar4) * 2 != puVar8);
+LAB_00105bc0:
+  puVar10[-1] = param_1;
+  return 0;
+}
+
+
+
+/* WARNING: Removing unreachable block (ram,0x00105eb8) */
+/* WARNING: Removing unreachable block (ram,0x00105fe8) */
+/* WARNING: Removing unreachable block (ram,0x001061b0) */
+/* WARNING: Removing unreachable block (ram,0x00105ff4) */
+/* WARNING: Removing unreachable block (ram,0x00105ffe) */
+/* WARNING: Removing unreachable block (ram,0x00106190) */
+/* WARNING: Removing unreachable block (ram,0x0010600a) */
+/* WARNING: Removing unreachable block (ram,0x00106014) */
+/* WARNING: Removing unreachable block (ram,0x00106170) */
+/* WARNING: Removing unreachable block (ram,0x00106020) */
+/* WARNING: Removing unreachable block (ram,0x0010602a) */
+/* WARNING: Removing unreachable block (ram,0x00106150) */
+/* WARNING: Removing unreachable block (ram,0x00106036) */
+/* WARNING: Removing unreachable block (ram,0x00106040) */
+/* WARNING: Removing unreachable block (ram,0x00106130) */
+/* WARNING: Removing unreachable block (ram,0x0010604c) */
+/* WARNING: Removing unreachable block (ram,0x00106056) */
+/* WARNING: Removing unreachable block (ram,0x00106110) */
+/* WARNING: Removing unreachable block (ram,0x00106062) */
+/* WARNING: Removing unreachable block (ram,0x0010606c) */
+/* WARNING: Removing unreachable block (ram,0x001060f0) */
+/* WARNING: Removing unreachable block (ram,0x00106074) */
+/* WARNING: Removing unreachable block (ram,0x0010608a) */
+/* WARNING: Removing unreachable block (ram,0x00106096) */
+/* String vformat<StringName>(String const&, StringName const) */
+
+undefined8 * vformat<StringName>(undefined8 *param_1,bool *param_2,StringName *param_3)
+
+{
+  char cVar1;
+  Variant *this;
+  int iVar2;
+  long in_FS_OFFSET;
+  Array local_c8 [8];
+  undefined8 local_c0 [9];
+  int local_78 [6];
+  undefined8 local_60;
+  undefined1 local_58 [16];
+  long local_40;
+  
+  local_40 = *(long *)(in_FS_OFFSET + 0x28);
+  Variant::Variant((Variant *)local_78,param_3);
+  local_60 = 0;
+  local_58 = (undefined1  [16])0x0;
+  Array::Array(local_c8);
+  iVar2 = (int)local_c8;
+  Array::resize(iVar2);
+  this = (Variant *)Array::operator[](iVar2);
+  Variant::operator=(this,(Variant *)local_78);
+  String::sprintf((Array *)local_c0,param_2);
+  *param_1 = local_c0[0];
+  Array::~Array(local_c8);
+  if (Variant::needs_deinit[(int)local_60] == '\0') {
+    cVar1 = Variant::needs_deinit[local_78[0]];
+  }
+  else {
+    Variant::_clear_internal();
+    cVar1 = Variant::needs_deinit[local_78[0]];
+  }
+  if (cVar1 != '\0') {
+    Variant::_clear_internal();
+  }
+  if (local_40 != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return param_1;
+}
+
+
+
+/* MethodBindTRC<bool>::call(Object*, Variant const**, int, Callable::CallError&) const */
+
+Object * MethodBindTRC<bool>::call(Object *param_1,Variant **param_2,int param_3,CallError *param_4)
+
+{
+  Variant *pVVar1;
+  long lVar2;
+  char *pcVar3;
+  bool bVar4;
+  long *plVar6;
+  undefined4 in_register_00000014;
+  long *plVar7;
+  int in_R8D;
+  undefined4 *in_R9;
+  long in_FS_OFFSET;
+  long local_68;
+  long local_60;
+  char *local_58;
+  undefined8 local_50;
+  undefined4 local_48 [2];
+  undefined8 local_40;
+  undefined8 uStack_38;
+  long local_30;
+  Variant *pVVar5;
+  
+  plVar7 = (long *)CONCAT44(in_register_00000014,param_3);
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  *(undefined4 *)param_1 = 0;
+  *(undefined1 (*) [16])(param_1 + 8) = (undefined1  [16])0x0;
+  if (((plVar7 != (long *)0x0) && (plVar7[1] != 0)) && (*(char *)(plVar7[1] + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_58,(StringName *)(param_2 + 3));
+    if (plVar7[1] == 0) {
+      plVar6 = (long *)plVar7[0x23];
+      if (plVar6 == (long *)0x0) {
+        plVar6 = (long *)(**(code **)(*plVar7 + 0x40))(plVar7);
+      }
+    }
+    else {
+      plVar6 = (long *)(plVar7[1] + 0x20);
+    }
+    if (local_58 == (char *)*plVar6) {
+      if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_58 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_60 = 0;
+      local_50 = 0x35;
+      String::parse_latin1((StrRange *)&local_60);
+      vformat<StringName>((StringName *)&local_58,(StrRange *)&local_60,&local_68);
+      _err_print_error(&_LC54,"./core/object/method_bind.h",0x267,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true. Returning: ret"
+                       ,(StringName *)&local_58,0,0);
+      pcVar3 = local_58;
+      if (local_58 != (char *)0x0) {
+        LOCK();
+        plVar7 = (long *)(local_58 + -0x10);
+        *plVar7 = *plVar7 + -1;
+        UNLOCK();
+        if (*plVar7 == 0) {
+          local_58 = (char *)0x0;
+          Memory::free_static(pcVar3 + -0x10,false);
+        }
+      }
+      lVar2 = local_60;
+      if (local_60 != 0) {
+        LOCK();
+        plVar7 = (long *)(local_60 + -0x10);
+        *plVar7 = *plVar7 + -1;
+        UNLOCK();
+        if (*plVar7 == 0) {
+          local_60 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_68 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_00106380;
+    }
+    if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  pVVar5 = param_2[0xb];
+  pVVar1 = param_2[0xc];
+  if (in_R8D == 0) {
+    if ((param_2[5] == (Variant *)0x0) || (-1 < *(int *)(param_2[5] + -8))) {
+      *in_R9 = 0;
+      if (((ulong)pVVar5 & 1) != 0) {
+        pVVar5 = *(Variant **)(pVVar5 + *(long *)((long)plVar7 + (long)pVVar1) + -1);
+      }
+      bVar4 = (bool)(*(code *)pVVar5)();
+      Variant::Variant((Variant *)local_48,bVar4);
+      if (Variant::needs_deinit[*(int *)param_1] != '\0') {
+        Variant::_clear_internal();
+      }
+      *(undefined4 *)param_1 = local_48[0];
+      *(undefined8 *)(param_1 + 8) = local_40;
+      *(undefined8 *)(param_1 + 0x10) = uStack_38;
+    }
+    else {
+      *in_R9 = 4;
+      in_R9[2] = 0;
+    }
+  }
+  else {
+    *in_R9 = 3;
+    in_R9[2] = 0;
+  }
+LAB_00106380:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return param_1;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<bool>::validated_call(Object*, Variant const**, Variant*) const */
+
+void __thiscall
+MethodBindTRC<bool>::validated_call
+          (MethodBindTRC<bool> *this,Object *param_1,Variant **param_2,Variant *param_3)
+
+{
+  long lVar1;
+  char *pcVar2;
+  Variant VVar3;
+  long *plVar5;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  char *local_48;
+  undefined8 local_40;
+  long local_30;
+  code *pcVar4;
+  
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_1 != (Object *)0x0) && (*(long *)(param_1 + 8) != 0)) &&
+     (*(char *)(*(long *)(param_1 + 8) + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_48,(StringName *)(this + 0x18));
+    if (*(long *)(param_1 + 8) == 0) {
+      plVar5 = *(long **)(param_1 + 0x118);
+      if (plVar5 == (long *)0x0) {
+        plVar5 = (long *)(**(code **)(*(long *)param_1 + 0x40))(param_1);
+      }
+    }
+    else {
+      plVar5 = (long *)(*(long *)(param_1 + 8) + 0x20);
+    }
+    if (local_48 == (char *)*plVar5) {
+      if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_48 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_40 = 0x35;
+      local_50 = 0;
+      String::parse_latin1((StrRange *)&local_50);
+      vformat<StringName>((StringName *)&local_48,(StrRange *)&local_50,&local_58);
+      _err_print_error("validated_call","./core/object/method_bind.h",0x273,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_48,0,0);
+      pcVar2 = local_48;
+      if (local_48 != (char *)0x0) {
+        LOCK();
+        plVar5 = (long *)(local_48 + -0x10);
+        *plVar5 = *plVar5 + -1;
+        UNLOCK();
+        if (*plVar5 == 0) {
+          local_48 = (char *)0x0;
+          Memory::free_static(pcVar2 + -0x10,false);
+        }
+      }
+      lVar1 = local_50;
+      if (local_50 != 0) {
+        LOCK();
+        plVar5 = (long *)(local_50 + -0x10);
+        *plVar5 = *plVar5 + -1;
+        UNLOCK();
+        if (*plVar5 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar1 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_58 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_00106672;
+    }
+    if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  pcVar4 = *(code **)(this + 0x58);
+  if (((ulong)pcVar4 & 1) != 0) {
+    pcVar4 = *(code **)(pcVar4 + *(long *)(param_1 + *(long *)(this + 0x60)) + -1);
+  }
+  VVar3 = (Variant)(*pcVar4)(param_1 + *(long *)(this + 0x60));
+  param_3[8] = VVar3;
+LAB_00106672:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<bool>::ptrcall(Object*, void const**, void*) const */
+
+void __thiscall
+MethodBindTRC<bool>::ptrcall(MethodBindTRC<bool> *this,Object *param_1,void **param_2,void *param_3)
+
+{
+  long lVar1;
+  char *pcVar2;
+  undefined1 uVar3;
+  long *plVar5;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  char *local_48;
+  undefined8 local_40;
+  long local_30;
+  code *pcVar4;
+  
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_1 != (Object *)0x0) && (*(long *)(param_1 + 8) != 0)) &&
+     (*(char *)(*(long *)(param_1 + 8) + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_48,(StringName *)(this + 0x18));
+    if (*(long *)(param_1 + 8) == 0) {
+      plVar5 = *(long **)(param_1 + 0x118);
+      if (plVar5 == (long *)0x0) {
+        plVar5 = (long *)(**(code **)(*(long *)param_1 + 0x40))(param_1);
+      }
+    }
+    else {
+      plVar5 = (long *)(*(long *)(param_1 + 8) + 0x20);
+    }
+    if (local_48 == (char *)*plVar5) {
+      if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_48 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_40 = 0x35;
+      local_50 = 0;
+      String::parse_latin1((StrRange *)&local_50);
+      vformat<StringName>((StringName *)&local_48,(StrRange *)&local_50,&local_58);
+      _err_print_error("ptrcall","./core/object/method_bind.h",0x27e,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_48,0,0);
+      pcVar2 = local_48;
+      if (local_48 != (char *)0x0) {
+        LOCK();
+        plVar5 = (long *)(local_48 + -0x10);
+        *plVar5 = *plVar5 + -1;
+        UNLOCK();
+        if (*plVar5 == 0) {
+          local_48 = (char *)0x0;
+          Memory::free_static(pcVar2 + -0x10,false);
+        }
+      }
+      lVar1 = local_50;
+      if (local_50 != 0) {
+        LOCK();
+        plVar5 = (long *)(local_50 + -0x10);
+        *plVar5 = *plVar5 + -1;
+        UNLOCK();
+        if (*plVar5 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar1 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_58 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_00106871;
+    }
+    if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  pcVar4 = *(code **)(this + 0x58);
+  if (((ulong)pcVar4 & 1) != 0) {
+    pcVar4 = *(code **)(pcVar4 + *(long *)(param_1 + *(long *)(this + 0x60)) + -1);
+  }
+  uVar3 = (*pcVar4)(param_1 + *(long *)(this + 0x60));
+  *(undefined1 *)param_3 = uVar3;
+LAB_00106871:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindT<bool>::validated_call(Object*, Variant const**, Variant*) const */
+
+void MethodBindT<bool>::validated_call(Object *param_1,Variant **param_2,Variant *param_3)
+
+{
+  long *plVar1;
+  long lVar2;
+  char *pcVar3;
+  code *UNRECOVERED_JUMPTABLE;
+  Variant *pVVar4;
+  long in_FS_OFFSET;
+  long local_48;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_2 != (Variant **)0x0) && (param_2[1] != (Variant *)0x0)) &&
+     (param_2[1][0x2e] != (Variant)0x0)) {
+    StringName::StringName((StringName *)&local_38,(StringName *)(param_1 + 0x18));
+    if (param_2[1] == (Variant *)0x0) {
+      pVVar4 = param_2[0x23];
+      if (pVVar4 == (Variant *)0x0) {
+        pVVar4 = (Variant *)(**(code **)(*param_2 + 0x40))(param_2);
+      }
+    }
+    else {
+      pVVar4 = param_2[1] + 0x20;
+    }
+    if (local_38 == *(char **)pVVar4) {
+      if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_38 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_40 = 0;
+      local_30 = 0x35;
+      String::parse_latin1((StrRange *)&local_40);
+      vformat<StringName>((StringName *)&local_38,(StrRange *)&local_40,&local_48);
+      _err_print_error("validated_call","./core/object/method_bind.h",0x160,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_38,0);
+      pcVar3 = local_38;
+      if (local_38 != (char *)0x0) {
+        LOCK();
+        plVar1 = (long *)(local_38 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_38 = (char *)0x0;
+          Memory::free_static(pcVar3 + -0x10,false);
+        }
+      }
+      lVar2 = local_40;
+      if (local_40 != 0) {
+        LOCK();
+        plVar1 = (long *)(local_40 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_40 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_48 != 0)) {
+        StringName::unref();
+      }
+      if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+        return;
+      }
+      goto LAB_00106c35;
+    }
+    if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  UNRECOVERED_JUMPTABLE = *(code **)(param_1 + 0x58);
+  if (((ulong)UNRECOVERED_JUMPTABLE & 1) != 0) {
+    UNRECOVERED_JUMPTABLE =
+         *(code **)(UNRECOVERED_JUMPTABLE +
+                   *(long *)((long)param_2 + *(long *)(param_1 + 0x60)) + -1);
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Could not recover jumptable at 0x00106a79. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+    (*UNRECOVERED_JUMPTABLE)
+              ((long *)((long)param_2 + *(long *)(param_1 + 0x60)),
+               *(undefined1 *)(*(long *)param_3 + 8));
+    return;
+  }
+LAB_00106c35:
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindT<bool>::ptrcall(Object*, void const**, void*) const */
+
+void MethodBindT<bool>::ptrcall(Object *param_1,void **param_2,void *param_3)
+
+{
+  long lVar1;
+  char *pcVar2;
+  code *UNRECOVERED_JUMPTABLE;
+  long *plVar3;
+  long in_FS_OFFSET;
+  long local_48;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_2 != (void **)0x0) && (param_2[1] != (void *)0x0)) &&
+     (*(char *)((long)param_2[1] + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_38,(StringName *)(param_1 + 0x18));
+    if (param_2[1] == (void *)0x0) {
+      plVar3 = (long *)param_2[0x23];
+      if (plVar3 == (long *)0x0) {
+        plVar3 = (long *)(**(code **)((long)*param_2 + 0x40))(param_2);
+      }
+    }
+    else {
+      plVar3 = (long *)((long)param_2[1] + 0x20);
+    }
+    if (local_38 == (char *)*plVar3) {
+      if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_38 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_40 = 0;
+      local_30 = 0x35;
+      String::parse_latin1((StrRange *)&local_40);
+      vformat<StringName>((StringName *)&local_38,(StrRange *)&local_40,&local_48);
+      _err_print_error("ptrcall","./core/object/method_bind.h",0x16b,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_38,0);
+      pcVar2 = local_38;
+      if (local_38 != (char *)0x0) {
+        LOCK();
+        plVar3 = (long *)(local_38 + -0x10);
+        *plVar3 = *plVar3 + -1;
+        UNLOCK();
+        if (*plVar3 == 0) {
+          local_38 = (char *)0x0;
+          Memory::free_static(pcVar2 + -0x10,false);
+        }
+      }
+      lVar1 = local_40;
+      if (local_40 != 0) {
+        LOCK();
+        plVar3 = (long *)(local_40 + -0x10);
+        *plVar3 = *plVar3 + -1;
+        UNLOCK();
+        if (*plVar3 == 0) {
+          local_40 = 0;
+          Memory::free_static((void *)(lVar1 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_48 != 0)) {
+        StringName::unref();
+      }
+      if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+        return;
+      }
+      goto LAB_00106e55;
+    }
+    if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  UNRECOVERED_JUMPTABLE = *(code **)(param_1 + 0x58);
+                    /* WARNING: Load size is inaccurate */
+  if (((ulong)UNRECOVERED_JUMPTABLE & 1) != 0) {
+    UNRECOVERED_JUMPTABLE =
+         *(code **)(UNRECOVERED_JUMPTABLE +
+                   *(long *)((long)param_2 + *(long *)(param_1 + 0x60)) + -1);
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Could not recover jumptable at 0x00106c9e. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+    (*UNRECOVERED_JUMPTABLE)((long *)((long)param_2 + *(long *)(param_1 + 0x60)),**param_3 != '\0');
+    return;
+  }
+LAB_00106e55:
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::call(Object*, Variant const**, int, Callable::CallError&) const
+    */
+
+Object * MethodBindTRC<Vector<Vector3>>::call
+                   (Object *param_1,Variant **param_2,int param_3,CallError *param_4)
+
+{
+  Variant *pVVar1;
+  long lVar2;
+  char *pcVar3;
+  Variant *pVVar4;
+  long *plVar5;
+  undefined4 in_register_00000014;
+  long *plVar6;
+  int in_R8D;
+  undefined4 *in_R9;
+  long in_FS_OFFSET;
+  long local_68;
+  long local_60;
+  char *local_58;
+  long local_50;
+  undefined4 local_48 [2];
+  undefined8 local_40;
+  undefined8 uStack_38;
+  long local_30;
+  
+  plVar6 = (long *)CONCAT44(in_register_00000014,param_3);
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  *(undefined4 *)param_1 = 0;
+  *(undefined1 (*) [16])(param_1 + 8) = (undefined1  [16])0x0;
+  if (((plVar6 != (long *)0x0) && (plVar6[1] != 0)) && (*(char *)(plVar6[1] + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_58,(StringName *)(param_2 + 3));
+    if (plVar6[1] == 0) {
+      plVar5 = (long *)plVar6[0x23];
+      if (plVar5 == (long *)0x0) {
+        plVar5 = (long *)(**(code **)(*plVar6 + 0x40))(plVar6);
+      }
+    }
+    else {
+      plVar5 = (long *)(plVar6[1] + 0x20);
+    }
+    if (local_58 == (char *)*plVar5) {
+      if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_58 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_60 = 0;
+      local_50 = 0x35;
+      String::parse_latin1((StrRange *)&local_60);
+      vformat<StringName>((StringName *)&local_58,(StrRange *)&local_60,&local_68);
+      _err_print_error(&_LC54,"./core/object/method_bind.h",0x267,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true. Returning: ret"
+                       ,(StringName *)&local_58,0,0);
+      pcVar3 = local_58;
+      if (local_58 != (char *)0x0) {
+        LOCK();
+        plVar6 = (long *)(local_58 + -0x10);
+        *plVar6 = *plVar6 + -1;
+        UNLOCK();
+        if (*plVar6 == 0) {
+          local_58 = (char *)0x0;
+          Memory::free_static(pcVar3 + -0x10,false);
+        }
+      }
+      lVar2 = local_60;
+      if (local_60 != 0) {
+        LOCK();
+        plVar6 = (long *)(local_60 + -0x10);
+        *plVar6 = *plVar6 + -1;
+        UNLOCK();
+        if (*plVar6 == 0) {
+          local_60 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_68 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_00106f60;
+    }
+    if ((StringName::configured != '\0') && (local_58 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  pVVar4 = param_2[0xb];
+  pVVar1 = param_2[0xc];
+  if (in_R8D == 0) {
+    if ((param_2[5] == (Variant *)0x0) || (-1 < *(int *)(param_2[5] + -8))) {
+      *in_R9 = 0;
+      if (((ulong)pVVar4 & 1) != 0) {
+        pVVar4 = *(Variant **)(pVVar4 + *(long *)((long)plVar6 + (long)pVVar1) + -1);
+      }
+      (*(code *)pVVar4)((Vector *)&local_58);
+      Variant::Variant((Variant *)local_48,(Vector *)&local_58);
+      if (Variant::needs_deinit[*(int *)param_1] != '\0') {
+        Variant::_clear_internal();
+      }
+      lVar2 = local_50;
+      *(undefined4 *)param_1 = local_48[0];
+      *(undefined8 *)(param_1 + 8) = local_40;
+      *(undefined8 *)(param_1 + 0x10) = uStack_38;
+      if (local_50 != 0) {
+        LOCK();
+        plVar6 = (long *)(local_50 + -0x10);
+        *plVar6 = *plVar6 + -1;
+        UNLOCK();
+        if (*plVar6 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+    }
+    else {
+      *in_R9 = 4;
+      in_R9[2] = 0;
+    }
+  }
+  else {
+    *in_R9 = 3;
+    in_R9[2] = 0;
+  }
+LAB_00106f60:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return param_1;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::validated_call(Object*, Variant const**, Variant*) const */
+
+void __thiscall
+MethodBindTRC<Vector<Vector3>>::validated_call
+          (MethodBindTRC<Vector<Vector3>> *this,Object *param_1,Variant **param_2,Variant *param_3)
+
+{
+  Variant **ppVVar1;
+  long lVar2;
+  Variant **ppVVar3;
+  code *pcVar4;
+  long *plVar5;
+  Variant **extraout_RDX;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  Variant **local_48;
+  long local_40 [2];
+  long local_30;
+  
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_1 != (Object *)0x0) && (*(long *)(param_1 + 8) != 0)) &&
+     (*(char *)(*(long *)(param_1 + 8) + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_48,(StringName *)(this + 0x18));
+    if (*(long *)(param_1 + 8) == 0) {
+      plVar5 = *(long **)(param_1 + 0x118);
+      if (plVar5 == (long *)0x0) {
+        plVar5 = (long *)(**(code **)(*(long *)param_1 + 0x40))(param_1);
+      }
+    }
+    else {
+      plVar5 = (long *)(*(long *)(param_1 + 8) + 0x20);
+    }
+    if (local_48 == (Variant **)*plVar5) {
+      if ((StringName::configured != '\0') && (local_48 != (Variant **)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_48 = (Variant **)0x1061d8;
+      local_40[0] = 0x35;
+      local_50 = 0;
+      String::parse_latin1((StrRange *)&local_50);
+      vformat<StringName>((StringName *)&local_48,(StrRange *)&local_50,&local_58);
+      _err_print_error("validated_call","./core/object/method_bind.h",0x273,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_48,0,0);
+      ppVVar3 = local_48;
+      if (local_48 != (Variant **)0x0) {
+        LOCK();
+        ppVVar1 = local_48 + -2;
+        *ppVVar1 = *ppVVar1 + -1;
+        UNLOCK();
+        if (*ppVVar1 == (Variant *)0x0) {
+          local_48 = (Variant **)0x0;
+          Memory::free_static(ppVVar3 + -2,false);
+        }
+      }
+      lVar2 = local_50;
+      if (local_50 != 0) {
+        LOCK();
+        plVar5 = (long *)(local_50 + -0x10);
+        *plVar5 = *plVar5 + -1;
+        UNLOCK();
+        if (*plVar5 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_58 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_0010721b;
+    }
+    param_2 = local_48;
+    if ((StringName::configured != '\0') && (local_48 != (Variant **)0x0)) {
+      StringName::unref();
+      param_2 = extraout_RDX;
+    }
+  }
+  pcVar4 = *(code **)(this + 0x58);
+  if (((ulong)pcVar4 & 1) != 0) {
+    param_2 = *(Variant ***)(param_1 + *(long *)(this + 0x60));
+    pcVar4 = *(code **)(pcVar4 + (long)param_2 + -1);
+  }
+  (*pcVar4)((StringName *)&local_48,param_1 + *(long *)(this + 0x60),param_2);
+  if (*(long *)(*(long *)(param_3 + 8) + 0x18) != local_40[0]) {
+    CowData<Vector3>::_ref((CowData<Vector3> *)(*(long *)(param_3 + 8) + 0x18),(CowData *)local_40);
+  }
+  lVar2 = local_40[0];
+  if (local_40[0] != 0) {
+    LOCK();
+    plVar5 = (long *)(local_40[0] + -0x10);
+    *plVar5 = *plVar5 + -1;
+    UNLOCK();
+    if (*plVar5 == 0) {
+      local_40[0] = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+LAB_0010721b:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindTRC<Vector<Vector3>>::ptrcall(Object*, void const**, void*) const */
+
+void __thiscall
+MethodBindTRC<Vector<Vector3>>::ptrcall
+          (MethodBindTRC<Vector<Vector3>> *this,Object *param_1,void **param_2,void *param_3)
+
+{
+  void **ppvVar1;
+  long lVar2;
+  void **ppvVar3;
+  code *pcVar4;
+  long *plVar5;
+  void **extraout_RDX;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  void **local_48;
+  long local_40 [2];
+  long local_30;
+  
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_1 != (Object *)0x0) && (*(long *)(param_1 + 8) != 0)) &&
+     (*(char *)(*(long *)(param_1 + 8) + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_48,(StringName *)(this + 0x18));
+    if (*(long *)(param_1 + 8) == 0) {
+      plVar5 = *(long **)(param_1 + 0x118);
+      if (plVar5 == (long *)0x0) {
+        plVar5 = (long *)(**(code **)(*(long *)param_1 + 0x40))(param_1);
+      }
+    }
+    else {
+      plVar5 = (long *)(*(long *)(param_1 + 8) + 0x20);
+    }
+    if (local_48 == (void **)*plVar5) {
+      if ((StringName::configured != '\0') && (local_48 != (void **)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_48 = (void **)0x1061d8;
+      local_40[0] = 0x35;
+      local_50 = 0;
+      String::parse_latin1((StrRange *)&local_50);
+      vformat<StringName>((StringName *)&local_48,(StrRange *)&local_50,&local_58);
+      _err_print_error("ptrcall","./core/object/method_bind.h",0x27e,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_48,0,0);
+      ppvVar3 = local_48;
+      if (local_48 != (void **)0x0) {
+        LOCK();
+        ppvVar1 = local_48 + -2;
+        *ppvVar1 = (void *)((long)*ppvVar1 + -1);
+        UNLOCK();
+        if (*ppvVar1 == (void *)0x0) {
+          local_48 = (void **)0x0;
+          Memory::free_static(ppvVar3 + -2,false);
+        }
+      }
+      lVar2 = local_50;
+      if (local_50 != 0) {
+        LOCK();
+        plVar5 = (long *)(local_50 + -0x10);
+        *plVar5 = *plVar5 + -1;
+        UNLOCK();
+        if (*plVar5 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_58 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_00107457;
+    }
+    param_2 = local_48;
+    if ((StringName::configured != '\0') && (local_48 != (void **)0x0)) {
+      StringName::unref();
+      param_2 = extraout_RDX;
+    }
+  }
+  pcVar4 = *(code **)(this + 0x58);
+  if (((ulong)pcVar4 & 1) != 0) {
+    param_2 = *(void ***)(param_1 + *(long *)(this + 0x60));
+    pcVar4 = *(code **)(pcVar4 + (long)param_2 + -1);
+  }
+  (*pcVar4)((StringName *)&local_48,param_1 + *(long *)(this + 0x60),param_2);
+  if (*(long *)((long)param_3 + 8) != local_40[0]) {
+    CowData<Vector3>::_ref((CowData<Vector3> *)((long)param_3 + 8),(CowData *)local_40);
+  }
+  lVar2 = local_40[0];
+  if (local_40[0] != 0) {
+    LOCK();
+    plVar5 = (long *)(local_40[0] + -0x10);
+    *plVar5 = *plVar5 + -1;
+    UNLOCK();
+    if (*plVar5 == 0) {
+      local_40[0] = 0;
+      Memory::free_static((void *)(lVar2 + -0x10),false);
+    }
+  }
+LAB_00107457:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::validated_call(Object*, Variant const**, Variant*) const */
+
+void MethodBindT<Vector<Vector3>const&>::validated_call
+               (Object *param_1,Variant **param_2,Variant *param_3)
+
+{
+  long *plVar1;
+  long lVar2;
+  char *pcVar3;
+  code *UNRECOVERED_JUMPTABLE;
+  Variant *pVVar4;
+  long in_FS_OFFSET;
+  long local_48;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_2 != (Variant **)0x0) && (param_2[1] != (Variant *)0x0)) &&
+     (param_2[1][0x2e] != (Variant)0x0)) {
+    StringName::StringName((StringName *)&local_38,(StringName *)(param_1 + 0x18));
+    if (param_2[1] == (Variant *)0x0) {
+      pVVar4 = param_2[0x23];
+      if (pVVar4 == (Variant *)0x0) {
+        pVVar4 = (Variant *)(**(code **)(*param_2 + 0x40))(param_2);
+      }
+    }
+    else {
+      pVVar4 = param_2[1] + 0x20;
+    }
+    if (local_38 == *(char **)pVVar4) {
+      if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_38 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_40 = 0;
+      local_30 = 0x35;
+      String::parse_latin1((StrRange *)&local_40);
+      vformat<StringName>((StringName *)&local_38,(StrRange *)&local_40,&local_48);
+      _err_print_error("validated_call","./core/object/method_bind.h",0x160,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_38,0);
+      pcVar3 = local_38;
+      if (local_38 != (char *)0x0) {
+        LOCK();
+        plVar1 = (long *)(local_38 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_38 = (char *)0x0;
+          Memory::free_static(pcVar3 + -0x10,false);
+        }
+      }
+      lVar2 = local_40;
+      if (local_40 != 0) {
+        LOCK();
+        plVar1 = (long *)(local_40 + -0x10);
+        *plVar1 = *plVar1 + -1;
+        UNLOCK();
+        if (*plVar1 == 0) {
+          local_40 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_48 != 0)) {
+        StringName::unref();
+      }
+      if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+        return;
+      }
+      goto LAB_00107815;
+    }
+    if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  UNRECOVERED_JUMPTABLE = *(code **)(param_1 + 0x58);
+  if (((ulong)UNRECOVERED_JUMPTABLE & 1) != 0) {
+    UNRECOVERED_JUMPTABLE =
+         *(code **)(UNRECOVERED_JUMPTABLE +
+                   *(long *)((long)param_2 + *(long *)(param_1 + 0x60)) + -1);
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Could not recover jumptable at 0x0010765d. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+    (*UNRECOVERED_JUMPTABLE)
+              ((long *)((long)param_2 + *(long *)(param_1 + 0x60)),
+               *(long *)(*(long *)param_3 + 8) + 0x10);
+    return;
+  }
+LAB_00107815:
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::ptrcall(Object*, void const**, void*) const */
+
+void MethodBindT<Vector<Vector3>const&>::ptrcall(Object *param_1,void **param_2,void *param_3)
+
+{
+  long lVar1;
+  char *pcVar2;
+  code *UNRECOVERED_JUMPTABLE;
+  long *plVar3;
+  long in_FS_OFFSET;
+  long local_48;
+  long local_40;
+  char *local_38;
+  undefined8 local_30;
+  long local_20;
+  
+  local_20 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((param_2 != (void **)0x0) && (param_2[1] != (void *)0x0)) &&
+     (*(char *)((long)param_2[1] + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_38,(StringName *)(param_1 + 0x18));
+    if (param_2[1] == (void *)0x0) {
+      plVar3 = (long *)param_2[0x23];
+      if (plVar3 == (long *)0x0) {
+        plVar3 = (long *)(**(code **)((long)*param_2 + 0x40))(param_2);
+      }
+    }
+    else {
+      plVar3 = (long *)((long)param_2[1] + 0x20);
+    }
+    if (local_38 == (char *)*plVar3) {
+      if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_38 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_40 = 0;
+      local_30 = 0x35;
+      String::parse_latin1((StrRange *)&local_40);
+      vformat<StringName>((StringName *)&local_38,(StrRange *)&local_40,&local_48);
+      _err_print_error("ptrcall","./core/object/method_bind.h",0x16b,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true."
+                       ,(StringName *)&local_38,0);
+      pcVar2 = local_38;
+      if (local_38 != (char *)0x0) {
+        LOCK();
+        plVar3 = (long *)(local_38 + -0x10);
+        *plVar3 = *plVar3 + -1;
+        UNLOCK();
+        if (*plVar3 == 0) {
+          local_38 = (char *)0x0;
+          Memory::free_static(pcVar2 + -0x10,false);
+        }
+      }
+      lVar1 = local_40;
+      if (local_40 != 0) {
+        LOCK();
+        plVar3 = (long *)(local_40 + -0x10);
+        *plVar3 = *plVar3 + -1;
+        UNLOCK();
+        if (*plVar3 == 0) {
+          local_40 = 0;
+          Memory::free_static((void *)(lVar1 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_48 != 0)) {
+        StringName::unref();
+      }
+      if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+        return;
+      }
+      goto LAB_00107a35;
+    }
+    if ((StringName::configured != '\0') && (local_38 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  UNRECOVERED_JUMPTABLE = *(code **)(param_1 + 0x58);
+                    /* WARNING: Load size is inaccurate */
+  if (((ulong)UNRECOVERED_JUMPTABLE & 1) != 0) {
+    UNRECOVERED_JUMPTABLE =
+         *(code **)(UNRECOVERED_JUMPTABLE +
+                   *(long *)((long)param_2 + *(long *)(param_1 + 0x60)) + -1);
+  }
+  if (local_20 == *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Could not recover jumptable at 0x00107875. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+    (*UNRECOVERED_JUMPTABLE)((long *)((long)param_2 + *(long *)(param_1 + 0x60)),*param_3);
+    return;
+  }
+LAB_00107a35:
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* MethodBindT<Vector<Vector3> const&>::call(Object*, Variant const**, int, Callable::CallError&)
+   const */
+
+Object * MethodBindT<Vector<Vector3>const&>::call
+                   (Object *param_1,Variant **param_2,int param_3,CallError *param_4)
+
+{
+  Variant *pVVar1;
+  long lVar2;
+  code *pcVar3;
+  undefined8 uVar4;
+  char *pcVar5;
+  char cVar6;
+  undefined4 uVar7;
+  long *plVar8;
+  long lVar9;
+  undefined4 in_register_00000014;
+  long *plVar10;
+  uint in_R8D;
+  undefined4 *in_R9;
+  Variant *pVVar11;
+  Variant *pVVar12;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  char *local_48;
+  long local_40;
+  long local_30;
+  
+  plVar10 = (long *)CONCAT44(in_register_00000014,param_3);
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((plVar10 != (long *)0x0) && (plVar10[1] != 0)) && (*(char *)(plVar10[1] + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_48,(StringName *)(param_2 + 3));
+    if (plVar10[1] == 0) {
+      plVar8 = (long *)plVar10[0x23];
+      if (plVar8 == (long *)0x0) {
+        plVar8 = (long *)(**(code **)(*plVar10 + 0x40))(plVar10);
+      }
+    }
+    else {
+      plVar8 = (long *)(plVar10[1] + 0x20);
+    }
+    if (local_48 == (char *)*plVar8) {
+      if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_48 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_50 = 0;
+      local_40 = 0x35;
+      String::parse_latin1((StrRange *)&local_50);
+      vformat<StringName>((StringName *)&local_48,(StrRange *)&local_50,&local_58);
+      _err_print_error(&_LC54,"./core/object/method_bind.h",0x154,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true. Returning: Variant()"
+                       ,(StringName *)&local_48,0);
+      pcVar5 = local_48;
+      if (local_48 != (char *)0x0) {
+        LOCK();
+        plVar10 = (long *)(local_48 + -0x10);
+        *plVar10 = *plVar10 + -1;
+        UNLOCK();
+        if (*plVar10 == 0) {
+          local_48 = (char *)0x0;
+          Memory::free_static(pcVar5 + -0x10,false);
+        }
+      }
+      lVar2 = local_50;
+      if (local_50 != 0) {
+        LOCK();
+        plVar10 = (long *)(local_50 + -0x10);
+        *plVar10 = *plVar10 + -1;
+        UNLOCK();
+        if (*plVar10 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar2 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_58 != 0)) {
+        StringName::unref();
+      }
+      goto LAB_00107c00;
+    }
+    if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  pVVar12 = param_2[0xb];
+  pVVar1 = param_2[0xc];
+  if (in_R8D < 2) {
+    pVVar11 = param_2[5];
+    if (pVVar11 == (Variant *)0x0) {
+      if (in_R8D != 1) goto LAB_00107c50;
+LAB_00107c40:
+      pVVar11 = *(Variant **)param_4;
+    }
+    else {
+      lVar2 = *(long *)(pVVar11 + -8);
+      if ((int)lVar2 < (int)(in_R8D ^ 1)) {
+LAB_00107c50:
+        uVar7 = 4;
+        goto LAB_00107bf5;
+      }
+      if (in_R8D == 1) goto LAB_00107c40;
+      lVar9 = (long)((int)lVar2 + -1);
+      if (lVar2 <= lVar9) {
+        _err_print_index_error
+                  ("get","./core/templates/cowdata.h",0xdb,lVar9,lVar2,"p_index","size()","",false,
+                   true);
+        _err_flush_stdout();
+                    /* WARNING: Does not return */
+        pcVar3 = (code *)invalidInstructionException();
+        (*pcVar3)();
+      }
+      pVVar11 = pVVar11 + lVar9 * 0x18;
+    }
+    *in_R9 = 0;
+    if (((ulong)pVVar12 & 1) != 0) {
+      pVVar12 = *(Variant **)(pVVar12 + *(long *)((long)plVar10 + (long)pVVar1) + -1);
+    }
+    cVar6 = Variant::can_convert_strict(*(undefined4 *)pVVar11,0x24);
+    uVar4 = _LC60;
+    if (cVar6 == '\0') {
+      *in_R9 = 2;
+      *(undefined8 *)(in_R9 + 1) = uVar4;
+    }
+    Variant::operator_cast_to_Vector((Variant *)&local_48);
+    (*(code *)pVVar12)((Variant *)((long)plVar10 + (long)pVVar1));
+    lVar2 = local_40;
+    if (local_40 != 0) {
+      LOCK();
+      plVar10 = (long *)(local_40 + -0x10);
+      *plVar10 = *plVar10 + -1;
+      UNLOCK();
+      if (*plVar10 == 0) {
+        local_40 = 0;
+        Memory::free_static((void *)(lVar2 + -0x10),false);
+      }
+    }
+  }
+  else {
+    uVar7 = 3;
+LAB_00107bf5:
+    *in_R9 = uVar7;
+    in_R9[2] = 1;
+  }
+LAB_00107c00:
+  *(undefined4 *)param_1 = 0;
+  *(undefined1 (*) [16])(param_1 + 8) = (undefined1  [16])0x0;
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return param_1;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* void call_with_variant_args_dv<__UnexistingClass, bool>(__UnexistingClass*, void
+   (__UnexistingClass::*)(bool), Variant const**, int, Callable::CallError&, Vector<Variant> const&)
+    */
+
+void call_with_variant_args_dv<__UnexistingClass,bool>
+               (__UnexistingClass *param_1,_func_void_bool *param_2,Variant **param_3,int param_4,
+               CallError *param_5,Vector *param_6)
+
+{
+  long lVar1;
+  long lVar2;
+  code *pcVar3;
+  undefined8 uVar4;
+  char cVar5;
+  undefined4 uVar6;
+  undefined4 in_register_0000000c;
+  long lVar7;
+  uint uVar8;
+  Variant *this;
+  long in_stack_00000008;
+  
+  uVar8 = (uint)param_5;
+  if (1 < uVar8) {
+    uVar6 = 3;
+    goto LAB_00107f7d;
+  }
+  lVar1 = *(long *)(in_stack_00000008 + 8);
+  if (lVar1 == 0) {
+    if (uVar8 != 1) goto LAB_00107fe0;
+  }
+  else {
+    lVar2 = *(long *)(lVar1 + -8);
+    if ((int)lVar2 < (int)(uVar8 ^ 1)) {
+LAB_00107fe0:
+      uVar6 = 4;
+LAB_00107f7d:
+      *(undefined4 *)param_6 = uVar6;
+      *(undefined4 *)(param_6 + 8) = 1;
+      return;
+    }
+    if (uVar8 != 1) {
+      lVar7 = (long)((int)lVar2 + -1);
+      if (lVar2 <= lVar7) {
+        _err_print_index_error
+                  ("get","./core/templates/cowdata.h",0xdb,lVar7,lVar2,"p_index","size()","",false,
+                   true);
+        _err_flush_stdout();
+                    /* WARNING: Does not return */
+        pcVar3 = (code *)invalidInstructionException();
+        (*pcVar3)();
+      }
+      this = (Variant *)(lVar1 + lVar7 * 0x18);
+      goto LAB_00107efb;
+    }
+  }
+  this = *(Variant **)CONCAT44(in_register_0000000c,param_4);
+LAB_00107efb:
+  *(undefined4 *)param_6 = 0;
+  if (((ulong)param_2 & 1) != 0) {
+    param_2 = *(_func_void_bool **)(param_2 + *(long *)(param_1 + (long)param_3) + -1);
+  }
+  cVar5 = Variant::can_convert_strict(*(undefined4 *)this,1);
+  uVar4 = _LC62;
+  if (cVar5 == '\0') {
+    *(undefined4 *)param_6 = 2;
+    *(undefined8 *)(param_6 + 4) = uVar4;
+  }
+  Variant::operator_cast_to_bool(this);
+                    /* WARNING: Could not recover jumptable at 0x00107f57. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  (*param_2)(SUB81(param_1 + (long)param_3,0));
+  return;
+}
+
+
+
+/* MethodBindT<bool>::call(Object*, Variant const**, int, Callable::CallError&) const */
+
+Object * MethodBindT<bool>::call(Object *param_1,Variant **param_2,int param_3,CallError *param_4)
+
+{
+  long lVar1;
+  char *pcVar2;
+  long *plVar3;
+  undefined4 in_register_00000014;
+  __UnexistingClass *p_Var4;
+  CallError *in_R8;
+  Vector *in_R9;
+  long in_FS_OFFSET;
+  long local_58;
+  long local_50;
+  char *local_48;
+  undefined8 local_40;
+  long local_30;
+  
+  p_Var4 = (__UnexistingClass *)CONCAT44(in_register_00000014,param_3);
+  local_30 = *(long *)(in_FS_OFFSET + 0x28);
+  if (((p_Var4 != (__UnexistingClass *)0x0) && (*(long *)(p_Var4 + 8) != 0)) &&
+     (*(char *)(*(long *)(p_Var4 + 8) + 0x2e) != '\0')) {
+    StringName::StringName((StringName *)&local_48,(StringName *)(param_2 + 3));
+    if (*(long *)(p_Var4 + 8) == 0) {
+      plVar3 = *(long **)(p_Var4 + 0x118);
+      if (plVar3 == (long *)0x0) {
+        plVar3 = (long *)(**(code **)(*(long *)p_Var4 + 0x40))(p_Var4);
+      }
+    }
+    else {
+      plVar3 = (long *)(*(long *)(p_Var4 + 8) + 0x20);
+    }
+    in_R8 = (CallError *)((ulong)in_R8 & 0xffffffff);
+    if (local_48 == (char *)*plVar3) {
+      if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+        StringName::unref();
+      }
+      MethodBind::get_name();
+      local_48 = "Cannot call method bind \'%s\' on placeholder instance.";
+      local_50 = 0;
+      local_40 = 0x35;
+      String::parse_latin1((StrRange *)&local_50);
+      vformat<StringName>((StringName *)&local_48,(StrRange *)&local_50,&local_58);
+      _err_print_error(&_LC54,"./core/object/method_bind.h",0x154,
+                       "Condition \"p_object && p_object->is_extension_placeholder() && p_object->get_class_name() == get_instance_class()\" is true. Returning: Variant()"
+                       ,(StringName *)&local_48,0,0);
+      pcVar2 = local_48;
+      if (local_48 != (char *)0x0) {
+        LOCK();
+        plVar3 = (long *)(local_48 + -0x10);
+        *plVar3 = *plVar3 + -1;
+        UNLOCK();
+        if (*plVar3 == 0) {
+          local_48 = (char *)0x0;
+          Memory::free_static(pcVar2 + -0x10,false);
+        }
+      }
+      lVar1 = local_50;
+      if (local_50 != 0) {
+        LOCK();
+        plVar3 = (long *)(local_50 + -0x10);
+        *plVar3 = *plVar3 + -1;
+        UNLOCK();
+        if (*plVar3 == 0) {
+          local_50 = 0;
+          Memory::free_static((void *)(lVar1 + -0x10),false);
+        }
+      }
+      if ((StringName::configured != '\0') && (local_58 != 0)) {
+        StringName::unref();
+      }
+      *(undefined4 *)param_1 = 0;
+      *(undefined1 (*) [16])(param_1 + 8) = (undefined1  [16])0x0;
+      goto LAB_00108046;
+    }
+    if ((StringName::configured != '\0') && (local_48 != (char *)0x0)) {
+      StringName::unref();
+    }
+  }
+  call_with_variant_args_dv<__UnexistingClass,bool>
+            (p_Var4,(_func_void_bool *)param_2[0xb],(Variant **)param_2[0xc],(int)param_4,in_R8,
+             in_R9);
+  *(undefined4 *)param_1 = 0;
+  *(undefined1 (*) [16])(param_1 + 8) = (undefined1  [16])0x0;
+LAB_00108046:
+  if (local_30 == *(long *)(in_FS_OFFSET + 0x28)) {
+    return param_1;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+
+
+/* WARNING: Control flow encountered bad instruction data */
+/* ConcavePolygonShape3D::~ConcavePolygonShape3D() */
+
+void __thiscall ConcavePolygonShape3D::~ConcavePolygonShape3D(ConcavePolygonShape3D *this)
+
+{
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
+
+/* WARNING: Control flow encountered bad instruction data */
+/* MethodBindTRC<bool>::~MethodBindTRC() */
+
+void __thiscall MethodBindTRC<bool>::~MethodBindTRC(MethodBindTRC<bool> *this)
+
+{
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
+
+/* WARNING: Control flow encountered bad instruction data */
+/* MethodBindT<bool>::~MethodBindT() */
+
+void __thiscall MethodBindT<bool>::~MethodBindT(MethodBindT<bool> *this)
+
+{
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
+
+/* WARNING: Control flow encountered bad instruction data */
+/* MethodBindTRC<Vector<Vector3>>::~MethodBindTRC() */
+
+void __thiscall MethodBindTRC<Vector<Vector3>>::~MethodBindTRC(MethodBindTRC<Vector<Vector3>> *this)
+
+{
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
+
+/* WARNING: Control flow encountered bad instruction data */
+/* MethodBindT<Vector<Vector3> const&>::~MethodBindT() */
+
+void __thiscall
+MethodBindT<Vector<Vector3>const&>::~MethodBindT(MethodBindT<Vector<Vector3>const&> *this)
+
+{
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
+
+/* WARNING: Control flow encountered bad instruction data */
+/* StringName::~StringName() */
+
+void __thiscall StringName::~StringName(StringName *this)
+
+{
+                    /* WARNING: Bad instruction - Truncating control flow here */
+  halt_baddata();
+}
+
+
