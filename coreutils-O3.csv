@@ -1,0 +1,27 @@
+samples/decompilations/coreutils-O3/lib libcoreutils_a-sm3.c, 0, 0, 4, 0, 0, 0, 3
+samples/decompilations/coreutils-O3/src find-mount-point.c, 0, 2, 0, 0, 0, 0, 2
+samples/decompilations/coreutils-O3/src set-fields.c, 0, 2, 3, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src libcksum_avx2_a-cksum_avx2.c, 0, 0, 3, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src printf.c, 1, 3, 9, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/lib libcoreutils_a-rand-isaac.c, 0, 0, 4, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src wc.c, 1, 6, 11, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/lib libcoreutils_a-i-ring.c, 0, 0, 0, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src pwd.c, 4, 2, 4, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src cp.c, 3, 11, 5, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src basenc-basenc.c, 0, 7, 20, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src env.c, 2, 6, 12, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/gnulib-tests unistr u32-set.c, 0, 0, 1, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src libwc_avx2_a-wc_avx2.c, 0, 1, 4, 0, 0, 0, 3
+samples/decompilations/coreutils-O3/lib libcoreutils_a-readtokens0.c, 0, 0, 1, 0, 0, 0, 2
+samples/decompilations/coreutils-O3/lib libcoreutils_a-fts.c, 3, 12, 11, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src tr.c, 2, 3, 34, 0, 0, 0, 1
+samples/decompilations/coreutils-O3/src copy.c, 4, 4, 8, 0, 0, 0, 3
+samples/decompilations/coreutils-O3/lib libcoreutils_a-sha512.c, 0, 0, 0, 0, 0, 0, 6
+samples/decompilations/coreutils-O3/src sort.c, 7, 54, 74, 0, 0, 0, 6
+samples/decompilations/coreutils-O3/lib libcoreutils_a-readutmp.c, 0, 3, 7, 0, 0, 0, 1
+Loops found:           39
+Statements removed:  1033
+              for  while     do    nodes
+   before:     239    699   1713  1677473
+   after:      278    699   1713  1651519
+   Δ                                  1.5%

@@ -321,6 +321,7 @@ class TreeStatistics:
         self.nodes = 0
 
         if tree is not None:
+
             def walk(node):
                 self.nodes += 1
                 if node.type == "for_statement":
@@ -335,10 +336,10 @@ class TreeStatistics:
             walk(tree)
 
     def __iadd__(self, other: Self) -> Self:
-        self.for_loops   += other.for_loops
+        self.for_loops += other.for_loops
         self.while_loops += other.while_loops
-        self.do_loops    += other.do_loops
-        self.nodes       += other.nodes
+        self.do_loops += other.do_loops
+        self.nodes += other.nodes
         return self
 
 
@@ -357,12 +358,12 @@ class RerollResult:
         self.after = TreeStatistics(tree)
 
     def __iadd__(self, other: Self) -> Self:
-        self.loops_found        += other.loops_found
+        self.loops_found += other.loops_found
         self.statements_removed += other.statements_removed
         self.total_line_numbers += other.total_line_numbers
 
         self.before += other.before
-        self.after  += other.after
+        self.after += other.after
         return self
 
     def __add__(self, other: Self) -> Self:
@@ -372,7 +373,7 @@ class RerollResult:
         return rv
 
 
-def process_file(source_code: str, parser: Parser) -> RerollResult:
+def process_file(filename: str, source_code: str, parser: Parser) -> RerollResult:
     # Parse the source into an abstract syntax tree
     tree = parser.parse(source_code)
     tree_root = Node.from_tree_sitter(tree.root_node)
@@ -407,6 +408,10 @@ def process_file(source_code: str, parser: Parser) -> RerollResult:
 
                         break
 
+    if result.loops_found > 0:
+        print(
+            f"{filename}, {result.before.for_loops}, {result.before.while_loops}, {result.before.do_loops}, {result.after.for_loops}, {result.after.while_loops}, {result.after.do_loops}, {result.loops_found}"
+        )
     result.update_tree(tree_root)
 
     return result
