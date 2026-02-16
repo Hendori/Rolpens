@@ -408,10 +408,10 @@ def process_file(filename: str, source_code: str, parser: Parser) -> RerollResul
 
                         break
 
+    result.update_tree(tree_root)
     if result.loops_found > 0:
         print(
             f"{filename}, {result.before.for_loops}, {result.before.while_loops}, {result.before.do_loops}, {result.after.for_loops}, {result.after.while_loops}, {result.after.do_loops}, {result.loops_found}"
         )
-    result.update_tree(tree_root)
 
     return result
