@@ -1,0 +1,9 @@
+uv run python -m rolpens samples/decompilations/coreutils-O3 --stats --results-file coreutils-O3.csv
+uv run python -m rolpens samples/decompilations/coreutils-O2 --stats --results-file coreutils-O2.csv
+uv run python -m rolpens samples/decompilations/coreutils-no-unroll --stats --results-file coreutils-no-unroll.csv
+uv run python -m rolpens samples/decompilations/openssl-O3 --stats --results-file openssl-O3.csv
+uv run python -m rolpens samples/decompilations/openssl-O2 --stats --results-file openssl-O2.csv
+uv run python -m rolpens samples/decompilations/openssl-no-unroll --stats --results-file openssl-no-unroll.csv
+uv run python -m rolpens samples/decompilations/godot-O3 --stats --results-file godot-O3.csv
+uv run python -m rolpens samples/decompilations/godot-O2 --stats --results-file godot-O2.csv
+uv run python -m rolpens samples/decompilations/godot-no-unroll --stats --results-file godot-no-unroll.csv

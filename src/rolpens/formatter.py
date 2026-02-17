@@ -8,6 +8,7 @@ class Formatter:
         return self.format_node(root_node)
 
     def format_node(self, node) -> str:
+        print(f"node is {node}")
         match node.type:
             # jq '.[] | select(.named) | .type' treesitter-decomp-c/src/node-types.json
             case "expression":

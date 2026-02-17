@@ -267,10 +267,12 @@ def find_duplicates(compound_node):
     cache = compound_node.candidate_cache
 
     children_list = list(compound_node.children)
-    for body_size in range(1, len(children_list) // 2):
+    for body_size in range(1, len(children_list) // 3):
+        if body_size > 10000:
+            break
         for i, startnode in enumerate(children_list):
             if (startnode, body_size) in cache:
-                # yield cache[(startnode, body_size)]
+                yield cache[(startnode, body_size)]
                 compound_node.cache_hits += 1
                 continue
 
@@ -306,11 +308,12 @@ def find_duplicates(compound_node):
                     imin += len(inst)
 
 
-def find_numeric_constants(result: List[Fraction], node: Node):
+def find_numeric_constants(result: List[Fraction], node: Node, counter: int = 0):
     if node.type == "number_literal":
         result.append(parse_c_number_literal(node.text.decode()))
+    counter += 1
     for child in node.children:
-        find_numeric_constants(result, child)
+        find_numeric_constants(result, child, counter)
 
 
 class TreeStatistics:
@@ -409,9 +412,5 @@ def process_file(filename: str, source_code: str, parser: Parser) -> RerollResul
                         break
 
     result.update_tree(tree_root)
-    if result.loops_found > 0:
-        print(
-            f"{filename}, {result.before.for_loops}, {result.before.while_loops}, {result.before.do_loops}, {result.after.for_loops}, {result.after.while_loops}, {result.after.do_loops}, {result.loops_found}"
-        )
 
     return result
