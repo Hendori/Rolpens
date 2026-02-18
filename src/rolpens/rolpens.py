@@ -267,10 +267,12 @@ def find_duplicates(compound_node):
     cache = compound_node.candidate_cache
 
     children_list = list(compound_node.children)
-    for body_size in range(1, len(children_list) // 2):
+    for body_size in range(1, len(children_list) // 3):
+        if body_size > 10000:
+            break
         for i, startnode in enumerate(children_list):
             if (startnode, body_size) in cache:
-                # yield cache[(startnode, body_size)]
+                yield cache[(startnode, body_size)]
                 compound_node.cache_hits += 1
                 continue
 
@@ -306,11 +308,12 @@ def find_duplicates(compound_node):
                     imin += len(inst)
 
 
-def find_numeric_constants(result: List[Fraction], node: Node):
+def find_numeric_constants(result: List[Fraction], node: Node, counter: int = 0):
     if node.type == "number_literal":
         result.append(parse_c_number_literal(node.text.decode()))
+    counter += 1
     for child in node.children:
-        find_numeric_constants(result, child)
+        find_numeric_constants(result, child, counter)
 
 
 class TreeStatistics:
@@ -321,6 +324,7 @@ class TreeStatistics:
         self.nodes = 0
 
         if tree is not None:
+
             def walk(node):
                 self.nodes += 1
                 if node.type == "for_statement":
@@ -335,10 +339,10 @@ class TreeStatistics:
             walk(tree)
 
     def __iadd__(self, other: Self) -> Self:
-        self.for_loops   += other.for_loops
+        self.for_loops += other.for_loops
         self.while_loops += other.while_loops
-        self.do_loops    += other.do_loops
-        self.nodes       += other.nodes
+        self.do_loops += other.do_loops
+        self.nodes += other.nodes
         return self
 
 
@@ -357,12 +361,12 @@ class RerollResult:
         self.after = TreeStatistics(tree)
 
     def __iadd__(self, other: Self) -> Self:
-        self.loops_found        += other.loops_found
+        self.loops_found += other.loops_found
         self.statements_removed += other.statements_removed
         self.total_line_numbers += other.total_line_numbers
 
         self.before += other.before
-        self.after  += other.after
+        self.after += other.after
         return self
 
     def __add__(self, other: Self) -> Self:
@@ -372,7 +376,7 @@ class RerollResult:
         return rv
 
 
-def process_file(source_code: str, parser: Parser) -> RerollResult:
+def process_file(filename: str, source_code: str, parser: Parser) -> RerollResult:
     # Parse the source into an abstract syntax tree
     tree = parser.parse(source_code)
     tree_root = Node.from_tree_sitter(tree.root_node)
