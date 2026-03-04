@@ -51,7 +51,7 @@ if config.output_dir is not None:
 result_writer = None
 if config.results_file:
     result_writer = open(config.results_file, "w")
-    result_writer.write("filename, for, while, do, for, while, do\n")
+    result_writer.write("filename, for, while, do, for, while, do, loops found\n")
 
 parser = get_parser("treesitter-cpp.so", "cpp")
 
