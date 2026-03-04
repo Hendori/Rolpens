@@ -48,9 +48,10 @@ if not config.stats and config.output_dir is None:
 if config.output_dir is not None:
     os.makedirs(config.output_dir, exist_ok=True)
 
+result_writer = None
 if config.results_file:
-    with open(config.results_file, "w") as f:
-        f.write("filename, for, while, do, for, while, do\n")
+    result_writer = open(config.results_file, "w")
+    result_writer.write("filename, for, while, do, for, while, do\n")
 
 parser = get_parser("treesitter-cpp.so", "cpp")
 
@@ -71,11 +72,10 @@ for project, filename in workload:
         source_code = f.read().encode()
 
     res = rolpens.process_file(filename, source_code, parser)
-    if res.loops_found > 1:
-        with open(config.results_file, "a") as f:
-            f.write(
-                f"{filename}, {res.before.for_loops}, {res.before.while_loops}, {res.before.do_loops}, {res.after.for_loops}, {res.after.while_loops}, {res.after.do_loops}, {res.loops_found}\n"
-            )
+    if result_writer:
+        result_writer.write(
+            f"{filename}, {res.before.for_loops}, {res.before.while_loops}, {res.before.do_loops}, {res.after.for_loops}, {res.after.while_loops}, {res.after.do_loops}, {res.loops_found}\n"
+        )
 
     project_stats[project] += res
 
